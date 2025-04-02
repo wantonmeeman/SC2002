@@ -1,8 +1,8 @@
 
 import java.util.Date;
-import java.util.List;
 
 public class Project {
+
     private String projectID;
     private String name;
     private String neighbourhood;
@@ -10,26 +10,59 @@ public class Project {
     private Date closingDate;
     private boolean visibility;
     private int officerSlots;
-    private List<TypeFlat> typeFlats;
+    private String[] officersIDs;
+    private String managerID;
+    private Flat[] flats;
 
-    public Project(String projectID, String name, String neighbourhood, Date openingDate, Date closingDate,
-                   boolean visibility, int officerSlots, List<TypeFlat> typeFlats) {
-        this.projectID = projectID;
+    public Project(String name, String neighbourhood,
+            Date openingDate, Date closingDate,
+            int officerSlots, String[] officerIDs, String managerID, Flat[] flats) {
+        this.projectID = "";//Generate random
         this.name = name;
         this.neighbourhood = neighbourhood;
+
         this.openingDate = openingDate;
         this.closingDate = closingDate;
-        this.visibility = visibility;
+        this.visibility = true;
+
         this.officerSlots = officerSlots;
-        this.typeFlats = typeFlats;
+        this.officersIDs = officerIDs;
+        this.managerID = managerID;
+        this.flats = flats;
     }
 
-    public String getProjectID() {
-        return projectID;
-    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Project ID: ").append(projectID).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Neighbourhood: ").append(neighbourhood).append("\n");
+        sb.append("Opening Date: ").append(openingDate).append("\n");
+        sb.append("Closing Date: ").append(closingDate).append("\n");
+        sb.append("Visibility: ").append(visibility).append("\n");
+        sb.append("Officer Slots: ").append(officerSlots).append("\n");
+        sb.append("Manager ID: ").append(managerID).append("\n");
 
-    public void setProjectID(String projectID) {
-        this.projectID = projectID;
+        sb.append("Officer IDs: ");
+        if (officersIDs != null && officersIDs.length > 0) {
+            for (String id : officersIDs) {
+                sb.append(id).append(" ");
+            }
+        } else {
+            sb.append("None");
+        }
+        sb.append("\n");
+
+        sb.append("Flats: ");
+        if (flats != null && flats.length > 0) {
+            for (Flat flat : flats) {
+                sb.append(flat.toString()).append("\n");
+            }
+        } else {
+            sb.append("None");
+        }
+
+        return sb.toString();
     }
 
     public String getName() {
@@ -72,6 +105,30 @@ public class Project {
         this.visibility = !this.visibility;
     }
 
+    public Flat[] getFlats() {
+        return flats;
+    }
+
+    public void setFlats(Flat[] flats) {
+        this.flats = flats;
+    }
+
+    public String getManagerID() {
+        return managerID;
+    }
+
+    public void setManagerID(String managerID) {
+        this.managerID = managerID;
+    }
+
+    public String[] getOfficersIDs() {
+        return officersIDs;
+    }
+
+    public void setOfficersIDs(String[] officersIDs) {
+        this.officersIDs = officersIDs;
+    }
+
     public int getOfficerSlots() {
         return officerSlots;
     }
@@ -80,25 +137,11 @@ public class Project {
         this.officerSlots = officerSlots;
     }
 
-    public List<TypeFlat> getTypeFlats() {
-        return typeFlats;
+    public String getProjectID() {
+        return projectID;
     }
 
-    public void setTypeFlats(List<TypeFlat> typeFlats) {
-        this.typeFlats = typeFlats;
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "projectID='" + projectID + '\'' +
-                ", name='" + name + '\'' +
-                ", neighbourhood='" + neighbourhood + '\'' +
-                ", openingDate=" + openingDate +
-                ", closingDate=" + closingDate +
-                ", visibility=" + visibility +
-                ", officerSlots=" + officerSlots +
-                ", typeFlats=" + typeFlats +
-                '}';
+    public void setProjectID(String projectID) {
+        this.projectID = projectID;
     }
 }

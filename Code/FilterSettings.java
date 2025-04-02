@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class FilterSettings{
     private String location;
-    private String[] flatTypes;
+    private Boolean[] flatTypes;
     private String neighborhood;
     private Date openingDate;
     private Date closingDate;
@@ -10,7 +10,7 @@ public class FilterSettings{
     public FilterSettings(){
         //These are the default values and we will use these to check if they are in use or not
         this.location = "";
-        this.flatTypes = new String[2];
+        this.flatTypes = new Boolean[] {true, true};
         this.neighborhood = "";
         this.openingDate = null;
         this.closingDate = null;
@@ -24,11 +24,11 @@ public class FilterSettings{
         this.location = location;
     }
 
-    public String[] getFlatTypes() {
+    public Boolean[] getFlatTypes() {
         return flatTypes;
     }
 
-    public void setFlatTypes(String[] flatTypes) {
+    public void Boolean(Boolean[] flatTypes) {
         this.flatTypes = flatTypes;
     }
 
@@ -55,4 +55,28 @@ public class FilterSettings{
     public void setClosingDate(Date closingDate) {
         this.closingDate = closingDate;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Location: ").append(location.isEmpty() ? "Not Set" : location).append("\n");
+        sb.append("Neighborhood: ").append(neighborhood.isEmpty() ? "Not Set" : neighborhood).append("\n");
+
+        sb.append("Opening Date: ").append(openingDate != null ? openingDate.toString() : "Not Set").append("\n");
+        sb.append("Closing Date: ").append(closingDate != null ? closingDate.toString() : "Not Set").append("\n");
+
+        sb.append("Flat Types: ");
+        if (flatTypes != null && flatTypes.length > 0) {
+            for (Boolean type : flatTypes) {
+                sb.append(type ? "Available " : "Not Available ");
+            }
+        } else {
+            sb.append("None");
+        }
+        sb.append("\n");
+
+        return sb.toString();
+    }
+
 }

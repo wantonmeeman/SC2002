@@ -1,4 +1,6 @@
+
 abstract public class User {
+
     private String userID;//Not using NRIC field as they it is basically userID
     private String name;
     private String password;
@@ -16,7 +18,7 @@ abstract public class User {
         this.filterSettings = new FilterSettings();
     }
 
-    public boolean login(String userid,String password){
+    public boolean login(String userid, String password) {
         return userid.equals(this.userID) && password.equals(this.password);
     }
 
@@ -58,5 +60,17 @@ abstract public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("User ID: ").append(userID).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Age: ").append(age).append("\n");
+        sb.append("Marital Status: ").append(maritalStatus).append("\n");
+        sb.append("Instance of: ").append(this.getClass().getSimpleName()).append("\n");
+        sb.append("Filter Settings: ").append(filterSettings != null ? "\n"+(filterSettings.toString()) : "None").append("\n");
+        return sb.toString();
     }
 }
