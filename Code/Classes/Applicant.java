@@ -1,3 +1,4 @@
+package Classes;
 public class Applicant extends User{
 
     private String currentApplicationID;

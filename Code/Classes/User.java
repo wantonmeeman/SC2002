@@ -1,5 +1,6 @@
+package Classes;
 
-abstract public class User {
+abstract public class User{
 
     private String userID;//Not using NRIC field as they it is basically userID
     private String name;

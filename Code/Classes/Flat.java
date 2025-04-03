@@ -1,3 +1,4 @@
+package Classes;
 
 public class Flat {
     private String type;
@@ -21,10 +22,6 @@ public class Flat {
         return totalUnits;
     }
 
-    // public int getAvailableUnits() {
-    //     return availableUnits;
-    // }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -32,10 +29,6 @@ public class Flat {
     public void setTotalUnits(int totalUnits) {
         this.totalUnits = totalUnits;
     }
-
-    // public void setAvailableUnits(int availableUnits) {
-    //     this.availableUnits = availableUnits;
-    // }
 
     @Override
     public String toString() {
@@ -48,6 +41,10 @@ public class Flat {
 
     public float getPrice() {
         return price;
+    }
+
+    public String getPriceAsString(){
+        return String.format("%.2f", price);
     }
 
     public void setPrice(float price) {

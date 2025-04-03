@@ -1,3 +1,4 @@
+package Classes;
 public class HDBOfficer extends Applicant {
 
     private String assignedProject;

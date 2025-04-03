@@ -1,3 +1,4 @@
+package Classes;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class Project {
     public Project(String name, String neighbourhood,
             Date openingDate, Date closingDate,
             int officerSlots, String[] officerIDs, String managerID, Flat[] flats) {
-        this.projectID = "";//Generate random
+        this.projectID = "12345678";//Generate random
         this.name = name;
         this.neighbourhood = neighbourhood;
 

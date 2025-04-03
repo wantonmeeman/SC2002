@@ -1,3 +1,4 @@
+package Classes;
 
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
@@ -42,7 +43,7 @@ public class InputReader {
             String neighbourhood = cols[1];
 
             Flat[] flats = new Flat[] {
-                new Flat(cols[2], Integer.parseInt(cols[4]), Float.parseFloat(cols[3])),
+                new Flat(cols[2], Integer.parseInt(cols[3]), Float.parseFloat(cols[4])),
                 new Flat(cols[5], Integer.parseInt(cols[6]), Float.parseFloat(cols[7]))
             };
             
@@ -50,7 +51,6 @@ public class InputReader {
             Date closingDate;
 
             try {
-
                 openingDate = sdf.parse(cols[8]);
                 closingDate = sdf.parse(cols[9]);
             }catch (ParseException ex) {
