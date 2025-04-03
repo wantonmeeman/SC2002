@@ -16,6 +16,7 @@ public class LoginScreen extends Screen<ArrayList<User>,User> {
     @Override
     public User start(ArrayList<User> userArr, Scanner sc) {
         this.userArr = userArr;
+        this.scanner = sc;
 
         return this.login();
     };

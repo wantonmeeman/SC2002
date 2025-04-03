@@ -8,7 +8,11 @@ import Classes.Enquiry;
 import Classes.InputReader;
 import Classes.Project;
 import Classes.User;
+import Screen.EnquiryScreen;
+import Screen.ExitScreen;
+import Screen.HomeScreen;
 import Screen.LoginScreen;
+import Screen.ProjectScreen;
 
 public class Main {
 
@@ -23,28 +27,39 @@ public class Main {
         User loggedUser;
 
         ArrayList<User> userArr = reader.loadUsers(INPUT_APPLICANT_PATH, INPUT_MANAGER_PATH, INPUT_OFFICER_PATH);
-        for (int x = 0; userArr.size() > x; x++) {
-            System.out.print(userArr.get(x).toString());
-        }
 
         LoginScreen loginScreen = new LoginScreen();
         loggedUser = loginScreen.start(userArr,sc);
-
-        System.out.print(loggedUser.toString());
 
         ArrayList<Project> projectArr = reader.loadProjects(INPUT_PROJECT_PATH, userArr);
         ArrayList<Enquiry> enquiryArr = new ArrayList<Enquiry>();
         enquiryArr.add(new Enquiry("12345678","S1234567A","LAWLAWLLAWLAWLAWL",new Date()));
 
-        for (int x = 0; projectArr.size() > x; x++) {
-            System.out.print(projectArr.get(x).toString());
+        HomeScreen homeScreen = new HomeScreen();
+        Integer userInput;
+
+        while(true){
+            userInput = homeScreen.start(loggedUser,sc);
+
+            switch(userInput){
+                case 1:
+                    ExitScreen escreen = new ExitScreen();
+                    escreen.start(null,sc);
+                    return;
+                case 2:
+                    ProjectScreen pscreen = new ProjectScreen(loggedUser);
+                    pscreen.start(projectArr,sc);
+                    break;
+                case 3:
+                    EnquiryScreen enqscreen = new EnquiryScreen(loggedUser);
+                    enqscreen.start(enquiryArr,sc);
+                break;
+            
+            }
+
         }
 
-        switch(){
-            case ""
-            case ""
-            case ""
-        }
+
 
 
         // Scanner scanner = new Scanner(System.in);

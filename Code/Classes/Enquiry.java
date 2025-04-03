@@ -78,8 +78,6 @@ public class Enquiry {
 			sb.append("Reply: ").append(this.getReply()).append("\n");
 		}
 
-		sb.append("\n");
-
 		return sb.toString();
 	}
 }

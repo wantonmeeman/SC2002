@@ -1,15 +1,13 @@
 package Screen;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import Classes.User;
 
-public class HomeScreen extends Screen<User,String,String> {
+public class HomeScreen extends Screen<User,Integer> {
 
     Scanner scanner;
     StringBuilder sb;
-    Integer 
 
     public HomeScreen() {
     }
@@ -23,23 +21,27 @@ public class HomeScreen extends Screen<User,String,String> {
     };
 
     private Integer displayHomescreen(){
-        this.sb
+        sb
         .append("1.Exit \n")
         .append("2.View Projects\n")
-        .append("3.View Project Applied for\n")
-        .append("4.View Enquiries\n");
+        //.append("3.View Project Applied for\n")
+        .append("3.View Enquiries\n");
 
-        System.out.print(this.sb.toString());
-        this.sb.setLength(0);
+        System.out.print(sb.toString());
+        sb.setLength(0);
         
-        String UserInput = scanner.nextLine();
+        String userInput = scanner.nextLine();
+        int userInputInteger = -1;
 
-        if(UserInput.length() == 1){
-            
-
-
+        if(userInput.length() == 1){
+            try{
+                userInputInteger = Integer.parseInt(userInput);
+            }catch(NumberFormatException e){
+                System.out.print("Error");//ERROR
+            }
+            return userInputInteger;    
         }else{
-            displayHomescreen();
+            return displayHomescreen();
         }
     }
 ;
