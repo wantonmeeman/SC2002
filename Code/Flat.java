@@ -4,7 +4,7 @@ public class Flat {
     private int totalUnits;
     //private int availableUnits;
     //Is there available units?
-    //Testing pushing to GitHub
+    //commit testing
     private float price;
 
     public Flat(String type, int totalUnits, float price) {
