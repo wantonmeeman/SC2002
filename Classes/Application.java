@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Application implements Serializable {
-// 私有属性，对应类图中的 attributes
 
     private String applicationID;
     private String status;

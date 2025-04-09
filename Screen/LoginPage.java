@@ -5,21 +5,17 @@ import java.util.Scanner;
 
 import Classes.User;
 
-public class LoginScreen extends Screen<ArrayList<User>,User> {
+public class LoginPage extends Screen<ArrayList<User>, User> {
 
     Scanner scanner;
     ArrayList<User> userArr;
 
-    public LoginScreen() {
-    }
-
-    @Override
-    public User start(ArrayList<User> userArr, Scanner sc) {
+    public LoginPage() {
         this.userArr = userArr;
         this.scanner = sc;
 
-        return this.login();
-    };
+        this.login();
+    }
 
     private User login() {
         String userid;
@@ -34,6 +30,12 @@ public class LoginScreen extends Screen<ArrayList<User>,User> {
 
             for (User user : userArr) {
                 if (user.login(userid, password)) {
+                    // try {
+                    //     new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+
+                    // } catch (final Exception e) {
+                    //     //  Handle any exceptions.
+                    // }
                     return user;
                 }
             }

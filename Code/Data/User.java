@@ -1,4 +1,4 @@
-package Classes;
+package Data;
 
 abstract public class User{
 
