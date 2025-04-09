@@ -1,3 +1,7 @@
+package Models;
+
+import Models.Applicant;
+
 public class HDBOfficer extends Applicant {
 
     private String assignedProject;

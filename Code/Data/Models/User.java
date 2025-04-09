@@ -1,7 +1,11 @@
+package Models;
 
-abstract public class User {
+import Data.Models.Model;
+import Models.FilterSettings;
 
-    private String userID;//Not using NRIC field as they it is basically userID
+abstract public class User extends Model {
+
+    //private String userID;//Not using NRIC field as they it is basically userID
     private String name;
     private String password;
     private char maritalStatus;
@@ -9,17 +13,17 @@ abstract public class User {
     private int age;
 
     public User(String userID, String name, int age, char maritalStatus, String password) {
-        this.userID = userID;
+        super(userID);
         this.name = name;
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
 
-        this.filterSettings = new FilterSettings();
+        this.filterSettings = new Models.FilterSettings();
     }
 
     public boolean login(String userid, String password) {
-        return userid.equals(this.userID) && password.equals(this.password);
+        return userid.equals(getID()) && password.equals(this.password);
     }
 
     public char getMaritalStatus() {
@@ -46,14 +50,6 @@ abstract public class User {
         this.name = name;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
     public int getAge() {
         return age;
     }
@@ -65,7 +61,7 @@ abstract public class User {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("User ID: ").append(userID).append("\n");
+        sb.append("User ID: ").append(getID()).append("\n");
         sb.append("Name: ").append(name).append("\n");
         sb.append("Age: ").append(age).append("\n");
         sb.append("Marital Status: ").append(maritalStatus).append("\n");
