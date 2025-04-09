@@ -1,0 +1,4 @@
+-Advanced, hash (and salt)? passwords
+-Register users
+-config file
+-enquiry reading from file?

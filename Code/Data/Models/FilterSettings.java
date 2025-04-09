@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Code/Data/Models/FilterSettings.java
 package Models;
+========
+package Data;
+>>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/FilterSettings.java
 import java.util.Date;
 
 public class FilterSettings{

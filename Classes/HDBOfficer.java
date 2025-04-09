@@ -1,11 +1,4 @@
-<<<<<<<< HEAD:Code/Data/Models/HDBOfficer.java
-package Models;
-
-import Models.Applicant;
-========
-package Data;
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/HDBOfficer.java
-
+package Classes;
 public class HDBOfficer extends Applicant {
 
     private String assignedProject;

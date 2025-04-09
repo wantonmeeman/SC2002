@@ -1,9 +1,4 @@
-<<<<<<<< HEAD:Code/Data/Models/HDBManager.java
-package Models;
-import Models.User;
-========
-package Data;
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/HDBManager.java
+package Classes;
 
 public class HDBManager extends User {
 

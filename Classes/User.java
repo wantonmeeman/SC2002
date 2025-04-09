@@ -1,17 +1,10 @@
-<<<<<<<< HEAD:Code/Data/Models/User.java
-package Models;
+package Classes;
 
-import Data.Models.Model;
-import Models.FilterSettings;
-========
-package Data;
+import Data.FilterSettings;
 
 abstract public class User{
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/User.java
 
-abstract public class User extends Model {
-
-    //private String userID;//Not using NRIC field as they it is basically userID
+    private String userID;//Not using NRIC field as they it is basically userID
     private String name;
     private String password;
     private char maritalStatus;
@@ -19,17 +12,17 @@ abstract public class User extends Model {
     private int age;
 
     public User(String userID, String name, int age, char maritalStatus, String password) {
-        super(userID);
+        this.userID = userID;
         this.name = name;
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
 
-        this.filterSettings = new Models.FilterSettings();
+        this.filterSettings = new FilterSettings();
     }
 
     public boolean login(String userid, String password) {
-        return userid.equals(getID()) && password.equals(this.password);
+        return userid.equals(this.userID) && password.equals(this.password);
     }
 
     public char getMaritalStatus() {
@@ -56,6 +49,14 @@ abstract public class User extends Model {
         this.name = name;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
     public int getAge() {
         return age;
     }
@@ -67,7 +68,7 @@ abstract public class User extends Model {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("User ID: ").append(getID()).append("\n");
+        sb.append("User ID: ").append(userID).append("\n");
         sb.append("Name: ").append(name).append("\n");
         sb.append("Age: ").append(age).append("\n");
         sb.append("Marital Status: ").append(maritalStatus).append("\n");
