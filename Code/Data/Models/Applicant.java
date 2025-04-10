@@ -1,16 +1,11 @@
-<<<<<<<< HEAD:Code/Data/Models/Applicant.java
-package Models;
-import Models.User;
-========
-package Data;
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/Applicant.java
+package Data.Models;
 
 public class Applicant extends User{
 
     private String currentApplicationID;
 
-    public Applicant(String userID, String name, int age, char maritalStatus, String password) {
-        super(userID, name, age, maritalStatus, password);
+    public Applicant(String id, String name, int age, char maritalStatus, String password) {
+        super(id, name, age, maritalStatus, password);
         
         this.currentApplicationID = null;
     }

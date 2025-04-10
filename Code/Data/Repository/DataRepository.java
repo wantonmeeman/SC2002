@@ -1,30 +1,31 @@
-package Repository;
+package Data.Repository;
 
 import java.util.ArrayList;
+import Data.Models.Model;
 
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 
-import Util.CSVUtils;
+import javax.xml.crypto.Data;
 
-abstract public class DataRepository<Model> extends CSVUtils{
-    private String filepath;
+abstract public class DataRepository extends Storable{
+
+    //Mapping Model to String and vice versa
+    protected abstract ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv);
+    protected abstract ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm);
+
     protected ArrayList<Model> listOfModels = new ArrayList<>();
 
-    public abstract void save();
-
-    public abstract void load();
-
-    public abstract ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv);
-
-    public abstract ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm);
-
-    public String getFilepath() {
-        return filepath;
+    protected void fetch(){
+        updateAll(toModelList(load()));
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    protected void store(){
+        save(toCSV(listOfModels));
+    }
+
+    public int size(){
+        return listOfModels.size();
     }
 
     public boolean contains(String ID) {
@@ -35,11 +36,6 @@ abstract public class DataRepository<Model> extends CSVUtils{
             return false;
         }
     }
-
-    public int size(){
-        return listOfModels.size();
-    }
-
 
     public Model get(String ID) throws ModelNotFoundException{
         for (Model model : listOfModels) {
@@ -60,38 +56,37 @@ abstract public class DataRepository<Model> extends CSVUtils{
             throw new ModelAlreadyExistsException();
         } else {
             listOfModels.add(model);
-
-            save();
         }
+
+        store();
     }
 
-    public void update(Model model){
-        Model oldModel = get(model.getID());
-        listOfModels.set(listOfModels.indexOf(get(oldModel.getID())), model);
+    public void update(String oldID,Model model) throws ModelNotFoundException {
+        int index = listOfModels.indexOf(get(oldID));
 
-        save();
+        if(index == -1){
+            throw new ModelNotFoundException();
+        }else{
+            listOfModels.set(index, model);
+        }
+
+        store();
     };
 
     public void updateAll(ArrayList<Model> models){
-        this.listOfModels = models;
+        listOfModels = models;
 
-        save();
+        store();
     };
 
-    public void delete(String ID){
-
-        try {
+    public void delete(String ID) throws ModelNotFoundException{
             listOfModels.remove(get(ID));
-
-            save();
-        } catch (ModelNotFoundException e) {
-            //
-        }
+            store();
     };
 
     public void deleteAll(){
         listOfModels.clear();
 
-        save();
+        store();
     };
 }

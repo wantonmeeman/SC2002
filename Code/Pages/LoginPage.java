@@ -2,7 +2,10 @@ package Pages;
 
 import java.util.Scanner;
 
-import Data.User;
+import Data.Models.Applicant;
+import Data.Models.HDBManager;
+import Data.Models.HDBOfficer;
+import Data.Models.User;
 import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
 import Util.ClearCMD;
@@ -10,14 +13,11 @@ import Util.ClearCMD;
 public class LoginPage {
 
     public static void login() {
-        //load Information
         StringBuilder sb = new StringBuilder();
         Scanner scanner = new Scanner(System.in);
-
+        User user;
         String userid;
         String password;
-
-        ClearCMD.clear();
 
         System.out.print("User ID:\n");
 
@@ -26,24 +26,23 @@ public class LoginPage {
         System.out.print("Password:\n");
 
         password = scanner.nextLine();
+
         try {
-            User user = UserLogicActions.login(userid, password);
-            System.out.print("Correct");
+            user = UserLogicActions.login(userid,password);
+
+                if (user instanceof HDBOfficer) {
+                    System.out.print("Officer");
+                }else if (user instanceof HDBManager) {
+                    System.out.print("Manager");
+                } else if (user instanceof Applicant) {
+                    System.out.print("App");
+                }
+
         } catch (WrongInputException e) {
-            System.out.print("Wrong!");
+            System.out.print("Wrong Input!\n");
             login();
         }
 
-        // try {
-        //     if (user instanceof Applicant) {
 
-        //     } else if (user instanceof HDBManager) {
-
-        //     } else if (user instanceof HDBOfficer) {
-
-        //     }
-        // } catch (lol e) {
-
-        // }
     }
 }

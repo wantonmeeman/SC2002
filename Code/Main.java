@@ -20,10 +20,6 @@ import Pages.StartPage;
 import Pages.*;
 
 public class Main {
-<<<<<<< HEAD
-
-=======
->>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265
     public static void main(String[] args) {
         StartPage.start();
     }
@@ -32,7 +28,7 @@ public class Main {
 // public class Main {
 
 //     static String INPUT_APPLICANT_PATH = "../InputData/ApplicantList.csv";
-//     static String INPUT_MANAGER_PATH = "../InputData/Manager.csv";
+//     static String INPUT_MANAGER_PATH = "../InputData/ManagerList.csv";
 //     static String INPUT_OFFICER_PATH = "../InputData/OfficerList.csv";
 //     static String INPUT_PROJECT_PATH = "../InputData/ProjectList.csv";
 

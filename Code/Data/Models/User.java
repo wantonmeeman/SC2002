@@ -1,35 +1,24 @@
-<<<<<<<< HEAD:Code/Data/Models/User.java
-package Models;
-
-import Data.Models.Model;
-import Models.FilterSettings;
-========
-package Data;
-
-abstract public class User{
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/User.java
+package Data.Models;
 
 abstract public class User extends Model {
-
-    //private String userID;//Not using NRIC field as they it is basically userID
     private String name;
     private String password;
     private char maritalStatus;
-    public FilterSettings filterSettings;
+    public SearchSettings searchSettings;
     private int age;
 
-    public User(String userID, String name, int age, char maritalStatus, String password) {
-        super(userID);
+    public User(String id, String name, int age, char maritalStatus, String password) {
+        super(id);
         this.name = name;
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
 
-        this.filterSettings = new Models.FilterSettings();
+        this.searchSettings = new SearchSettings();
     }
 
-    public boolean login(String userid, String password) {
-        return userid.equals(getID()) && password.equals(this.password);
+    public boolean login(String id, String password) {//Remove this?
+        return id.equals(getID()) && password.equals(this.password);
     }
 
     public char getMaritalStatus() {
@@ -64,7 +53,7 @@ abstract public class User extends Model {
         this.age = age;
     }
 
-    @Override
+    @Override //Debugging! remove when done
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("User ID: ").append(getID()).append("\n");
@@ -72,7 +61,7 @@ abstract public class User extends Model {
         sb.append("Age: ").append(age).append("\n");
         sb.append("Marital Status: ").append(maritalStatus).append("\n");
         sb.append("Instance of: ").append(this.getClass().getSimpleName()).append("\n");
-        sb.append("Filter Settings: ").append(filterSettings != null ? "\n"+(filterSettings.toString()) : "None").append("\n");
+        sb.append("Filter Settings: ").append(searchSettings != null ? "\n"+(searchSettings.toString()) : "None").append("\n");
         return sb.toString();
     }
 }

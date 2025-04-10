@@ -1,17 +1,17 @@
-<<<<<<<< HEAD:Code/Data/Models/HDBManager.java
-package Models;
-import Models.User;
-========
-package Data;
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/HDBManager.java
+package Data.Models;
 
 public class HDBManager extends User {
 
     private String managedProjectID;
 
-    public HDBManager(String userID, String name, int age, char maritalStatus, String password) {
-        super(userID, name, age, maritalStatus, password); 
+    public HDBManager(String id, String name, int age, char maritalStatus, String password) {
+        super(id, name, age, maritalStatus, password);
         this.managedProjectID = null;
+    }
+
+    public HDBManager(String id, String name, int age, char maritalStatus, String password, String managedProjectID) {
+        super(id, name, age, maritalStatus, password);
+        this.managedProjectID = managedProjectID;
     }
 
     public String getManagedProjectID() {

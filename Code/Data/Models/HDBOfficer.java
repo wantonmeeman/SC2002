@@ -1,21 +1,22 @@
-<<<<<<<< HEAD:Code/Data/Models/HDBOfficer.java
-package Models;
-
-import Models.Applicant;
-========
-package Data;
->>>>>>>> 658316984a214edaae8c9d8f2cc14eac7675d265:Code/Data/HDBOfficer.java
+package Data.Models;
 
 public class HDBOfficer extends Applicant {
 
     private String assignedProject;
     private char registrationStatus;//null , pending, approved, rejected
 
-    public HDBOfficer(String userID, String name, int age, char maritalStatus, String password) {
-        super(userID, name, age, maritalStatus, password);
+    public HDBOfficer(String id, String name, int age, char maritalStatus, String password) {
+        super(id, name, age, maritalStatus, password);
         
         this.assignedProject = null;
         this.registrationStatus = '\0';//null char
+    }
+
+    public HDBOfficer(String id, String name, int age, char maritalStatus, String password, String assignedProject, char registrationStatus) {
+        super(id, name, age, maritalStatus, password);
+
+        this.assignedProject = assignedProject;//change name
+        this.registrationStatus = registrationStatus;//
     }
 
     public String getAssignedProject() {

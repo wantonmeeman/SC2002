@@ -26,7 +26,6 @@ public class CSVUtils {
             }
 
             scanner.close();
-
         } catch (FileNotFoundException e) {
             System.out.print("Error with reading the file!");
         }
@@ -34,13 +33,13 @@ public class CSVUtils {
     }
 
     public static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvString) {
-        try {
-            PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
-            //for (modelList mappableObject : modelList) {
-                printWriter.println();
-            //}
-        } catch (IOException e) {
-            throw new RuntimeException("Data could not be saved to file: ");
-        }
+//        try {
+//            //PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
+//            //for (modelList mappableObject : modelList) {
+//                //printWriter.println();
+//            //}
+//        } catch (IOException e) {
+//            throw new RuntimeException("Data could not be saved to file: ");
+//        }
     }
 }
