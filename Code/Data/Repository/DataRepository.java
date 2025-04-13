@@ -6,8 +6,6 @@ import Data.Models.Model;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 
-import javax.xml.crypto.Data;
-
 abstract public class DataRepository extends Storable{
 
     //Mapping Model to String and vice versa
