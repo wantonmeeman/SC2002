@@ -1,6 +1,6 @@
 package Data.Repository;
 
-import Data.Models.HDBOfficer;
+import Data.Models.Officer;
 import Data.Models.Model;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class OfficerRepository extends DataRepository {
         ArrayList<Model> officerArr = new ArrayList<>();
 
         for (ArrayList<String> strArr : csv) {
-            officerArr.add(new HDBOfficer(
+            officerArr.add(new Officer(
                     strArr.get(1),
                     strArr.get(0),
                     Integer.parseInt(strArr.get(2)),
@@ -37,7 +37,7 @@ public class OfficerRepository extends DataRepository {
 
         // Loop through each Model in alm
         alm.forEach(model -> {
-            HDBOfficer officer = (HDBOfficer) model;
+            Officer officer = (Officer) model;
 
             ArrayList<String> row = new ArrayList<>();
             row.add(officer.getID());       // Add userID
@@ -51,12 +51,6 @@ public class OfficerRepository extends DataRepository {
 
         return csvData;
     }
-
-//    Should we do it like this?
-//    public static HDBOfficerRepository getInstance() {
-//        return new HDBOfficerRepository();
-//    }
-    //cREATING NEW instance everytime or checking first
 
     public static OfficerRepository getInstance() {
         if (instance == null)

@@ -1,14 +1,15 @@
 package Pages;
 
 import java.util.Scanner;
+import Util.ClearCMD;
 
-import Data.Models.HDBManager;
+import Data.Models.Manager;
 
 public class ManagerPage {
-	private HDBManager manager;
+	private Manager manager;
 	private Scanner scanner;
 	
-	public ManagerPage(HDBManager manager) {
+	public ManagerPage(Manager manager) {
 		this.manager = manager;
 		this.scanner = new Scanner(System.in);
 	}

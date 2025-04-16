@@ -1,45 +1,92 @@
 package Pages;
+import Data.Models.Applicant;
+import Data.Models.User;
+
+import Util.ClearCMD;
+
+import Logic.UserLogicActions;
+import Pages.LogoutPage;
+import Exceptions.ModelNotFoundException;
+
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class ApplicantPage {
-	public class ApplicantPage {
-	    private String applicationID;
-	    private String userType;
+		public static void start(String userID){
+			Scanner scanner = new Scanner(System.in);
+			int input;
+			HashMap<String, String> user = new HashMap<>();
+			try {
+				user = UserLogicActions.getUser(userID);
+			}catch(ModelNotFoundException e){
+				System.out.println("User Not Found!");
+				ClearCMD.clear();
+				LogoutPage.logout();
+			}
 
-	    public ApplicantPage(String userType) {
-	        this.userType = userType;
-	        this.applicationID = generateApplicationID(); // Initialize with a generated ID
-	    }
+			System.out.println("========================");
+			System.out.println("1. Logout");
+			System.out.println("2. Projects");
+			System.out.println("3. Enquiries");
+			System.out.println("4. Applications");
+			System.out.println("========================");
 
-	    public void applyProject(Applicant applicant) {
-	        System.out.println("Applicant " + applicant.getName() + " (ID: " + applicant.getId() + 
-	                         ") is applying for a project with application ID: " + applicationID);
-	        // Implementation for project application logic
-	    }
+			input = Integer.parseInt(scanner.nextLine());
+			ClearCMD.clear();
 
-	    public void requestAppWithdraw(Applicant applicant) {
-	        System.out.println("Applicant " + applicant.getName() + " is requesting to withdraw application " + applicationID);
-	        // Implementation for withdrawal request
-	    }
+			switch(input){
+				case 1:
+					//Logout
+					LogoutPage.logout(user.get("Role"),user.get("Name"));
+					return;
+				case 2:
+					//Projects
+					break;
+				case 3:
+					//Enquiries
+					EnquiriesPage.start(userID);
+					break;
+				case 4:
+					//Applications
+					break;
+				default:
+					System.out.print("Wrong Input, Please try again.");
+			}
+			start(userID);
 
-	    public void createEnquiries(Applicant applicant) {
-	        System.out.println("Applicant " + applicant.getName() + " is creating an enquiry");
-	        // Implementation for enquiry creation
-	    }
+		}
 
-	    public void viewEnquiries(Applicant applicant) {
-	        System.out.println("Applicant " + applicant.getName() + " is viewing enquiries");
-	        // Implementation to fetch and display enquiries
-	    }
+//	    public void applyProject(Applicant applicant) {
+//	        System.out.println("Applicant " + applicant.getName() + " (ID: "+
+//	                         ") is applying for a project with application ID: " + applicationID);
+//	        // Implementation for project application logic
+//	    }
+//
+//	    public void requestAppWithdraw(Applicant applicant) {
+//	        System.out.println("Applicant " + applicant.getName() + " is requesting to withdraw application " + applicationID);
+//	        // Implementation for withdrawal request
+//	    }
+//
+//	    public void createEnquiries(Applicant applicant) {
+//	        System.out.println("Applicant " + applicant.getName() + " is creating an enquiry");
+//	        // Implementation for enquiry creation
+//	    }
+//
+//	    public void viewEnquiries(Applicant applicant) {
+//	        System.out.println("Applicant " + applicant.getName() + " is viewing enquiries");
+//	        // Implementation to fetch and display enquiries
+//	    }
+//
+//	    public void deleteEnquiries(Applicant applicant) {
+//	        System.out.println("Applicant " + applicant.getName() + " is deleting an enquiry");
+//	        // Implementation for enquiry deletion
+//	    }
+//
+//	    // Getter for applicationID
+//	    public String generateApplicationID() {
+//	        return applicationID;
+//	    }
 
-	    public void deleteEnquiries(Applicant applicant) {
-	        System.out.println("Applicant " + applicant.getName() + " is deleting an enquiry");
-	        // Implementation for enquiry deletion
-	    }
-
-	    // Getter for applicationID
-	    public String getApplicationID() {
-	        return applicationID;
-	    }
 	}
-}
+
 

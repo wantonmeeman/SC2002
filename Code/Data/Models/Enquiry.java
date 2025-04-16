@@ -1,8 +1,7 @@
 package Data.Models;
 import java.util.Date;
 
-public class Enquiry {
-    private String enquiryID;
+public class Enquiry extends Model{
     private String projectID;
     private String userID;
     private String message;
@@ -10,20 +9,12 @@ public class Enquiry {
     private Date timestamp;
 
     public Enquiry(String projectID, String userID, String message, Date timestamp) {
-        this.enquiryID = "";
+        super("Test");
         this.projectID = projectID;
         this.userID = userID;
         this.message = message;
         this.reply = null;
         this.timestamp = timestamp;
-    }
-
-    public String getEnquiryID() {
-        return enquiryID;
-    }
-
-    public void setEnquiryID(String enquiryID) {
-        this.enquiryID = enquiryID;
     }
 
     public String getMessage() {
@@ -66,18 +57,4 @@ public class Enquiry {
         this.userID = userID;
     }
 
-    @Override
-    public String toString(){
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Enquiry ID: ").append(this.getEnquiryID()).append("\n");
-
-        sb.append("Message: ").append(this.getMessage()).append("\n");
-
-        if (this.getReply() != null) {
-            sb.append("Reply: ").append(this.getReply()).append("\n");
-        }
-
-        return sb.toString();
-    }
 }

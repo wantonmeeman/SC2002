@@ -1,10 +1,11 @@
 package Data.Models;
+import Data.Models.SearchSettings;
 
 abstract public class User extends Model {
     private String name;
     private String password;
     private char maritalStatus;
-    public SearchSettings searchSettings;
+    private SearchSettings searchSettings;
     private int age;
 
     public User(String id, String name, int age, char maritalStatus, String password) {
@@ -51,6 +52,14 @@ abstract public class User extends Model {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public void setSearchSettings(SearchSettings ss){
+        this.searchSettings = ss;
+    }
+
+    public SearchSettings getSearchSettings(){
+        return this.searchSettings;
     }
 
     @Override //Debugging! remove when done

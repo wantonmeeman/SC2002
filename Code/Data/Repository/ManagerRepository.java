@@ -1,6 +1,6 @@
 package Data.Repository;
 
-import Data.Models.HDBManager;
+import Data.Models.Manager;
 import Data.Models.Model;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ManagerRepository extends DataRepository {
         ArrayList<Model> managerArr = new ArrayList<>();
 
         for (ArrayList<String> strArr : csv) {
-            managerArr.add(new HDBManager(
+            managerArr.add(new Manager(
                     strArr.get(1),
                     strArr.get(0),
                     Integer.parseInt(strArr.get(2)),
@@ -37,7 +37,7 @@ public class ManagerRepository extends DataRepository {
 
         // Loop through each Model in alm
         alm.forEach(model -> {
-            HDBManager manager = (HDBManager) model;
+            Manager manager = (Manager) model;
 
             ArrayList<String> row = new ArrayList<>();
             row.add(manager.getID());       // Add userID

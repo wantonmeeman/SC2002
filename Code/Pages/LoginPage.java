@@ -1,10 +1,11 @@
 package Pages;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 import Data.Models.Applicant;
-import Data.Models.HDBManager;
-import Data.Models.HDBOfficer;
+import Data.Models.Manager;
+import Data.Models.Officer;
 import Data.Models.User;
 import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
@@ -13,9 +14,8 @@ import Util.ClearCMD;
 public class LoginPage {
 
     public static void login() {
-        StringBuilder sb = new StringBuilder();
         Scanner scanner = new Scanner(System.in);
-        User user;
+        HashMap<String,String> user;
         String userid;
         String password;
 
@@ -29,14 +29,20 @@ public class LoginPage {
 
         try {
             user = UserLogicActions.login(userid,password);
+            ClearCMD.clear();
+            System.out.print(getWelcomeMessage(user.get("Role"),user.get("Name")));
 
-                if (user instanceof HDBOfficer) {
-                    System.out.print("Officer");
-                }else if (user instanceof HDBManager) {
-                    System.out.print("Manager");
-                } else if (user instanceof Applicant) {
-                    System.out.print("App");
-                }
+            switch(user.get("Role")) {
+                case "Officer":
+                    //OfficerPage.start();
+                    break;
+                case "Manager":
+                    //ManagerPage.start();
+                    break;
+                case "Applicant":
+                    ApplicantPage.start(user.get("ID"));
+                    break;
+            }
 
         } catch (WrongInputException e) {
             System.out.print("Wrong Input!\n");
@@ -44,5 +50,23 @@ public class LoginPage {
         }
 
 
+    }
+
+    public static String getWelcomeMessage(String role,String name){
+        String returnStr = "Welcome "+name;
+
+        switch(role) {
+            case "Officer":
+                returnStr += " (Officer)";
+                break;
+            case "Manager":
+                returnStr += " (Manager)";
+                break;
+            case "Applicant":
+                returnStr += " (Applicant)";
+                break;
+        }
+
+        return returnStr+"\n";
     }
 }
