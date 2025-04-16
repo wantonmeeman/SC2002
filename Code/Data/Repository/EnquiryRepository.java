@@ -16,10 +16,11 @@ public class EnquiryRepository extends DataRepository {
         //setFilepath(DATA_PATH + OFFICER_CSV);
         //fetch();
         this.listOfModels.add(new Enquiry(
+                "12345678",
                 "TestPID",
                 "TestUID",
                 "Message",
-                new Date(System.currentTimeMillis() / 1000L)
+                System.currentTimeMillis() / 1000L
         ));
     }
 

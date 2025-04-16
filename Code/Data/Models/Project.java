@@ -1,27 +1,28 @@
-package Models;
+package Data.Models;
 
 import Data.Models.Flat;
 
 import java.util.Date;
 
 
-public class Project {
+public class Project extends Model {
 
-    private String projectID;
     private String name;
     private String neighbourhood;
-    private Date openingDate;
-    private Date closingDate;
+    private long openingDate;
+    private long closingDate;
     private boolean visibility;
     private int officerSlots;
     private String[] officersIDs;
     private String managerID;
     private Flat[] flats;
 
-    public Project(String name, String neighbourhood,
-                   Date openingDate, Date closingDate,
-                   int officerSlots, String[] officerIDs, String managerID, Flat[] flats) {
-        this.projectID = "12345678";//Generate random
+    public Project(String projectID,
+                    String name, String neighbourhood,
+                   long openingDate, long closingDate,
+                   int officerSlots, String[] officerIDs,
+                   String managerID, Flat[] flats) {
+        super(projectID);//Generate random
         this.name = name;
         this.neighbourhood = neighbourhood;
 
@@ -51,23 +52,23 @@ public class Project {
         this.neighbourhood = neighbourhood;
     }
 
-    public Date getOpeningDate() {
+    public long getOpeningDate() {
         return openingDate;
     }
 
-    public void setOpeningDate(Date openingDate) {
+    public void setOpeningDate(long openingDate) {
         this.openingDate = openingDate;
     }
 
-    public Date getClosingDate() {
+    public long getClosingDate() {
         return closingDate;
     }
 
-    public void setClosingDate(Date closingDate) {
+    public void setClosingDate(long closingDate) {
         this.closingDate = closingDate;
     }
 
-    public boolean getVisibility() {
+    public boolean isVisible() {
         return visibility;
     }
 
@@ -107,11 +108,4 @@ public class Project {
         this.officerSlots = officerSlots;
     }
 
-    public String getProjectID() {
-        return projectID;
-    }
-
-    public void setProjectID(String projectID) {
-        this.projectID = projectID;
-    }
 }

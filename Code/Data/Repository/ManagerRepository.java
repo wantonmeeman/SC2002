@@ -25,7 +25,8 @@ public class ManagerRepository extends DataRepository {
                     strArr.get(0),
                     Integer.parseInt(strArr.get(2)),
                     strArr.get(3).charAt(0),
-                    strArr.get(4)));
+                    strArr.get(4)
+                    ));
         }
 
         return managerArr;

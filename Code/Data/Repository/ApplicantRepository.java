@@ -26,7 +26,8 @@ public class ApplicantRepository extends DataRepository {
                     strArr.get(0),
                     Integer.parseInt(strArr.get(2)),
                     strArr.get(3).charAt(0),
-                    strArr.get(4)));
+                    strArr.get(4))
+            );
         }
 
         return applicantArr;
@@ -52,12 +53,6 @@ public class ApplicantRepository extends DataRepository {
 
         return csvData;
     }
-
-//    Should we do it like this?
-//    public static ApplicantRepository getInstance() {
-//        return new ApplicantRepository();
-//    }
-    //cREATING NEW instance everytime or checking first
 
     public static ApplicantRepository getInstance() {
         if (instance == null)

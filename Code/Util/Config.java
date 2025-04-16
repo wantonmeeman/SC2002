@@ -1,5 +1,7 @@
 package Util;
 
+import java.text.SimpleDateFormat;
+
 public class Config {
     /**
      * This class contains the location of the resources.
@@ -9,4 +11,5 @@ public class Config {
     public static final String OFFICER_CSV = "OfficerList.csv";
     public static final String PROJECT_CSV = "ProjectList.csv";
     public static final String APPLICANT_CSV = "ApplicantList.csv";
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 }

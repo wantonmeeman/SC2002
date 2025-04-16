@@ -44,10 +44,6 @@ public class Flat {
         return price;
     }
 
-    public String getPriceAsString(){
-        return String.format("%.2f", price);
-    }
-
     public void setPrice(float price) {
         this.price = price;
     }

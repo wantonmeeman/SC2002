@@ -6,10 +6,10 @@ public class Enquiry extends Model{
     private String userID;
     private String message;
     private String reply;
-    private Date timestamp;
+    private long timestamp;
 
-    public Enquiry(String projectID, String userID, String message, Date timestamp) {
-        super("Test");
+    public Enquiry(String EnquiryID, String projectID, String userID, String message, long timestamp) {
+        super(EnquiryID);
         this.projectID = projectID;
         this.userID = userID;
         this.message = message;
@@ -25,11 +25,11 @@ public class Enquiry extends Model{
         this.message = message;
     }
 
-    public Date getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

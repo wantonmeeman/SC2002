@@ -11,15 +11,20 @@ import Data.Repository.OfficerRepository;
 import Data.Repository.EnquiryRepository;
 import Exceptions.ModelNotFoundException;
 import Exceptions.WrongInputException;
+import Exceptions.ModelAlreadyExistsException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.time.Instant;
 
-public class EnquiryLogicActions {
-//Can we use the DataRepository base functions?
-    private static HashMap<String,String> convertEnquiryToMap(Enquiry enquiry){
+public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
+    private static EnquiryLogicActions instance;
+
+    @Override
+    protected HashMap<String,String> toMap(Enquiry enquiry){
         HashMap<String,String> enquiryMap = new HashMap<String, String>();
 
         enquiryMap.put("ID",enquiry.getID());
@@ -27,60 +32,64 @@ public class EnquiryLogicActions {
         enquiryMap.put("UserID", enquiry.getUserID());
         enquiryMap.put("Message", enquiry.getMessage());
         enquiryMap.put("Reply", enquiry.getReply());
-        enquiryMap.put("Timestamp", String.valueOf(enquiry.getTimestamp().getTime()));
+        enquiryMap.put("Timestamp", String.valueOf(enquiry.getTimestamp()));
 
         return enquiryMap;
     }
 
-    private static Stream<Enquiry> getEnquiries() {
+    public String create(HashMap<String,String> hm){
+        String EnquiryID = null;
+
+        try {
+            EnquiryID = generateID();
+
+            EnquiryRepository.getInstance().create(new Enquiry(
+                    EnquiryID,
+                    hm.get("ProjectID"),
+                    hm.get("UserID"),
+                    hm.get("Message"),
+                    Instant.now().getEpochSecond()
+            ));
+        }catch(ModelAlreadyExistsException e){
+            create(hm);//Try again
+        }
+
+        return EnquiryID;
+    }
+
+    @Override
+    protected Stream<Enquiry> getAllObject(){
         return EnquiryRepository.getInstance().getAll()
                 .stream()
                 .map(model -> (Enquiry) model);
     }
 
-    public static HashMap<String,String> getEnquiry(String ID) throws ModelNotFoundException{
-        Optional<Enquiry> enquiryOpt = getEnquiries().filter(
-                Enquiry -> Enquiry.getID().equals(ID)
-                ).findFirst();
-
-        if (enquiryOpt.isPresent()) {
-            return convertEnquiryToMap(enquiryOpt.get());
-        }else{
-            throw new ModelNotFoundException();
-        }
+    @Override
+    public void delete(String ID) throws ModelNotFoundException{
+        EnquiryRepository.getInstance().delete(ID);
     }
 
-    public static ArrayList<HashMap<String,String>> getUserEnquiries(String UserID){
+    public ArrayList<HashMap<String,String>> getUserEnquiries(String UserID){
         ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
-        getEnquiries()
+        getAllObject()
                 //.filter(enquiry -> enquiry.getUserID().equals(UserID))
                 .forEach(enquiry -> {
-                    enquiryList.add(convertEnquiryToMap(enquiry));
+                    enquiryList.add(toMap(enquiry));
                 });
         return enquiryList;
     }
 
-    public static void editEnquiry(String EnquiryID,String newMessage) throws ModelNotFoundException{
-        Optional<Enquiry> enquiryOpt = getEnquiries().filter(
-                Enquiry -> Enquiry.getID().equals(EnquiryID)
-        ).findFirst();
+    public void editMessage(String ID, String newMessage) throws ModelNotFoundException{
+        Enquiry newEnquiry = getObject(ID);
 
-        if (enquiryOpt.isPresent()) {
-            enquiryOpt.get().setMessage(newMessage);
-        }else{
-            throw new ModelNotFoundException();
-        }
+        newEnquiry.setMessage(newMessage);
+
+        EnquiryRepository.getInstance().update(ID,newEnquiry);
     }
-    public static void deleteEnquiry(String enquiryID) throws ModelNotFoundException{
-        Optional<Enquiry> enquiryOpt = getEnquiries().filter(
-                enquiry -> enquiry.getID().equals(enquiryID)
-        ).findFirst();
 
-        if (enquiryOpt.isPresent()) {
-            // Assuming you have an EnquiryRepository or some collection to remove it from
-                EnquiryRepository.getInstance().delete(enquiryOpt.get().getID());
-        } else {
-            throw new ModelNotFoundException();
-        }
+    public static EnquiryLogicActions getInstance() {
+        if (instance == null)
+            instance = new EnquiryLogicActions();
+        return instance;
     }
 }

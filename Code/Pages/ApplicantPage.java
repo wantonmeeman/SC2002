@@ -17,7 +17,7 @@ public class ApplicantPage {
 			int input;
 			HashMap<String, String> user = new HashMap<>();
 			try {
-				user = UserLogicActions.getUser(userID);
+				user = UserLogicActions.getInstance().get(userID);
 			}catch(ModelNotFoundException e){
 				System.out.println("User Not Found!");
 				ClearCMD.clear();
@@ -41,6 +41,7 @@ public class ApplicantPage {
 					return;
 				case 2:
 					//Projects
+					ProjectsPage.start(userID);
 					break;
 				case 3:
 					//Enquiries

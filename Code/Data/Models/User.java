@@ -1,11 +1,11 @@
 package Data.Models;
-import Data.Models.SearchSettings;
+import Data.Models.SearchSetting;
 
 abstract public class User extends Model {
     private String name;
     private String password;
     private char maritalStatus;
-    private SearchSettings searchSettings;
+    private SearchSetting searchSetting;
     private int age;
 
     public User(String id, String name, int age, char maritalStatus, String password) {
@@ -14,8 +14,7 @@ abstract public class User extends Model {
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
-
-        this.searchSettings = new SearchSettings();
+        this.searchSetting = new SearchSetting();
     }
 
     public boolean login(String id, String password) {//Remove this?
@@ -54,23 +53,11 @@ abstract public class User extends Model {
         this.age = age;
     }
 
-    public void setSearchSettings(SearchSettings ss){
-        this.searchSettings = ss;
+    public void setSearchSetting(SearchSetting ss){
+        this.searchSetting = ss;
     }
 
-    public SearchSettings getSearchSettings(){
-        return this.searchSettings;
-    }
-
-    @Override //Debugging! remove when done
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("User ID: ").append(getID()).append("\n");
-        sb.append("Name: ").append(name).append("\n");
-        sb.append("Age: ").append(age).append("\n");
-        sb.append("Marital Status: ").append(maritalStatus).append("\n");
-        sb.append("Instance of: ").append(this.getClass().getSimpleName()).append("\n");
-        sb.append("Filter Settings: ").append(searchSettings != null ? "\n"+(searchSettings.toString()) : "None").append("\n");
-        return sb.toString();
+    public SearchSetting getSearchSetting(){
+        return this.searchSetting;
     }
 }

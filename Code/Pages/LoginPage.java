@@ -28,7 +28,7 @@ public class LoginPage {
         password = scanner.nextLine();
 
         try {
-            user = UserLogicActions.login(userid,password);
+            user = UserLogicActions.getInstance().login(userid,password);
             ClearCMD.clear();
             System.out.print(getWelcomeMessage(user.get("Role"),user.get("Name")));
 

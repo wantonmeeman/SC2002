@@ -1,31 +1,29 @@
 package Data.Models;
 
-import java.util.Date;
-
-public class SearchSettings {
+public class SearchSetting{
     private String location;
     private Boolean[] flatTypes;
-    private String neighborhood;
-    private Date openingDate;
-    private Date closingDate;
+    private String neighbourhood;
+    private long openingDate;
+    private long closingDate;
     private Boolean ascending;
     private int sortBy;
 
-    public SearchSettings(){
+    public SearchSetting(){
         //These are the default values and we will use these to check if they are in use or not
         this.location = ""; // 0
         this.flatTypes = new Boolean[] {true, true}; //1
-        this.neighborhood = ""; // 2
-        this.openingDate = null;// 3
-        this.closingDate = null; // 4
+        this.neighbourhood = ""; // 2
+        this.openingDate = 0;// 3
+        this.closingDate = 0; // 4
         this.ascending = true;
         this.sortBy = 0;
     }
 
-    public SearchSettings(String location, Boolean[] flatTypes, String neighborhood, Date openingDate, Date closingDate, Boolean ascending, int sortBy){
+    public SearchSetting(String location, Boolean[] flatTypes, String neighbourhood, long openingDate, long closingDate, Boolean ascending, int sortBy){
         this.location = location;
         this.flatTypes = flatTypes;
-        this.neighborhood = neighborhood;
+        this.neighbourhood = neighbourhood;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
         this.ascending = ascending;
@@ -48,27 +46,27 @@ public class SearchSettings {
         this.flatTypes = flatTypes;
     }
 
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getNeighbourhood() {
+        return neighbourhood;
     }
 
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setNeighbourhood(String neighbourhood) {
+        this.neighbourhood = neighbourhood;
     }
 
-    public Date getOpeningDate() {
+    public long getOpeningDate() {
         return openingDate;
     }
 
-    public void setOpeningDate(Date openingDate) {
+    public void setOpeningDate(long openingDate) {
         this.openingDate = openingDate;
     }
 
-    public Date getClosingDate() {
+    public long getClosingDate() {
         return closingDate;
     }
 
-    public void setClosingDate(Date closingDate) {
+    public void setClosingDate(long closingDate) {
         this.closingDate = closingDate;
     }
 
