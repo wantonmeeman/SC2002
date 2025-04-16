@@ -1,93 +1,107 @@
 package Pages;
-import Data.Models.Applicant;
-import Data.Models.User;
 
-import Util.ClearCMD;
-
-import Logic.UserLogicActions;
-import Pages.LogoutPage;
 import Exceptions.ModelNotFoundException;
+import Logic.UserLogicActions;
+import Logic.ApplicationLogicActions;
+import Logic.ProjectLogicActions;
+import Pages.LogoutPage;
+import Util.ClearCMD;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ApplicantPage {
-		public static void start(String userID){
+public class ApplicationsPage {
+		public static void start(String userID) {
 			Scanner scanner = new Scanner(System.in);
 			int input;
 			HashMap<String, String> user = new HashMap<>();
-			try {
-				user = UserLogicActions.getInstance().get(userID);
+			HashMap<String, String> project = new HashMap<>();
+			HashMap<String, String> application = new HashMap<>();
+try{
+			user = UserLogicActions.getInstance().get(userID);
+		}catch(ModelNotFoundException e){
+		System.out.print(1);
+	}
+
+
+			if(user.get("ApplicationID") != null) {
+				try {
+					application = ApplicationLogicActions.getInstance().get(user.get("ApplicationID"));
+				}catch(ModelNotFoundException e){
+					System.out.print(2);
+				}
+
+				try{
+				project = ProjectLogicActions.getInstance().get(application.get("ProjectID"));
 			}catch(ModelNotFoundException e){
-				System.out.println("User Not Found!");
-				ClearCMD.clear();
-				LogoutPage.logout();
+					System.out.print(3);
+
 			}
+				String projName = project.get("Name");
+				String flatType = String.valueOf(Integer.parseInt(application.get("Type")) + 2);
+				String status = application.get("Status");
 
-			System.out.println("========================");
-			System.out.println("1. Logout");
-			System.out.println("2. Projects");
-			System.out.println("3. Enquiries");
-			System.out.println("4. Applications");
-			System.out.println("========================");
+				System.out.println("========================");
+				System.out.println("Application for " + projName + "(" + flatType + " Room)");
+				System.out.println("Status: " + status);
 
-			input = Integer.parseInt(scanner.nextLine());
-			ClearCMD.clear();
+				switch(status){
+					case "Booked":
+						try{
+						System.out.println("Booked with Officer: "+UserLogicActions.getInstance().get(application.get("OfficerID")));
+						}catch(ModelNotFoundException e){
 
-			switch(input){
-				case 1:
-					//Logout
-					LogoutPage.logout(user.get("Role"),user.get("Name"));
-					return;
-				case 2:
-					//Projects
-					ProjectsPage.start(userID);
-					break;
-				case 3:
-					//Enquiries
-					EnquiriesPage.start(userID);
-					break;
-				case 4:
-					//Applications
-					ApplicationsPage.start();
-					break;
-				default:
-					System.out.print("Wrong Input, Please try again.");
+						}
+					case "Pending":
+					case "Unsuccessful":
+						System.out.println("1. Back");
+						System.out.println("2. Withdraw");
+						break;
+
+					case "Successful":
+						System.out.println("1. Back");
+						System.out.println("2. Withdraw");
+						System.out.println("3. Make a booking");
+						break;
+
+					case "Withdrawn":
+						System.out.println("1. Back");
+						break;
+				}
+
+				input = Integer.parseInt(scanner.nextLine());
+
+				if(input == 1){
+
+				}else if(input == 2){
+					//Withdraw
+					try {
+						ApplicationLogicActions.getInstance().withdraw(application.get("ID"));
+					}catch(ModelNotFoundException e){
+						System.out.print("Cant");
+					}
+				}else if(status.equals("Successful") && input == 3){
+					try {
+					//Make a booking
+					ApplicationLogicActions.getInstance().book(application.get("ID"),application.get("OfficerID"));
+				}catch(ModelNotFoundException e){
+
+				}
+				}
+			}else{
+				System.out.println("========================");
+				System.out.println("No Application Made");
+				System.out.println("1. Back");
+
+				input = Integer.parseInt(scanner.nextLine());
+				if(input == 1){
+
+				}else{
+					start(userID);
+				}
 			}
-			start(userID);
 
 		}
-
-//	    public void applyProject(Applicant applicant) {
-//	        System.out.println("Applicant " + applicant.getName() + " (ID: "+
-//	                         ") is applying for a project with application ID: " + applicationID);
-//	        // Implementation for project application logic
-//	    }
-//
-//	    public void requestAppWithdraw(Applicant applicant) {
-//	        System.out.println("Applicant " + applicant.getName() + " is requesting to withdraw application " + applicationID);
-//	        // Implementation for withdrawal request
-//	    }
-//
-//	    public void createEnquiries(Applicant applicant) {
-//	        System.out.println("Applicant " + applicant.getName() + " is creating an enquiry");
-//	        // Implementation for enquiry creation
-//	    }
-//
-//	    public void viewEnquiries(Applicant applicant) {
-//	        System.out.println("Applicant " + applicant.getName() + " is viewing enquiries");
-//	        // Implementation to fetch and display enquiries
-//	    }
-//
-//	    public void deleteEnquiries(Applicant applicant) {
-//	        System.out.println("Applicant " + applicant.getName() + " is deleting an enquiry");
-//	        // Implementation for enquiry deletion
-//	    }
-//
-//	    // Getter for applicationID
-//	    public String generateApplicationID() {
-//	        return applicationID;
-//	    }
 
 	}
 

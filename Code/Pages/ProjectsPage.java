@@ -88,8 +88,10 @@ public class ProjectsPage {
 				hm.put("ProjectID",projectID);
 				hm.put("Type",String.valueOf(flatType-2));
 				try {
-					ApplicationLogicActions.getInstance().create(hm);
+					ApplicationLogicActions.getInstance().apply(hm);
 				}catch(ModelAlreadyExistsException e){
+
+				}catch(ModelNotFoundException e){
 
 				}
 			}

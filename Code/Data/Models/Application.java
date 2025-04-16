@@ -25,14 +25,6 @@ public class Application extends Model {
         this.type = type;
     }
 
-    public String getApplicationID() {
-        return applicationID;
-    }
-
-    public void setApplicationID(String applicationID) {
-        this.applicationID = applicationID;
-    }
-
     public String getUserID() {
         return userID;
     }

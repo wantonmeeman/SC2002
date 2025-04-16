@@ -49,6 +49,7 @@ public class ApplicantPage {
 					break;
 				case 4:
 					//Applications
+					ApplicationsPage.start(userID);
 					break;
 				default:
 					System.out.print("Wrong Input, Please try again.");
