@@ -1,15 +1,10 @@
 package Pages;
 
 
-
-import Exceptions.ModelNotFoundException;
-import Exceptions.ModelAlreadyExistsException;
-
-import Logic.EnquiryLogicActions;
-import Logic.ProjectLogicActions;
-import Logic.UserLogicActions;
-import Logic.ApplicationLogicActions;
+import Logic.*;
 import Util.ClearCMD;
+
+import Exceptions.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,21 +30,42 @@ public class ProjectsPage {
 
 			int x = 2;
 			for(HashMap<String,String> hm: projList){
-				int twoRoom = Integer.parseInt(hm.get("2RoomUnits"));
-				int threeRoom = Integer.parseInt(hm.get("3RoomUnits"));
-				if(twoRoom > 0){
-					System.out.println(x +". "+
-							hm.get("Name")+" - 2 Room"+
-							"("+twoRoom+")");
-					intStr.put(x++,hm.get("ID")+"2");
+				String twoRoomID = hm.get("TwoRoomFlatID");
+				String threeRoomID = hm.get("ThreeRoomFlatID");
+
+				HashMap<String,String> twoRoomHm,threeRoomHm;
+
+				try {
+					twoRoomHm = FlatLogicActions.getInstance().get(twoRoomID);
+
+					int twoRoomUnits = Integer.parseInt(twoRoomHm.get("TotalUnits"));
+
+					if (twoRoomUnits > 0) {
+						System.out.println(x + ". " +
+								hm.get("Name") + " - 2 Room - $" + twoRoomHm.get("Price") +
+								" - " + twoRoomUnits + " Units left");
+						intStr.put(x++, hm.get("ID") + "2");
+					}
+				} catch(ModelNotFoundException e){
+					System.out.print(e);
 				}
-				if(threeRoom > 0){
+
+				try{
+					threeRoomHm = FlatLogicActions.getInstance().get(threeRoomID);
+				int threeRoomUnits = Integer.parseInt(threeRoomHm.get("TotalUnits"));
+				if(threeRoomUnits > 0){
 					System.out.println(x +". "+
-							hm.get("Name")+" - 3 Room"+
-							"("+threeRoom+")");
+							hm.get("Name")+" - 3 Room - $"+ threeRoomHm.get("Price") +
+							" - " + threeRoomUnits + " Units left");
 
 					intStr.put(x++,hm.get("ID")+"3");
 				}
+				}catch(ModelNotFoundException e){
+					System.out.print(e);
+				}
+
+
+
 			}
 
 			input = Integer.parseInt(scanner.nextLine());
@@ -81,7 +97,6 @@ public class ProjectsPage {
 
 			}else if(input == 2){
 				//Apply
-
 				HashMap<String,String> hm = new HashMap<String,String>();
 
 				hm.put("UserID",userID);
@@ -90,9 +105,13 @@ public class ProjectsPage {
 				try {
 					ApplicationLogicActions.getInstance().apply(hm);
 				}catch(ModelAlreadyExistsException e){
-
+					System.out.println("123");
 				}catch(ModelNotFoundException e){
-
+					System.out.println("456");
+				}catch(RepositoryNotFoundException e){
+					System.out.println("789");
+				}catch(UnauthorizedActionException e){
+					System.out.println("1234");
 				}
 			}
 
@@ -110,11 +129,11 @@ public class ProjectsPage {
 		String formattedOpening = formatter.format(new Date(Integer.parseInt(project.get("OpeningDate")) * 1000L));
 		String formattedClosing = formatter.format(new Date(Integer.parseInt(project.get("ClosingDate")) * 1000L));
 	try{
-		returnStr += "Name:\n"+project.get("Name");
-		returnStr += "\nNeighbourhood:\n" +project.get("Neighbourhood");
-		returnStr += "\nOfficers:\n"+formatOfficers(project.get("OfficerIDs"));
-		returnStr += "\nManager:\n"+UserLogicActions.getInstance().get(project.get("ManagerID")).get("Name");
-		returnStr += "\nOpening to Ending:" + formattedOpening + "-" + formattedClosing + "\n";
+		returnStr += "Name: "+project.get("Name");
+		returnStr += "\nNeighbourhood: " +project.get("Neighbourhood");
+		returnStr += "\nOfficers: "+formatOfficers(project.get("OfficerIDs"));
+		returnStr += "\nManager: "+UserLogicActions.getInstance().get(project.get("ManagerID")).get("Name");
+		returnStr += "\nOpening to Ending: " + formattedOpening + " to " + formattedClosing + "\n";
 	}catch(ModelNotFoundException e){
 		ClearCMD.clear();
 		//Go back or smth
@@ -127,10 +146,9 @@ public class ProjectsPage {
 		String[] officerIDs = officerStrings.split(",");
 		String returnStr = "";
 
-		for(String x:officerIDs) {
-
+		for(int x = 0;x < officerIDs.length;x++) {
 			try{
-			returnStr += UserLogicActions.getInstance().get(x).get("Name");
+			returnStr += UserLogicActions.getInstance().get(officerIDs[x]).get("Name") + (x == officerIDs.length-1 ?"":", ");
 			}catch(ModelNotFoundException e){
 				ClearCMD.clear();
 				//Go back or smth

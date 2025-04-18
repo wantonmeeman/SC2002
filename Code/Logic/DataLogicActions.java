@@ -51,9 +51,5 @@ public abstract class DataLogicActions<T extends Model>{
         return modelList;
     }
 
-//    private void edit(String ID){
-//        return; Should define own edit function for each class
-//    };
-
     abstract void delete(String ID) throws ModelNotFoundException;
 }

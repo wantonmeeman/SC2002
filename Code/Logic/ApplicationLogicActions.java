@@ -3,14 +3,18 @@ package Logic;
 import Data.Models.Flat;
 import Data.Models.Project;
 import Data.Models.Application;
+import Data.Models.User;
 import Data.Models.Applicant;
 
 import Data.Repository.ProjectRepository;
 import Data.Repository.ApplicationRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Exceptions.RepositoryNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Logic.UserLogicActions;
 import Util.GenerateID;
+import Logic.DataLogicActions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,24 +63,38 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
-    public String apply(HashMap<String,String> hm) throws ModelAlreadyExistsException, ModelNotFoundException{
-        String appID = create(hm);
-        Applicant applicant = (Applicant) UserLogicActions.getInstance().getObject(hm.get("UserID"));
-        applicant.setApplicationID(appID);
+    public String apply(HashMap<String,String> hm) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
 
-        return appID;
+        HashMap<String,String> uhm = UserLogicActions.getInstance().get(hm.get("UserID"));
+
+        String applicationID = uhm.get("ApplicationID");
+
+        String status = ApplicationLogicActions.getInstance().get(applicationID).get("Status");
+
+        if(applicationID == null || status.equals("Withdrawn") || status.equals("Unsuccessful")) {
+            String appID = create(hm);
+
+            UserLogicActions.getInstance().apply(hm.get("UserID"), appID);
+
+            return appID;
+        }else{
+            throw new UnauthorizedActionException();
+        }
     }
 
     public void book(String ID, String OfficerID) throws ModelNotFoundException{
         Application application = getObject(ID);
         application.setStatus("Booked");
         application.setOfficerID(OfficerID);
+
         ApplicationRepository.getInstance().update(ID,application);
     }
 
     public void withdraw(String ID) throws ModelNotFoundException{
         Application application = getObject(ID);
+
         application.setStatus("Withdrawn");
+
         ApplicationRepository.getInstance().update(ID,application);
     }
 

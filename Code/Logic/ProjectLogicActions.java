@@ -5,6 +5,8 @@ import Data.Models.Flat;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 import Logic.UserLogicActions;
+import Logic.SearchSettingLogicActions;
+import Logic.FlatLogicActions;
 import Data.Repository.ProjectRepository;
 
 import java.util.ArrayList;
@@ -28,11 +30,8 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         projectMap.put("OfficerSlots", String.valueOf(project.getOfficerSlots()));
         projectMap.put("OfficerIDs", String.join(",", project.getOfficersIDs()));
         projectMap.put("ManagerID", project.getManagerID());
-
-        projectMap.put("2RoomUnits", String.valueOf(project.getFlats()[0].getTotalUnits()));
-        projectMap.put("2RoomPrice", String.valueOf(project.getFlats()[0].getPrice()));
-        projectMap.put("3RoomUnits", String.valueOf(project.getFlats()[1].getTotalUnits()));
-        projectMap.put("3RoomPrice", String.valueOf(project.getFlats()[1].getPrice()));
+        projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
+        projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
 
         return projectMap;
     }
@@ -43,24 +42,18 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         String neighbourhood = hm.get("Neighbourhood");
         long openingDate = Long.parseLong(hm.get("OpeningDate"));
         long closingDate = Long.parseLong(hm.get("ClosingDate"));
+        boolean visibility = Boolean.parseBoolean(hm.get("Visibility"));
         int officerSlots = Integer.parseInt(hm.get("OfficerSlots"));
         String[] officerIDs = hm.get("OfficerIDs").split(",");
         String managerID = hm.get("ManagerID");
-
-        // Parse Flats manually since you've split them
-        int twoRoomUnits = Integer.parseInt(hm.get("2RoomUnits"));
-        float twoRoomPrice = Float.parseFloat(hm.get("2RoomPrice"));
-        int threeRoomUnits = Integer.parseInt(hm.get("3RoomUnits"));
-        float threeRoomPrice = Float.parseFloat(hm.get("3RoomPrice"));
-
-        Flat[] flats = new Flat[2];
-        flats[0] = new Flat("2-Room", twoRoomUnits, twoRoomPrice);
-        flats[1] = new Flat("3-Room", threeRoomUnits, threeRoomPrice);
+        String twoRoomFlatID = hm.get("TwoRoomFlatID");
+        String threeRoomFlatID = hm.get("ThreeRoomFlatID");
 
         try {
             ProjectRepository.getInstance().create(
-                    new Project(projectID, name, neighbourhood, openingDate,
-                    closingDate, officerSlots, officerIDs, managerID, flats));
+                    new Project(
+                            projectID, name, neighbourhood, openingDate,
+                    closingDate, visibility ,officerSlots, officerIDs, managerID, twoRoomFlatID, threeRoomFlatID));
         }catch(ModelAlreadyExistsException e){
             create(hm);//Try again
         }
@@ -79,16 +72,23 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
         HashMap<String,String> user = UserLogicActions.getInstance().get(userID);
-        HashMap<String,String> ss = UserLogicActions.getInstance().getSearchSetting(userID);
+        HashMap<String,String> ss = SearchSettingLogicActions.getInstance().get(userID);
 
         int age = Integer.parseInt(user.get("Age"));
         char status = user.get("MaritalStatus").charAt(0);
 
         projList = getAllObject()
-                .filter(proj ->
-                        (age >= 21 && status == 'M') ||
-                                (age >= 35 && status == 'S' && proj.getFlats()[0].getTotalUnits() > 0)
-                )
+                .filter(proj -> {
+                    int totalFlats;
+                    try {
+                        totalFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getTwoRoomFlatID()).get("TotalUnits"));
+                    } catch (ModelNotFoundException e) {
+                        totalFlats = 0;
+                    }
+
+                    return (age >= 21 && status == 'M') ||
+                            (age >= 35 && status == 'S' && totalFlats > 0);
+                })
                 .map(this::toMap) // <-- Replace with actual method to convert Project to HashMap
                 .collect(Collectors.toCollection(ArrayList::new));
 

@@ -15,25 +15,29 @@ public class Project extends Model {
     private int officerSlots;
     private String[] officersIDs;
     private String managerID;
-    private Flat[] flats;
+    private String twoRoomFlatID;
+    private String threeRoomFlatID;
 
     public Project(String projectID,
                     String name, String neighbourhood,
                    long openingDate, long closingDate,
+                   boolean visible,
                    int officerSlots, String[] officerIDs,
-                   String managerID, Flat[] flats) {
+                   String managerID, String twoRoomFlatID,
+                    String threeRoomFlatID) {
         super(projectID);//Generate random
         this.name = name;
         this.neighbourhood = neighbourhood;
 
         this.openingDate = openingDate;
         this.closingDate = closingDate;
-        this.visibility = true;
+        this.visibility = visible;
 
         this.officerSlots = officerSlots;
         this.officersIDs = officerIDs;
         this.managerID = managerID;
-        this.flats = flats;
+        this.twoRoomFlatID = twoRoomFlatID;
+        this.threeRoomFlatID = threeRoomFlatID;
     }
 
     public String getName() {
@@ -76,14 +80,6 @@ public class Project extends Model {
         this.visibility = !this.visibility;
     }
 
-    public Flat[] getFlats() {
-        return flats;
-    }
-
-    public void setFlats(Flat[] flats) {
-        this.flats = flats;
-    }
-
     public String getManagerID() {
         return managerID;
     }
@@ -108,4 +104,19 @@ public class Project extends Model {
         this.officerSlots = officerSlots;
     }
 
+    public String getThreeRoomFlatID() {
+        return threeRoomFlatID;
+    }
+
+    public void setThreeRoomFlatID(String threeRoomFlatID) {
+        this.threeRoomFlatID = threeRoomFlatID;
+    }
+
+    public String getTwoRoomFlatID() {
+        return twoRoomFlatID;
+    }
+
+    public void setTwoRoomFlatID(String twoRoomFlatID) {
+        this.twoRoomFlatID = twoRoomFlatID;
+    }
 }

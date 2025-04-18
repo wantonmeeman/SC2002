@@ -2,36 +2,25 @@ package Data.Models;
 
 public class Officer extends Applicant {
 
-    private String assignedProjectID;
-    private char registrationStatus;//null , pending, approved, rejected
+    private String registrationID;
 
     public Officer(String id, String name, int age, char maritalStatus, String password) {
         super(id, name, age, maritalStatus, password);
         
-        this.assignedProjectID = null;
-        this.registrationStatus = '\0';//null char
+        this.registrationID = null;
     }
 
-    public Officer(String id, String name, int age, char maritalStatus, String password, String assignedProjectID, char registrationStatus) {
+    public Officer(String id, String name, int age, char maritalStatus, String password, String registrationID) {
         super(id, name, age, maritalStatus, password);
 
-        this.assignedProjectID = assignedProjectID;//change name
-        this.registrationStatus = registrationStatus;//
+        this.registrationID = registrationID;
     }
 
-    public String getAssignedProjectID() {
-        return assignedProjectID;
+    public String getRegistrationID() {
+        return registrationID;
     }
 
-    public void setAssignedProjectID(String assignedProjectID) {
-        this.assignedProjectID = assignedProjectID;
-    }
-
-    public char getRegistrationStatus() {
-        return registrationStatus;
-    }
-
-    public void setRegistrationStatus(char registrationStatus) {
-        this.registrationStatus = registrationStatus;
+    public void setRegistrationID(String registrationID) {
+        this.registrationID = registrationID;
     }
 }

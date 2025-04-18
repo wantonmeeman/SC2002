@@ -6,10 +6,15 @@ public class Config {
     /**
      * This class contains the location of the resources.
      */
-    public static final String DATA_PATH = "C:\\Users\\tokyo\\OneDrive\\Desktop\\SC2002\\Project\\InputData\\";
+    public static final String DATA_PATH = "C:\\Users\\tokyo\\OneDrive\\Desktop\\SC2002\\Project\\Data\\";
+    public static final String FLAT_CSV = "FlatList.csv";
     public static final String MANAGER_CSV = "ManagerList.csv";
     public static final String OFFICER_CSV = "OfficerList.csv";
     public static final String PROJECT_CSV = "ProjectList.csv";
+    public static final String ENQUIRY_CSV = "EnquiryList.csv";
     public static final String APPLICANT_CSV = "ApplicantList.csv";
+    public static final String APPLICATION_CSV = "ApplicationList.csv";
+    public static final String REGISTRATION_CSV = "RegistrationList.csv";
+    public static final String SEARCH_SETTING_CSV = "SearchSettingList.csv";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 }

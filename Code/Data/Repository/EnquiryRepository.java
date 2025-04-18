@@ -1,41 +1,34 @@
 package Data.Repository;
 
 import Data.Models.Model;
-import Data.Models.Officer;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import Util.Config.*;
+import static Util.Config.*;
 import Data.Models.Enquiry;
 
 public class EnquiryRepository extends DataRepository {
     private static EnquiryRepository instance;
 
     public EnquiryRepository() {
-        //setFilepath(DATA_PATH + OFFICER_CSV);
-        //fetch();
-        this.listOfModels.add(new Enquiry(
-                "12345678",
-                "TestPID",
-                "TestUID",
-                "Message",
-                System.currentTimeMillis() / 1000L
-        ));
+        setFilepath(DATA_PATH + ENQUIRY_CSV);
+        fetch();
     }
 
     @Override
 public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> officerArr = new ArrayList<>();
 
-//        for (ArrayList<String> strArr : csv) {
-//            officerArr.add(new Officer(
-//                    strArr.get(1),
-//                    strArr.get(0),
-//                    Integer.parseInt(strArr.get(2)),
-//                    strArr.get(3).charAt(0),
-//                    strArr.get(4)));
-//        }
+        for (ArrayList<String> strArr : csv) {
+            officerArr.add(new Enquiry(
+                    strArr.get(0),
+                    strArr.get(1),
+                    strArr.get(2),
+                    strArr.get(3),
+                    strArr.get(4),
+                    Long.parseLong(strArr.get(5))
+            ));
+        }
 
         return officerArr;
     }
@@ -44,19 +37,20 @@ public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
     public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
-//        // Loop through each Model in alm
-//        alm.forEach(model -> {
-//            Officer officer = (Officer) model;
-//
-//            ArrayList<String> row = new ArrayList<>();
-//            row.add(officer.getID());       // Add userID
-//            row.add(officer.getName());         // Add name
-//            row.add(officer.getPassword());
-//            row.add(String.valueOf(officer.getAge())); // Convert age to String
-//            row.add(String.valueOf(officer.getMaritalStatus())); // Convert maritalStatus to String
-//
-//            csvData.add(row);
-//        });
+        // Loop through each Model in alm
+        alm.forEach(model -> {
+            Enquiry enquiry = (Enquiry) model;
+
+            ArrayList<String> row = new ArrayList<>();
+            row.add(enquiry.getID());       // Add userID
+            row.add(enquiry.getProjectID());         // Add name
+            row.add(enquiry.getUserID());
+            row.add(enquiry.getMessage()); // Convert age to String
+            row.add(enquiry.getReply()); // Convert maritalStatus to String
+            row.add(String.valueOf(enquiry.getTimestamp()));
+
+            csvData.add(row);
+        });
 
         return csvData;
     }

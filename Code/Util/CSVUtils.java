@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class CSVUtils {
@@ -19,10 +20,23 @@ public class CSVUtils {
             File file = new File(filepath);
             Scanner scanner = new Scanner(file);
 
-            scanner.nextLine();
+           // scanner.nextLine(); skips first line as it is the header
 
             while (scanner.hasNextLine()) {
-                returnArr.add(new ArrayList<>(Arrays.asList(((scanner.nextLine()).split(",")))));
+
+                String[] lineList = scanner.nextLine().split(",");
+
+                for(int x = 0;lineList.length > x;x++){
+                    if(lineList[x].equals("null")){
+                        lineList[x] = null;
+                    }
+                }
+
+                returnArr.add(
+                        new ArrayList<>(
+                                Arrays.asList(lineList)
+                        )
+                );
             }
 
             scanner.close();
@@ -32,14 +46,27 @@ public class CSVUtils {
         return returnArr;
     }
 
-    public static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvString) {
-//        try {
-//            //PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
-//            //for (modelList mappableObject : modelList) {
-//                //printWriter.println();
-//            //}
-//        } catch (IOException e) {
-//            throw new RuntimeException("Data could not be saved to file: ");
-//        }
+    public static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvData) {
+        try {
+            File file = new File(filepath);
+
+            // Check if the file exists, if not, create it
+            if (!file.exists()) {
+                file.getParentFile().mkdirs(); // create directories if they don't exist
+                file.createNewFile();
+            }
+
+            PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
+
+            for (ArrayList<String> line: csvData) {
+                for(int x = 0;line.size() > x;x++) {
+                    printWriter.print(line.get(x)+(x==line.size()-1 ?"":","));
+                }
+                printWriter.print("\n");
+            }
+            printWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Data could not be saved to file: ");
+        }
     }
 }

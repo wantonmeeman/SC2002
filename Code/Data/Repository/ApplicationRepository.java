@@ -1,54 +1,58 @@
 package Data.Repository;
 
 import Data.Models.Model;
+import Data.Models.Application;
 
 import java.util.ArrayList;
 
-import static Util.Config.APPLICANT_CSV;
+
+import static Util.Config.APPLICATION_CSV;
 import static Util.Config.DATA_PATH;
 
 public class ApplicationRepository extends DataRepository {
     private static ApplicationRepository instance;
 
     public ApplicationRepository() {
-//        setFilepath(DATA_PATH + APPLICANT_CSV);
-//        fetch();
+        setFilepath(DATA_PATH + APPLICATION_CSV);
+        fetch();
     }
 
     @Override
     public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
-        ArrayList<Model> applicantArr = new ArrayList<>();
+        ArrayList<Model> applicationArr = new ArrayList<>();
 
-//        for (ArrayList<String> strArr : csv) {
-//            applicantArr.add(new Applicant(
-//                    strArr.get(1),
-//                    strArr.get(0),
-//                    Integer.parseInt(strArr.get(2)),
-//                    strArr.get(3).charAt(0),
-//                    strArr.get(4))
-//            );
-//        }
+        for (ArrayList<String> strArr : csv) {
+            applicationArr.add(new Application(
+                    strArr.get(0),
+                    strArr.get(1),
+                    strArr.get(2),
+                    strArr.get(4),
+                    strArr.get(3),
+                    Integer.parseInt(strArr.get(5))
+                    )
+            );
+        }
 
-        return applicantArr;
+        return applicationArr;
     }
 
     @Override
     public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
-//        // Loop through each Model in alm
-//        alm.forEach(model -> {
-//            Applicant applicant = (Applicant) model;
-//
-//            ArrayList<String> row = new ArrayList<>();
-//            row.add(applicant.getID());       // Add userID
-//            row.add(applicant.getName());         // Add name
-//            row.add(applicant.getPassword());
-//            row.add(String.valueOf(applicant.getAge())); // Convert age to String
-//            row.add(String.valueOf(applicant.getMaritalStatus())); // Convert maritalStatus to String
-//
-//            csvData.add(row);
-//        });
+        alm.forEach(model -> {
+            Application application = (Application) model;
+
+            ArrayList<String> row = new ArrayList<>();
+            row.add(application.getID());
+            row.add(application.getUserID());
+            row.add(application.getProjectID());
+            row.add(application.getOfficerID());
+            row.add(application.getStatus());
+            row.add(String.valueOf(application.getType()));
+
+            csvData.add(row);
+        });
 
         return csvData;
     }

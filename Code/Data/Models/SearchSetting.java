@@ -1,6 +1,6 @@
 package Data.Models;
 
-public class SearchSetting{
+public class SearchSetting extends Model{
     private String location;
     private Boolean[] flatTypes;
     private String neighbourhood;
@@ -9,8 +9,9 @@ public class SearchSetting{
     private Boolean ascending;
     private int sortBy;
 
-    public SearchSetting(){
+    public SearchSetting(String userID){
         //These are the default values and we will use these to check if they are in use or not
+        super(userID);
         this.location = ""; // 0
         this.flatTypes = new Boolean[] {true, true}; //1
         this.neighbourhood = ""; // 2
@@ -20,7 +21,8 @@ public class SearchSetting{
         this.sortBy = 0;
     }
 
-    public SearchSetting(String location, Boolean[] flatTypes, String neighbourhood, long openingDate, long closingDate, Boolean ascending, int sortBy){
+    public SearchSetting(String userID, String location, Boolean[] flatTypes, String neighbourhood, long openingDate, long closingDate, Boolean ascending, int sortBy){
+        super(userID);
         this.location = location;
         this.flatTypes = flatTypes;
         this.neighbourhood = neighbourhood;

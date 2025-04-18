@@ -21,11 +21,12 @@ public class OfficerRepository extends DataRepository {
 
         for (ArrayList<String> strArr : csv) {
             officerArr.add(new Officer(
-                    strArr.get(1),
                     strArr.get(0),
-                    Integer.parseInt(strArr.get(2)),
-                    strArr.get(3).charAt(0),
-                    strArr.get(4)
+                    strArr.get(1),
+                    Integer.parseInt(strArr.get(3)),
+                    strArr.get(4).charAt(0),
+                    strArr.get(2),
+                    strArr.get(5)
                     ));
         }
 
@@ -46,6 +47,7 @@ public class OfficerRepository extends DataRepository {
             row.add(officer.getPassword());
             row.add(String.valueOf(officer.getAge())); // Convert age to String
             row.add(String.valueOf(officer.getMaritalStatus())); // Convert maritalStatus to String
+            row.add(officer.getRegistrationID());
 
             csvData.add(row);
         });

@@ -21,11 +21,12 @@ public class ManagerRepository extends DataRepository {
 
         for (ArrayList<String> strArr : csv) {
             managerArr.add(new Manager(
-                    strArr.get(1),
                     strArr.get(0),
-                    Integer.parseInt(strArr.get(2)),
-                    strArr.get(3).charAt(0),
-                    strArr.get(4)
+                    strArr.get(1),
+                    Integer.parseInt(strArr.get(3)),
+                    strArr.get(4).charAt(0),
+                    strArr.get(2),
+                    strArr.get(5)
                     ));
         }
 
@@ -46,18 +47,13 @@ public class ManagerRepository extends DataRepository {
             row.add(manager.getPassword());
             row.add(String.valueOf(manager.getAge())); // Convert age to String
             row.add(String.valueOf(manager.getMaritalStatus())); // Convert maritalStatus to String
+            row.add(String.valueOf(manager.getProjectID())); // Convert maritalStatus to String
 
             csvData.add(row);
         });
 
         return csvData;
     }
-
-//    Should we do it like this?
-//    public static HDBManagerRepository getInstance() {
-//        return new HDBManagerRepository();
-//    }
-    //cREATING NEW instance everytime or checking first
 
     public static ManagerRepository getInstance() {
         if (instance == null)

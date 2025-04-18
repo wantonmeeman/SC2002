@@ -22,12 +22,13 @@ public class ApplicantRepository extends DataRepository {
 
         for (ArrayList<String> strArr : csv) {
             applicantArr.add(new Applicant(
-                    strArr.get(1),
                     strArr.get(0),
-                    Integer.parseInt(strArr.get(2)),
-                    strArr.get(3).charAt(0),
-                    strArr.get(4))
-            );
+                    strArr.get(1),
+                    Integer.parseInt(strArr.get(3)),
+                    strArr.get(4).charAt(0),
+                    strArr.get(2),
+                    strArr.get(5)
+            ));
         }
 
         return applicantArr;
@@ -45,8 +46,9 @@ public class ApplicantRepository extends DataRepository {
             row.add(applicant.getID());       // Add userID
             row.add(applicant.getName());         // Add name
             row.add(applicant.getPassword());
-            row.add(String.valueOf(applicant.getAge())); // Convert age to String
-            row.add(String.valueOf(applicant.getMaritalStatus())); // Convert maritalStatus to String
+            row.add(String.valueOf(applicant.getAge()));
+            row.add(String.valueOf(applicant.getMaritalStatus()));
+            row.add(String.valueOf(applicant.getApplicationID()));
 
             csvData.add(row);
         });

@@ -2,7 +2,6 @@ package Data.Models;
 
 public class Application extends Model {
 
-    private String applicationID;
     private String userID;
     private String projectID;
     private String status;

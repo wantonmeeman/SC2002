@@ -16,8 +16,10 @@ import Exceptions.ModelNotFoundException;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.WrongInputException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserLogicActions extends DataLogicActions<User>{
@@ -35,8 +37,8 @@ public class UserLogicActions extends DataLogicActions<User>{
         if (user instanceof Officer) {
             userMap.put("Role","Officer");
 
-            userMap.put("AssignedProjectID", ((Officer) user).getAssignedProjectID());
-            userMap.put("RegistrationStatus", String.valueOf(((Officer) user).getRegistrationStatus()));
+            userMap.put("ApplicationID",((Applicant) user).getApplicationID());
+            userMap.put("RegistrationID", ((Officer) user).getRegistrationID());
         } else if (user instanceof Manager) {
             userMap.put("Role","Manager");
 
@@ -144,47 +146,54 @@ public class UserLogicActions extends DataLogicActions<User>{
         }
     }
 
-    public HashMap<String,String> searchSettingToMap(SearchSetting ss){
-        HashMap<String,String> hm = new HashMap<String, String>();
+    public void apply(String ID,String applicationID) throws ModelNotFoundException, RepositoryNotFoundException {
+        Applicant applicant = (Applicant) getObject(ID);
+        applicant.setApplicationID(applicationID);
 
-        hm.put("Location",ss.getLocation());
-        hm.put("2Room",String.valueOf(ss.getFlatTypes()[0]));
-        hm.put("3Room",String.valueOf(ss.getFlatTypes()[1]));
-        hm.put("Neighbourhood",ss.getNeighbourhood());
-        hm.put("OpeningDate",String.valueOf(ss.getOpeningDate()));
-        hm.put("ClosingDate",String.valueOf(ss.getClosingDate()));
-        hm.put("Ascending",String.valueOf(ss.getAscending()));
-        hm.put("SortBy",String.valueOf(ss.getSortBy()));
-
-        return hm;
+        getDataRepository((User) applicant).update(ID,applicant);
     }
 
-    public SearchSetting mapToSearchSetting(HashMap<String,String> hm){
-        return new SearchSetting(
-                hm.get("Location"),
-                new Boolean[] {
-                        Boolean.parseBoolean(hm.get("2Room")),
-                        Boolean.parseBoolean(hm.get("3Room"))
-                },
-                hm.get("Neighbourhood"),
-                Long.parseLong(hm.get("OpeningDate")),
-                Long.parseLong(hm.get("ClosingDate")),
-                Boolean.parseBoolean(hm.get("Ascending")),
-                Integer.parseInt(hm.get("SortBy"))
-        );
-    }
+//    public HashMap<String,String> searchSettingToMap(SearchSetting ss){
+//        HashMap<String,String> hm = new HashMap<String, String>();
+//
+//        hm.put("Location",ss.getLocation());
+//        hm.put("2Room",String.valueOf(ss.getFlatTypes()[0]));
+//        hm.put("3Room",String.valueOf(ss.getFlatTypes()[1]));
+//        hm.put("Neighbourhood",ss.getNeighbourhood());
+//        hm.put("OpeningDate",String.valueOf(ss.getOpeningDate()));
+//        hm.put("ClosingDate",String.valueOf(ss.getClosingDate()));
+//        hm.put("Ascending",String.valueOf(ss.getAscending()));
+//        hm.put("SortBy",String.valueOf(ss.getSortBy()));
+//
+//        return hm;
+//    }
+//
+//    public SearchSetting mapToSearchSetting(HashMap<String,String> hm){
+//        return new SearchSetting(
+//                hm.get("Location"),
+//                new Boolean[] {
+//                        Boolean.parseBoolean(hm.get("2Room")),
+//                        Boolean.parseBoolean(hm.get("3Room"))
+//                },
+//                hm.get("Neighbourhood"),
+//                Long.parseLong(hm.get("OpeningDate")),
+//                Long.parseLong(hm.get("ClosingDate")),
+//                Boolean.parseBoolean(hm.get("Ascending")),
+//                Integer.parseInt(hm.get("SortBy"))
+//        );
+//    }
 
-    public HashMap<String,String> getSearchSetting(String userID) throws ModelNotFoundException{
-         return searchSettingToMap(getObject(userID).getSearchSetting());
-    }
+//    public HashMap<String,String> getSearchSetting(String userID) throws ModelNotFoundException{
+//         return searchSettingToMap(getObject(userID).getSearchSetting());
+//    }
 
-    public void updateSearchSetting(String userID,HashMap<String,String> hm) throws ModelNotFoundException, RepositoryNotFoundException{
-        User user = getObject(userID);
-
-        user.setSearchSetting(mapToSearchSetting(hm));
-
-        getDataRepository(user).update(userID,user);
-    }
+//    public void updateSearchSetting(String userID,HashMap<String,String> hm) throws ModelNotFoundException, RepositoryNotFoundException{
+//        User user = getObject(userID);
+//
+//        user.setSearchSetting(mapToSearchSetting(hm));
+//
+//        getDataRepository(user).update(userID,user);
+//    }
 
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
         Optional<User> userOpt = getAllObject().filter(

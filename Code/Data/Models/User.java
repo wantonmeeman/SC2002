@@ -5,7 +5,6 @@ abstract public class User extends Model {
     private String name;
     private String password;
     private char maritalStatus;
-    private SearchSetting searchSetting;
     private int age;
 
     public User(String id, String name, int age, char maritalStatus, String password) {
@@ -14,7 +13,6 @@ abstract public class User extends Model {
         this.age = age;
         this.maritalStatus = maritalStatus;
         this.password = password;
-        this.searchSetting = new SearchSetting();
     }
 
     public boolean login(String id, String password) {//Remove this?
@@ -53,11 +51,12 @@ abstract public class User extends Model {
         this.age = age;
     }
 
-    public void setSearchSetting(SearchSetting ss){
-        this.searchSetting = ss;
-    }
-
-    public SearchSetting getSearchSetting(){
-        return this.searchSetting;
+    @Override
+    public String toString() {
+        return "User {" +
+                "ID='" + getID() + '\'' +
+                ", Name='" + name + '\'' +
+                ", Age=" + age +
+                ", Marital Status=" + maritalStatus;
     }
 }

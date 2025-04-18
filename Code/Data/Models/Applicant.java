@@ -6,8 +6,14 @@ public class Applicant extends User{
 
     public Applicant(String id, String name, int age, char maritalStatus, String password) {
         super(id, name, age, maritalStatus, password);
-        
+
         this.applicationID = null;
+    }
+
+    public Applicant(String id, String name, int age, char maritalStatus, String password, String applicationID) {
+        super(id, name, age, maritalStatus, password);
+
+        this.applicationID = applicationID;
     }
 
     public String getApplicationID() {
@@ -17,4 +23,17 @@ public class Applicant extends User{
     public void setApplicationID(String applicationID) {
         this.applicationID = applicationID;
     }
+
+    @Override
+    public String toString() {
+        return "Applicant {" +
+                "ID='" + getID() + '\'' +
+                ", Name='" + getName() + '\'' +
+                ", Age=" + getAge() +
+                ", Marital Status=" + getMaritalStatus() +
+                ", ApplicationID='" + applicationID + '\'' +
+               // ", SearchSetting=" + (getSearchSetting() != null ? getSearchSetting().toString() : "null") +
+                '}';
+    }
+
 }

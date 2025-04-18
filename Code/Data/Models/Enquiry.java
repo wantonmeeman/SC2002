@@ -17,6 +17,15 @@ public class Enquiry extends Model{
         this.timestamp = timestamp;
     }
 
+    public Enquiry(String EnquiryID, String projectID, String userID, String message, String reply, long timestamp) {
+        super(EnquiryID);
+        this.projectID = projectID;
+        this.userID = userID;
+        this.message = message;
+        this.reply = reply;
+        this.timestamp = timestamp;
+    }
+
     public String getMessage() {
         return message;
     }

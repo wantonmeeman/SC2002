@@ -1,17 +1,14 @@
 package Data.Models;
 
-public class Flat {
+public class Flat extends Model{
     private String type;
     private int totalUnits;
-    //private int availableUnits;
-    //Is there available units?
-    //commit testing
     private float price;
 
-    public Flat(String type, int totalUnits, float price) {
+    public Flat(String ID,String type, int totalUnits, float price) {
+        super(ID);
         this.type = type;
         this.totalUnits = totalUnits;
-        //this.availableUnits = availableUnits;
         this.price = price;
     }
 

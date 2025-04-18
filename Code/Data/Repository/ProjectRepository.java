@@ -2,93 +2,84 @@ package Data.Repository;
 
 import Data.Models.Model;
 import Data.Models.Project;
-import Data.Models.Flat;
 
-import Util.Config.*;
+import static Util.Config.*;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+import java.util.Arrays;
 
 public class ProjectRepository extends DataRepository {
     private static ProjectRepository instance;
 
     public ProjectRepository() {
-        //setFilepath(DATA_PATH + OFFICER_CSV);
-        //fetch();
-        this.listOfModels.add(new Project(
-                "TestPID",
-                "Test Project23",
-                "Test Neighbourhood",
-                System.currentTimeMillis() / 1000L,                     // openingDate (Unix time)
-                (System.currentTimeMillis() / 1000L) + (86400 * 30),    // closingDate: 30 days later
-                5,                                                      // officerSlots
-                new String[] {"T2109876H", "S6543210I"},//TODO maybe use an arrayList?
-                "T8765432F",
-                new Flat[] {
-                new Flat("2-Room", 50, 200000.0f),
-                new Flat("3-Room", 30, 300000.0f)}
-        ));
-        this.listOfModels.add(new Project(
-                "TestPID",
-                "Test Project2",
-                "Test Neighbourhood",
-                System.currentTimeMillis() / 1000L,                     // openingDate (Unix time)
-                (System.currentTimeMillis() / 1000L) + (86400 * 30),    // closingDate: 30 days later
-                5,                                                      // officerSlots
-                new String[] {"T2109876H", "S6543210I"},//TODO maybe use an arrayList?
-                "T8765432F",
-                new Flat[] {
-                        new Flat("2-Room", 50, 200000.0f),
-                        new Flat("3-Room", 0, 300000.0f)}
-        ));
-        this.listOfModels.add(new Project(
-                "TestPID",
-                "Test Project3",
-                "Test Neighbourhood",
-                System.currentTimeMillis() / 1000L,                     // openingDate (Unix time)
-                (System.currentTimeMillis() / 1000L) + (86400 * 30),    // closingDate: 30 days later
-                5,                                                      // officerSlots
-                new String[] {"T2109876H", "S6543210I"},//TODO maybe use an arrayList?
-                "T8765432F",
-                new Flat[] {
-                        new Flat("2-Room", 0, 200000.0f),
-                        new Flat("3-Room", 0, 300000.0f)}
-        ));
+        setFilepath(DATA_PATH + PROJECT_CSV);
+        fetch();
     }
 
     @Override
-public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
-        ArrayList<Model> officerArr = new ArrayList<>();
+    public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
+        ArrayList<Model> projectArr = new ArrayList<>();
 
-//        for (ArrayList<String> strArr : csv) {
-//            officerArr.add(new Officer(
-//                    strArr.get(1),
-//                    strArr.get(0),
-//                    Integer.parseInt(strArr.get(2)),
-//                    strArr.get(3).charAt(0),
-//                    strArr.get(4)));
-//        }
+        for (ArrayList<String> strArr : csv) {
 
-        return officerArr;
+            int officerSlots = Integer.parseInt(strArr.get(6));
+
+            String[] officerIDArr = new String[officerSlots];
+
+            for(int x = 0;x < officerSlots;x++){
+                officerIDArr[x] = strArr.get(6+x+1);
+            }
+
+            projectArr.add(new Project(
+                    strArr.get(0),
+                    strArr.get(1),
+                    strArr.get(2),
+                    Long.parseLong(strArr.get(3)),
+                    Long.parseLong(strArr.get(4)),
+                    Boolean.parseBoolean(strArr.get(5)),
+                    officerSlots,
+                    officerIDArr,
+                    strArr.get(officerSlots+6+1),
+                    strArr.get(officerSlots+6+2),
+                    strArr.get(officerSlots+6+3)
+                    )
+            );
+        }
+
+        return projectArr;
     }
 
     @Override
     public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
-//        // Loop through each Model in alm
-//        alm.forEach(model -> {
-//            Officer officer = (Officer) model;
-//
-//            ArrayList<String> row = new ArrayList<>();
-//            row.add(officer.getID());       // Add userID
-//            row.add(officer.getName());         // Add name
-//            row.add(officer.getPassword());
-//            row.add(String.valueOf(officer.getAge())); // Convert age to String
-//            row.add(String.valueOf(officer.getMaritalStatus())); // Convert maritalStatus to String
-//
-//            csvData.add(row);
-//        });
+        // Loop through each Model in alm
+        alm.forEach(model -> {
+            Project project = (Project) model;
+
+            int officerSlots = project.getOfficerSlots();
+
+            ArrayList<String> row = new ArrayList<>();
+            row.add(project.getID());                    // Add project ID (assumed to exist)
+            row.add(project.getName());                  // Add name
+            row.add(project.getNeighbourhood());         // Add neighbourhood
+            row.add(String.valueOf(project.getOpeningDate()));           // Add opening date
+            row.add(String.valueOf(project.getClosingDate()));           // Add closing date
+            row.add(String.valueOf(project.isVisible()));             // Add visibility (boolean)
+            row.add(String.valueOf(officerSlots));          // Add number of officer slots
+
+            List<String> list = new ArrayList<>(Arrays.asList(project.getOfficersIDs()));
+
+            while (list.size() < officerSlots) list.add("");
+
+            row.add(String.join(",", list.subList(0, officerSlots))); // Add officer IDs as string
+            row.add(project.getManagerID());             // Add manager ID
+            row.add(project.getTwoRoomFlatID());         // Add two-room flat ID
+            row.add(project.getThreeRoomFlatID());
+
+            csvData.add(row);
+        });
 
         return csvData;
     }

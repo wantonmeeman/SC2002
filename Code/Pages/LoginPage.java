@@ -34,7 +34,7 @@ public class LoginPage {
 
             switch(user.get("Role")) {
                 case "Officer":
-                    //OfficerPage.start();
+                    OfficerPage.start(user.get("ID"));
                     break;
                 case "Manager":
                     //ManagerPage.start();
