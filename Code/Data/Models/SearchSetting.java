@@ -44,7 +44,7 @@ public class SearchSetting extends Model{
         return flatTypes;
     }
 
-    public void Boolean(Boolean[] flatTypes) {
+    public void setFlatTypes(Boolean[] flatTypes) {
         this.flatTypes = flatTypes;
     }
 
