@@ -9,6 +9,7 @@ import Data.Models.Officer;
 import Data.Models.User;
 import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
+import Pages.Components.HomepageView;
 import Util.ClearCMD;
 
 public class LoginPage {
@@ -19,54 +20,22 @@ public class LoginPage {
         String userid;
         String password;
 
-        System.out.print("User ID:\n");
+        System.out.println("User ID:");
 
         userid = scanner.nextLine();
 
-        System.out.print("Password:\n");
+        System.out.println("Password:");
 
         password = scanner.nextLine();
 
         try {
             user = UserLogicActions.getInstance().login(userid,password);
             ClearCMD.clear();
-            System.out.print(getWelcomeMessage(user.get("Role"),user.get("Name")));
-
-            switch(user.get("Role")) {
-                case "Officer":
-                    OfficerPage.start(user.get("ID"));
-                    break;
-                case "Manager":
-                    //ManagerPage.start();
-                    break;
-                case "Applicant":
-                    ApplicantPage.start(user.get("ID"));
-                    break;
-            }
-
+            System.out.println(HomepageView.getWelcomeMessage(user.get("Role"),user.get("Name")));
+            HomePage.start(user.get("ID"));
         } catch (WrongInputException e) {
-            System.out.print("Wrong Input!\n");
+            System.out.println("Wrong Input!\n");
             login();
         }
-
-
-    }
-
-    public static String getWelcomeMessage(String role,String name){
-        String returnStr = "Welcome "+name;
-
-        switch(role) {
-            case "Officer":
-                returnStr += " (Officer)";
-                break;
-            case "Manager":
-                returnStr += " (Manager)";
-                break;
-            case "Applicant":
-                returnStr += " (Applicant)";
-                break;
-        }
-
-        return returnStr+"\n";
     }
 }

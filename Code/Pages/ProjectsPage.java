@@ -2,6 +2,9 @@ package Pages;
 
 
 import Logic.*;
+import Pages.Components.Back;
+import Pages.Components.ProjectView;
+import Pages.Components.Seperator;
 import Util.ClearCMD;
 
 import Exceptions.*;
@@ -22,11 +25,12 @@ public class ProjectsPage {
 			try {
 				projList = ProjectLogicActions.getInstance().getAllFiltered(userID);
 			}catch(ModelNotFoundException e){
-				System.out.print(e.toString());
+				System.out.println(e.toString());
 			}
 
-			System.out.println("========================");
-			System.out.println("1. Back");
+
+			System.out.println(Seperator.seperate());
+			System.out.println(Back.back());
 
 			int x = 2;
 			for(HashMap<String,String> hm: projList){
@@ -49,7 +53,7 @@ public class ProjectsPage {
 						}
 					}
 				} catch(ModelNotFoundException e){
-					System.out.print(e);
+					System.out.println(e);
 				}
 
 				try{
@@ -67,9 +71,8 @@ public class ProjectsPage {
 						}
 					}
 				}catch(ModelNotFoundException e){
-					System.out.print(e);
+					System.out.println(e);
 				}
-
 			}
 
 			input = Integer.parseInt(scanner.nextLine());
@@ -88,9 +91,10 @@ public class ProjectsPage {
 			projectID = projectID.substring(0, projectID.length() - 1);
 
 			try{
-			System.out.println("========================");
-			System.out.print(formatProject(ProjectLogicActions.getInstance().get(projectID),flatType-2));
-			System.out.println("1. Back");
+
+			System.out.println(Seperator.seperate());
+			System.out.println(ProjectView.detailedView(projectID));
+			System.out.println(Back.back());
 			System.out.println("2. Apply");
 
 			input = Integer.parseInt(scanner.nextLine());
@@ -123,43 +127,6 @@ public class ProjectsPage {
 			}
 		}
 
-	public static String formatProject(HashMap<String,String> project,int type){
-		String returnStr = "";
-
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");//TODO config
-
-		String formattedOpening = formatter.format(new Date(Integer.parseInt(project.get("OpeningDate")) * 1000L));
-		String formattedClosing = formatter.format(new Date(Integer.parseInt(project.get("ClosingDate")) * 1000L));
-	try{
-		returnStr += "Name: "+project.get("Name");
-		returnStr += "\nNeighbourhood: " +project.get("Neighbourhood");
-		returnStr += "\nOfficers: "+formatOfficers(project.get("OfficerIDs"));
-		returnStr += "\nManager: "+UserLogicActions.getInstance().get(project.get("ManagerID")).get("Name");
-		returnStr += "\nOpening to Ending: " + formattedOpening + " to " + formattedClosing + "\n";
-	}catch(ModelNotFoundException e){
-		ClearCMD.clear();
-		//Go back or smth
-	}
-
-		return returnStr;
-	}
-
-	public static String formatOfficers(String officerStrings){
-		String[] officerIDs = officerStrings.split(",");
-		String returnStr = "";
-
-		for(int x = 0;x < officerIDs.length;x++) {
-			try{
-			returnStr += UserLogicActions.getInstance().get(officerIDs[x]).get("Name") + (x == officerIDs.length-1 ?"":", ");
-			}catch(ModelNotFoundException e){
-				ClearCMD.clear();
-				//Go back or smth
-			}
-
-		}
-
-		return returnStr;
-	}
 }
 
 

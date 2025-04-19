@@ -24,7 +24,7 @@ public class InputReader {
 
             return returnString;
         } catch (FileNotFoundException e) {
-            System.out.print("Error with reading the file!");
+            System.out.println("Error with reading the file!");
             return "Error!";
         }
     }

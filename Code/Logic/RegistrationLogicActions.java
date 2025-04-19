@@ -80,7 +80,6 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
             HashMap<String,String> projHm = ProjectLogicActions.getInstance().get(projectID);
 
         if (userApplicationID != null){
-            System.out.println("UserApplicationID: "+userApplicationID);
             HashMap<String,String> appHm = ApplicationLogicActions.getInstance().get(userApplicationID);
 
             if(appHm.get("ProjectID").equals(projectID)){
@@ -111,7 +110,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                     (hm.get("Status").equals("Pending") ||
                             hm.get("Status").equals("Successful") ||
                             hm.get("Status").equals("Booked")) &&
-                    !(closingApply < openingNew || openingApply > closingNew)){
+                    !(closingApply < openingNew || openingApply > closingNew)){//This also handles the same project being reigstered twice
                 System.out.println("Date Conflict");
                 return false;
             }

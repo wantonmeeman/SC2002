@@ -91,20 +91,20 @@ public class Main {
 //         //         for (User user : userArr) {
 //         //             if (user.login(username, password)) {
 //         //                 loggedUserObj = user;
-//         //                 System.out.print("Welcome " + loggedUserObj.getName() + "\n");
+//         //                 System.out.println("Welcome " + loggedUserObj.getName() + "\n");
 //         //                 break;
 //         //             }
 //         //         }
 
 //         //         if (loggedUserObj == null) {
-//         //             System.out.print("Invalid! Please try again.\n");
+//         //             System.out.println("Invalid! Please try again.\n");
 //         //         }
 
 //         //     } else {
 //         //         sb.setLength(0);
 //         //         sb.append("\n");
 
-//                 // System.out.print("1.Exit" + "\n"
+//                 // System.out.println("1.Exit" + "\n"
 //                 //         + "2.View Projects" + "\n"
 //                 //         + "3.View Project Applied for" + "\n"
 //                 //         + "4.View Enquiries" + "\n");
@@ -178,7 +178,7 @@ public class Main {
 //         //                 }
 
 //         //                 //User input to create new or choose which one to edit/delete
-//         //                 System.out.print(sb.toString());
+//         //                 System.out.println(sb.toString());
 
 //         //                 input = scanner.nextLine();
 //         //                 if(input.equals("+")){
@@ -191,7 +191,7 @@ public class Main {
 
 //         //                 break;
 //         //         }
-//         //         System.out.print(sb.toString());
+//         //         System.out.println(sb.toString());
 //         //     }
 //         // }
 //     }

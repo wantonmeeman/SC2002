@@ -23,25 +23,25 @@ public class CSVUtils {
            // scanner.nextLine(); skips first line as it is the header
 
             while (scanner.hasNextLine()) {
-
                 String[] lineList = scanner.nextLine().split(",");
-
-                for(int x = 0;lineList.length > x;x++){
-                    if(lineList[x].equals("null")){
-                        lineList[x] = null;
+                if(lineList.length > 0) {
+                    for (int x = 0; lineList.length > x; x++) {
+                        if (lineList[x].equals("null")) {
+                            lineList[x] = null;
+                        }
                     }
-                }
 
-                returnArr.add(
-                        new ArrayList<>(
-                                Arrays.asList(lineList)
-                        )
-                );
+                    returnArr.add(
+                            new ArrayList<>(
+                                    Arrays.asList(lineList)
+                            )
+                    );
+                }
             }
 
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.print("Error with reading the file!");
+            System.out.println("Error with reading the file!");
         }
         return returnArr;
     }
@@ -57,12 +57,23 @@ public class CSVUtils {
             }
 
             PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
-
+            int y = 0;
             for (ArrayList<String> line: csvData) {
                 for(int x = 0;line.size() > x;x++) {
+                    String value = line.get(x);
+
+                    if (value != null && (value.contains(",") || value.contains("\"") || value.contains("\n"))) {
+                        // Escape double quotes by doubling them
+                        value = value.replace("\"", "\"\"");
+                        // Wrap the value in quotes
+                        value = "\"" + value + "\"";
+                    }
+
                     printWriter.print(line.get(x)+(x==line.size()-1 ?"":","));
                 }
-                printWriter.print("\n");
+                if (y < csvData.size() - 1) {
+                    printWriter.print("\n");
+                }
             }
             printWriter.close();
         } catch (IOException e) {

@@ -5,6 +5,10 @@ import Logic.UserLogicActions;
 import Logic.ApplicationLogicActions;
 import Logic.ProjectLogicActions;
 
+import Pages.Components.ApplicationView;
+import Pages.Components.Back;
+import Pages.Components.ProjectView;
+import Pages.Components.Seperator;
 import Pages.LogoutPage;
 import Util.ClearCMD;
 
@@ -16,57 +20,43 @@ public class ApplicationsPage {
 			Scanner scanner = new Scanner(System.in);
 			int input;
 			HashMap<String, String> user = new HashMap<>();
-			HashMap<String, String> project = new HashMap<>();
-			HashMap<String, String> application = new HashMap<>();
 try{
 			user = UserLogicActions.getInstance().get(userID);
 		}catch(ModelNotFoundException e){
-		System.out.print(1);
+		System.out.println(e);
 	}
 
 
 			if(user.get("ApplicationID") != null) {
-				try {
-					application = ApplicationLogicActions.getInstance().get(user.get("ApplicationID"));
-				}catch(ModelNotFoundException e){
-					System.out.print(2);
-				}
 
-				try{
-				project = ProjectLogicActions.getInstance().get(application.get("ProjectID"));
-			}catch(ModelNotFoundException e){
-					System.out.print(3);
+				System.out.println(Seperator.seperate());
+                try {
+					String applicationID = user.get("ApplicationID");
+                    String projectID = ApplicationLogicActions.getInstance().get(applicationID).get("ProjectID");
+					String status = ApplicationLogicActions.getInstance().get(applicationID).get("Status");
 
-			}
-				String projName = project.get("Name");
-				String flatType = String.valueOf(Integer.parseInt(application.get("Type")) + 2);
-				String status = application.get("Status");
-
-				System.out.println("========================");
-				System.out.println("Application for " + projName + "(" + flatType + " Room)");
-				System.out.println("Status: " + status);
+					System.out.println(ProjectView.detailedView(projectID));
+					System.out.println(ApplicationView.detailedView(applicationID));
 
 				switch(status){
 					case "Booked":
 						try{
-						System.out.println("Booked with Officer: "+UserLogicActions.getInstance().get(application.get("OfficerID")));
+						System.out.println("Booked with Officer: "+UserLogicActions.getInstance().get(
+								ApplicationLogicActions.getInstance().get(applicationID).get("OfficerID")
+						).get("Name"));
 						}catch(ModelNotFoundException e){
 
 						}
+
 					case "Pending":
 					case "Unsuccessful":
-						System.out.println("1. Back");
-						System.out.println("2. Withdraw");
-						break;
-
 					case "Successful":
-						System.out.println("1. Back");
+						System.out.println(Back.back());
 						System.out.println("2. Withdraw");
-						System.out.println("3. Make a booking");
-						break;
-
+					break;
 					case "Withdrawn":
-						System.out.println("1. Back");
+
+						System.out.println(Back.back());
 						break;
 				}
 
@@ -74,25 +64,23 @@ try{
 
 				if(input == 1){
 
-				}else if(input == 2){
+				}else if(input == 2) {
 					//Withdraw
 					try {
-						ApplicationLogicActions.getInstance().withdraw(application.get("ID"));
-					}catch(ModelNotFoundException e){
-						System.out.print("Cant");
+						ApplicationLogicActions.getInstance().withdraw(applicationID);
+					} catch (ModelNotFoundException e) {
+						System.out.println("Cant");
 					}
-				}else if(status.equals("Successful") && input == 3){
-					try {
-					//Make a booking
-					ApplicationLogicActions.getInstance().book(application.get("ID"),application.get("OfficerID"));
-				}catch(ModelNotFoundException e){
-
 				}
+
+				} catch (ModelNotFoundException e) {
+					throw new RuntimeException(e);
 				}
 			}else{
-				System.out.println("========================");
+
+				System.out.println(Seperator.seperate());
 				System.out.println("No Application Made");
-				System.out.println("1. Back");
+				System.out.println(Back.back());
 
 				input = Integer.parseInt(scanner.nextLine());
 				if(input == 1){

@@ -69,10 +69,20 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         EnquiryRepository.getInstance().delete(ID);
     }
 
-    public ArrayList<HashMap<String,String>> getUserEnquiries(String UserID){
+    public ArrayList<HashMap<String,String>> getEnquiriesByUserID(String UserID){
         ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
         getAllObject()
                 .filter(enquiry -> enquiry.getUserID().equals(UserID))
+                .forEach(enquiry -> {
+                    enquiryList.add(toMap(enquiry));
+                });
+        return enquiryList;
+    }
+
+    public ArrayList<HashMap<String,String>> getEnquiriesByProjectID(String ProjectID){
+        ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
+        getAllObject()
+                .filter(enquiry -> enquiry.getProjectID().equals(ProjectID))
                 .forEach(enquiry -> {
                     enquiryList.add(toMap(enquiry));
                 });
@@ -84,7 +94,15 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
 
         newEnquiry.setMessage(newMessage);
 
-        //EnquiryRepository.getInstance().update(ID,newEnquiry);
+        EnquiryRepository.getInstance().update();
+    }
+
+    public void reply(String enquiryID, String reply) throws ModelNotFoundException {
+        Enquiry newEnquiry = getObject(enquiryID);
+
+        newEnquiry.setReply(reply);
+
+        EnquiryRepository.getInstance().update();
     }
 
     public static EnquiryLogicActions getInstance() {

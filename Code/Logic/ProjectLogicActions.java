@@ -122,8 +122,9 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                     }
 
                     boolean maritalStatusAgeCheck = proj.getThreeRoomFlatID().charAt(0) != '-' || proj.getTwoRoomFlatID().charAt(0) != '-';
+                    boolean timeCheck = true;//proj.getOpeningDate() <= System.currentTimeMillis() / 1000L && System.currentTimeMillis() / 1000L <= proj.getClosingDate();
 
-                    return maritalStatusAgeCheck && proj.isVisible();
+                    return maritalStatusAgeCheck && proj.isVisible() && timeCheck;
                 })
                 .map(this::toMap)
                 .collect(Collectors.toCollection(ArrayList::new));

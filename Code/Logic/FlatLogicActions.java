@@ -53,6 +53,14 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         FlatRepository.getInstance().delete(ID);
     }
 
+    public void book(String flatID) throws ModelNotFoundException{
+
+        Flat flat = getObject(flatID);
+        flat.setTotalUnits(flat.getTotalUnits()-1);
+
+        FlatRepository.getInstance().update();
+    }
+
     public static FlatLogicActions getInstance() {
         if (instance == null)
             instance = new FlatLogicActions();

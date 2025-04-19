@@ -152,7 +152,7 @@ public class UserLogicActions extends DataLogicActions<User>{
         Applicant applicant = (Applicant) getObject(ID);
         applicant.setApplicationID(applicationID);
 
-        //getDataRepository((User) applicant).update(ID,applicant);
+        getDataRepository(getObject(ID)).update();
     }
 
 //    public HashMap<String,String> searchSettingToMap(SearchSetting ss){

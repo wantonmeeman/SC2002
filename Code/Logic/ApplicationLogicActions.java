@@ -1,24 +1,16 @@
 package Logic;
 
-import Data.Models.Flat;
-import Data.Models.Project;
 import Data.Models.Application;
-import Data.Models.User;
-import Data.Models.Applicant;
 
-import Data.Repository.ProjectRepository;
 import Data.Repository.ApplicationRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 import Exceptions.RepositoryNotFoundException;
 import Exceptions.UnauthorizedActionException;
-import Logic.UserLogicActions;
 import Util.GenerateID;
-import Logic.DataLogicActions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ApplicationLogicActions extends DataLogicActions<Application>{
@@ -63,6 +55,19 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
+    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID){
+        ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
+
+        getAllObject()
+                .filter(application -> application.getProjectID().equals(projectID)
+                        //&& (application.getStatus().equals("Booked"))//Is this correct?
+                ).forEach(application -> {
+                    applicationList.add(toMap(application));
+                });
+
+        return applicationList;
+    }
+
     private Boolean checkApplicationValidity(int type, String userID, String projectID) throws ModelNotFoundException{
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(userID);
         String applicationID = uhm.get("ApplicationID");
@@ -80,12 +85,12 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
             }
         }
 
-        //Could be NULL! Handle this TODO
+        //If the user has an active application
         if(applicationID != null) {
             HashMap<String, String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
             String status = ahm.get("Status");
 
-            //Check if the User has already applied
+            //Check if the User's active application is active
             if (status.equals("Pending") || status.equals("Successful") || status.equals("Booked")) {
                 return false;
             }
@@ -95,28 +100,14 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         if(role.equals("Officer")){
             ArrayList<HashMap<String,String>> rArr = RegistrationLogicActions.getInstance().getByOfficerID(userID);
             if(!rArr.isEmpty()) {
-                HashMap<String, String> phm = ProjectLogicActions.getInstance().get(projectID);
-
-                long applicationOpening = Long.parseLong(phm.get("OpeningDate"));
-                long applicationClosing = Long.parseLong(phm.get("ClosingDate"));
-
                 for (HashMap<String, String> rhm : rArr) {
-
-                    //Check if the officer has another project within application period
-                    HashMap<String, String> rphm = ProjectLogicActions.getInstance().get(projectID);
-                    long registerOpening = Long.parseLong(rphm.get("OpeningDate"));
-                    long registerClosing = Long.parseLong(rphm.get("ClosingDate"));
-
                     String registerProjectID = rhm.get("ProjectID");
                     if (
                             (rhm.get("Status").equals("Pending") ||
                                     rhm.get("Status").equals("Successful") ||
                                     rhm.get("Status").equals("Booked")) && (
-                                    registerProjectID.equals(projectID)//Cannot apply if registered
-                                            ||
-                                            !(applicationClosing < registerOpening || applicationOpening > registerClosing)//Cannot apply if already have a application date conflicting
-                            )) {
-                        return false;
+                                    registerProjectID.equals(projectID))){
+                            return false;
                     }
                 }
             }
@@ -134,6 +125,8 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         if(checkApplicationValidity(type,userID,projectID)) {
             String appID = create(hm);
             UserLogicActions.getInstance().apply(hm.get("UserID"), appID);
+
+            ApplicationRepository.getInstance().update();
             return appID;
         }else{
             throw new UnauthorizedActionException();
@@ -141,13 +134,24 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
 
     }
 
-    public void book(String ID, String OfficerID) throws ModelNotFoundException{
-        Application application = getObject(ID);
+    public void book(String applicationID, String OfficerID) throws ModelNotFoundException{
+        Application application = getObject(applicationID);
         if(application.getStatus().equals("Successful")) {
             application.setStatus("Booked");
             application.setOfficerID(OfficerID);
 
-            //ApplicationRepository.getInstance().update(ID, application);
+            if(application.getType() == 0){
+                FlatLogicActions.getInstance().book(
+                        ProjectLogicActions.getInstance().get(
+                                application.getProjectID()
+                        ).get("TwoRoomFlatID"));
+            }else if(application.getType() == 1){
+                FlatLogicActions.getInstance().book(
+                        ProjectLogicActions.getInstance().get(
+                                application.getProjectID()
+                        ).get("ThreeRoomFlatID"));
+            }
+            ApplicationRepository.getInstance().update();
         }
     }
 
@@ -155,7 +159,7 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         Application application = getObject(ID);
         application.setStatus("Withdrawn");
 
-        //ApplicationRepository.getInstance().update(ID,application);
+        ApplicationRepository.getInstance().update();
     }
 
     public static ApplicationLogicActions getInstance() {

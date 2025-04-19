@@ -4,6 +4,9 @@ import Data.Models.Model;
 import Exceptions.ModelNotFoundException;
 import Logic.ProjectLogicActions;
 import Logic.EnquiryLogicActions;
+import Pages.Components.Back;
+import Pages.Components.EnquiryView;
+import Pages.Components.Seperator;
 import Pages.LogoutPage;
 import Util.ClearCMD;
 
@@ -20,24 +23,20 @@ public class EnquiriesPage {
 			int input;
 			ArrayList<HashMap<String, String>> enquiries = new ArrayList<>();
 
-			enquiries = EnquiryLogicActions.getInstance().getUserEnquiries(userID);
+			enquiries = EnquiryLogicActions.getInstance().getEnquiriesByUserID(userID);
 
-
-//			HashMap<String, String> user;
-//
-//			try {
-//				user = UserLogicActions.getUser(userID);
-//			}catch(ModelNotFoundException e){
-//				System.out.println("User Not Found!");
-//				ClearCMD.clear();
-//				LogoutPage.logout();
-//			}
-
-			System.out.println("============Enquiries============");
-			System.out.println("1. Back");
+			System.out.println(Seperator.seperate());
+			System.out.println(Back.back());
 			System.out.println("2. Create new Enquiry");
-			System.out.print(formatEnquiries(enquiries));
-			System.out.println("=================================");
+
+			int x = 3;
+			for(HashMap<String,String> ehm: enquiries){
+				try {
+					System.out.println((x++)+". "+EnquiryView.simpleView(ehm.get("ID")));
+				}catch(ModelNotFoundException e){
+					System.out.println(e);
+				}
+			}
 
 			input = Integer.parseInt(scanner.nextLine());
 			ClearCMD.clear();
@@ -55,7 +54,8 @@ public class EnquiriesPage {
 		public static String chooseProject(String userID){
 			Scanner scanner = new Scanner(System.in);
 			int input;
-			System.out.println("=================================");
+
+			System.out.println(Seperator.seperate());
 
 			System.out.println("Choose which project you wish to enquire about:");
 			ArrayList<HashMap<String,String>> projList = ProjectLogicActions.getInstance().getAll();
@@ -71,12 +71,12 @@ public class EnquiriesPage {
 
 		public static String writeMessage(){
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("=================================");
+
+			System.out.println(Seperator.seperate());
 
 			System.out.println("Write your enquiry:");
-			String message = scanner.nextLine();
 
-			return message;
+            return scanner.nextLine();
 		}
 
 		public static void createEnquiry(String userID){
@@ -93,13 +93,12 @@ public class EnquiriesPage {
 		public static void detailedEnquiry(String enquiryID){
 			Scanner scanner = new Scanner(System.in);
 			int input;
-			HashMap<String, String> enquiry = new HashMap<>();
 			try {
-				enquiry = EnquiryLogicActions.getInstance().get(enquiryID);
 
-				System.out.println("=================================");
-				System.out.println(formatEnquiry(enquiry));
-				System.out.println("1. Back");
+				System.out.println(Seperator.seperate());
+				System.out.println(EnquiryView.detailedView(enquiryID));
+
+				System.out.println(Back.back());
 				System.out.println("2. Edit");
 				System.out.println("3. Delete");
 
@@ -110,10 +109,8 @@ public class EnquiriesPage {
 				if(input == 1){
 					return;
 				}else if(input == 2){
-					//edit
 					editEnquiry(enquiryID);
 				}else if(input == 3){
-					//delete
 					deleteEnquiry(enquiryID);
 				}
 			}catch(ModelNotFoundException e){
@@ -141,7 +138,8 @@ public class EnquiriesPage {
 				String simulatedInput = enquiry.get("Message");
 				Scanner scanner = new Scanner(System.in);
 
-				System.out.println("=================================");
+
+				System.out.println(Seperator.seperate());
 				System.out.println("Old Message:");
 				System.out.println(simulatedInput);
 				System.out.println("New Message:");
@@ -150,63 +148,11 @@ public class EnquiriesPage {
 				EnquiryLogicActions.getInstance().editMessage(enquiryID,NewMsg);
 			}catch(ModelNotFoundException e){
 				//TODO
+				System.out.println(e);
 			}
 			ClearCMD.clear();
 			System.out.println("Changes Saved!");
 
-		}
-
-		public static String formatEnquiry(HashMap<String,String> enquiry) throws ModelNotFoundException{
-			String returnStr = "";
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//TODO config
-			Date dateObject = new Date(Integer.parseInt(enquiry.get("Timestamp")) * 1000L);
-			String formattedDateTime = formatter.format(dateObject);
-
-			HashMap<String,String> hm = ProjectLogicActions.getInstance().get(enquiry.get("ProjectID"));//TODO handle exception
-
-			returnStr += "Time and Date: " +formattedDateTime;
-			returnStr += "\n" + "Project Name: " +hm.get("Name");
-			returnStr += "\n" + "Message:\n" + wrapText(enquiry.get("Message"),50);
-			returnStr += "\n" + "Reply:\n" + wrapText(enquiry.get("Reply"),50);
-
-			return returnStr;
-		}
-
-	public static String wrapText(String input, int maxLineLength) {//AI, rewrite this
-//		StringBuilder result = new StringBuilder();
-//		int index = 0;
-//
-//		while (index < input.length()) {
-//			int endIndex = Math.min(index + maxLineLength, input.length());
-//			result.append(input, index, endIndex).append("\n");
-//			index = endIndex;
-//		}
-//
-//		return result.toString();
-		return input;
-	}
-
-		public static String formatEnquiries(ArrayList<HashMap<String,String>> enquiries){
-			String returnStr = "";
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-			int iterator = 3;
-
-			for(HashMap<String,String> enquiry:enquiries){
-				Date dateObject = new Date(Integer.parseInt(enquiry.get("Timestamp"))*1000L);
-				String formattedDateTime = formatter.format(dateObject);
-				HashMap<String, String> hm = null;
-				try {
-					hm = ProjectLogicActions.getInstance().get(enquiry.get("ProjectID"));//TODO handle exception
-				}catch(Exception e){
-
-				}
-				String Message = enquiry.get("Message");
-				Message = Message.length() > 50 ? Message.substring(0, 50 - 3) + "..." : Message;
-
-				returnStr += iterator++ +". "+ formattedDateTime + " - " + hm.get("Name") + " - " + Message + "\n";
-			}
-			return returnStr;
 		}
 
 	}
