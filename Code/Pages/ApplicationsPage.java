@@ -1,16 +1,12 @@
 package Pages;
 
 import Exceptions.ModelNotFoundException;
-import Logic.UserLogicActions;
 import Logic.ApplicationLogicActions;
 import Logic.ProjectLogicActions;
-
-import Pages.LogoutPage;
+import Logic.UserLogicActions;
 import Util.ClearCMD;
-
 import java.util.HashMap;
 import java.util.Scanner;
-
 public class ApplicationsPage {
 		public static void start(String userID) {
 			Scanner scanner = new Scanner(System.in);
@@ -44,7 +40,7 @@ try{
 
 				System.out.println("========================");
 				System.out.println("Application for " + projName + "(" + flatType + " Room)");
-				System.out.println("Status: " + status);
+				System.out.println("Current Application Status: " + status);
 
 				switch(status){
 					case "Booked":
@@ -69,11 +65,11 @@ try{
 						System.out.println("1. Back");
 						break;
 				}
-
+				
 				input = Integer.parseInt(scanner.nextLine());
 
 				if(input == 1){
-
+					ClearCMD.clear();
 				}else if(input == 2){
 					//Withdraw
 					try {

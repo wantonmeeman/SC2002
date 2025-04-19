@@ -1,13 +1,7 @@
 package Pages;
-import Data.Models.Applicant;
-import Data.Models.User;
-
-import Util.ClearCMD;
-
-import Logic.UserLogicActions;
-import Pages.LogoutPage;
 import Exceptions.ModelNotFoundException;
-
+import Logic.UserLogicActions;
+import Util.ClearCMD;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -25,10 +19,10 @@ public class ApplicantPage {
 			}
 
 			System.out.println("========================");
-			System.out.println("1. Logout");
-			System.out.println("2. Projects");
-			System.out.println("3. Enquiries");
-			System.out.println("4. Applications");
+			System.out.println("1. Projects");
+			System.out.println("2. Enquiries");
+			System.out.println("3. Applications");
+			System.out.println("4. Logout");
 			System.out.println("========================");
 
 			input = Integer.parseInt(scanner.nextLine());
@@ -36,9 +30,9 @@ public class ApplicantPage {
 
 			switch(input){
 				case 1:
-					//Logout
-					LogoutPage.logout(user.get("Role"),user.get("Name"));
-					return;
+					//Applications
+					ApplicationsPage.start(userID);
+					break;
 				case 2:
 					//Projects
 					ProjectsPage.start(userID);
@@ -48,9 +42,9 @@ public class ApplicantPage {
 					EnquiriesPage.start(userID);
 					break;
 				case 4:
-					//Applications
-					ApplicationsPage.start(userID);
-					break;
+					//Logout
+					LogoutPage.logout(user.get("Role"),user.get("Name"));
+					return;
 				default:
 					System.out.print("Wrong Input, Please try again.");
 			}

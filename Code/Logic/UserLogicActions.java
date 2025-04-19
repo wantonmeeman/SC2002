@@ -119,6 +119,11 @@ public class UserLogicActions extends DataLogicActions<User>{
 
     @Override
     protected Stream<User> getAllObject(){
+
+        // System.out.println("[DEBUG] Loading applicants: " + ApplicantRepository.getInstance().getAll().size());
+        // System.out.println("[DEBUG] Loading managers: " + ManagerRepository.getInstance().getAll().size());
+        // System.out.println("[DEBUG] Loading officers: " + OfficerRepository.getInstance().getAll().size());
+
         return Stream.of(
                         ApplicantRepository.getInstance().getAll(),
                         ManagerRepository.getInstance().getAll(),
@@ -198,6 +203,9 @@ public class UserLogicActions extends DataLogicActions<User>{
 //    }
 
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
+
+        System.out.println("[DEBUG] Attempting login for userID: " + userID);
+
         Optional<User> userOpt = getAllObject().filter(
                         user -> user.login(userID, password))//Do we want the user to handle authentication
                 .findFirst();

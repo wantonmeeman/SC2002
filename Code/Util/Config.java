@@ -6,7 +6,7 @@ public class Config {
     /**
      * This class contains the location of the resources.
      */
-    public static final String DATA_PATH = "C:\\Users\\tokyo\\OneDrive\\Desktop\\SC2002\\Project\\Data\\";
+    public static final String DATA_PATH = "C:/Users/Yong Ming Xuan/OneDrive/Desktop/SC2002_Project_NEW/SC2002/Data/";
     public static final String FLAT_CSV = "FlatList.csv";
     public static final String MANAGER_CSV = "ManagerList.csv";
     public static final String OFFICER_CSV = "OfficerList.csv";

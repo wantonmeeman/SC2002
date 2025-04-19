@@ -1,15 +1,10 @@
 package Pages;
 
-import java.util.HashMap;
-import java.util.Scanner;
-
-import Data.Models.Applicant;
-import Data.Models.Manager;
-import Data.Models.Officer;
-import Data.Models.User;
 import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
 import Util.ClearCMD;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class LoginPage {
 

@@ -1,4 +1,6 @@
 
+package Pages;
+
 public class ChangePassword {
     public ChangePassword() {
     }
