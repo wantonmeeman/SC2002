@@ -59,17 +59,17 @@ abstract public class DataRepository extends Storable{
         store();
     }
 
-    public void update(String oldID,Model model) throws ModelNotFoundException {
-        int index = listOfModels.indexOf(get(oldID));
-
-        if(index == -1){
-            throw new ModelNotFoundException();
-        }else{
-            listOfModels.set(index, model);
-        }
-
-        store();
-    };
+//    public void update(String oldID,Model model) throws ModelNotFoundException {
+//        int index = listOfModels.indexOf(get(oldID));
+//
+//        if(index == -1){
+//            throw new ModelNotFoundException();
+//        }else{
+//            listOfModels.set(index, model);
+//        }
+//
+//        store();
+//    };
 
     public void updateAll(ArrayList<Model> models){
         listOfModels = models;

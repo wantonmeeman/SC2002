@@ -30,8 +30,21 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         projectMap.put("OfficerSlots", String.valueOf(project.getOfficerSlots()));
         projectMap.put("OfficerIDs", String.join(",", project.getOfficersIDs()));
         projectMap.put("ManagerID", project.getManagerID());
-        projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
-        projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
+
+        if(project.getTwoRoomFlatID().charAt(0) == '-'){
+            projectMap.put("TwoRoomFlatID", null);
+            project.setTwoRoomFlatID(project.getTwoRoomFlatID().substring(1));
+        }else{
+            projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
+        }
+
+        if(project.getThreeRoomFlatID().charAt(0) == '-'){
+            projectMap.put("ThreeRoomFlatID", null);
+            project.setThreeRoomFlatID(project.getThreeRoomFlatID().substring(1));
+        }else{
+            projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
+        }
+
 
         return projectMap;
     }
@@ -72,24 +85,47 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
         HashMap<String,String> user = UserLogicActions.getInstance().get(userID);
-        HashMap<String,String> ss = SearchSettingLogicActions.getInstance().get(userID);
+        HashMap<String, String> ss = SearchSettingLogicActions.getInstance().get(userID);
 
         int age = Integer.parseInt(user.get("Age"));
         char status = user.get("MaritalStatus").charAt(0);
 
         projList = getAllObject()
                 .filter(proj -> {
-                    int totalFlats;
+                    //Check Marital Status and age
+                    int totalTwoRoomFlats;
+                    int totalThreeRoomFlats;
+
                     try {
-                        totalFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getTwoRoomFlatID()).get("TotalUnits"));
+                        totalTwoRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getTwoRoomFlatID()).get("TotalUnits"));                        totalThreeRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getThreeRoomFlatID()).get("TotalUnits"));
                     } catch (ModelNotFoundException e) {
-                        totalFlats = 0;
+                        totalTwoRoomFlats = 0;
                     }
 
-                    return (age >= 21 && status == 'M') ||
-                            (age >= 35 && status == 'S' && totalFlats > 0);
+                    try {
+                        totalThreeRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getThreeRoomFlatID()).get("TotalUnits"));
+                    } catch (ModelNotFoundException e) {
+                        totalThreeRoomFlats = 0;
+                    }
+
+                    if(totalTwoRoomFlats <= 0
+                    || (status == 'M' && age < 21)
+                    || (status == 'S' && age < 35)
+                    ){
+                        proj.setTwoRoomFlatID("-"+proj.getTwoRoomFlatID());
+                    }
+
+                    if(totalThreeRoomFlats <= 0
+                    || status == 'S'
+                    || (status == 'M' && age < 21)){
+                        proj.setThreeRoomFlatID("-"+proj.getThreeRoomFlatID());
+                    }
+
+                    boolean maritalStatusAgeCheck = proj.getThreeRoomFlatID().charAt(0) != '-' || proj.getTwoRoomFlatID().charAt(0) != '-';
+
+                    return maritalStatusAgeCheck && proj.isVisible();
                 })
-                .map(this::toMap) // <-- Replace with actual method to convert Project to HashMap
+                .map(this::toMap)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return projList;

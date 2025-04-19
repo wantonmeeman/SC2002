@@ -1,5 +1,6 @@
 package Pages;
 
+import Data.Models.Model;
 import Exceptions.ModelNotFoundException;
 import Logic.ProjectLogicActions;
 import Logic.EnquiryLogicActions;
@@ -155,14 +156,16 @@ public class EnquiriesPage {
 
 		}
 
-		public static String formatEnquiry(HashMap<String,String> enquiry){
+		public static String formatEnquiry(HashMap<String,String> enquiry) throws ModelNotFoundException{
 			String returnStr = "";
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//TODO config
 			Date dateObject = new Date(Integer.parseInt(enquiry.get("Timestamp")) * 1000L);
 			String formattedDateTime = formatter.format(dateObject);
 
+			HashMap<String,String> hm = ProjectLogicActions.getInstance().get(enquiry.get("ProjectID"));//TODO handle exception
+
 			returnStr += "Time and Date: " +formattedDateTime;
-			returnStr += "\n" + "Project ID: " + enquiry.get("ProjectID");
+			returnStr += "\n" + "Project Name: " +hm.get("Name");
 			returnStr += "\n" + "Message:\n" + wrapText(enquiry.get("Message"),50);
 			returnStr += "\n" + "Reply:\n" + wrapText(enquiry.get("Reply"),50);
 
@@ -186,16 +189,22 @@ public class EnquiriesPage {
 		public static String formatEnquiries(ArrayList<HashMap<String,String>> enquiries){
 			String returnStr = "";
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 			int iterator = 3;
 
 			for(HashMap<String,String> enquiry:enquiries){
 				Date dateObject = new Date(Integer.parseInt(enquiry.get("Timestamp"))*1000L);
 				String formattedDateTime = formatter.format(dateObject);
+				HashMap<String, String> hm = null;
+				try {
+					hm = ProjectLogicActions.getInstance().get(enquiry.get("ProjectID"));//TODO handle exception
+				}catch(Exception e){
 
+				}
 				String Message = enquiry.get("Message");
 				Message = Message.length() > 50 ? Message.substring(0, 50 - 3) + "..." : Message;
 
-				returnStr += iterator++ +". "+ formattedDateTime + " - " + enquiry.get("ProjectID") + " - " + Message + "\n";
+				returnStr += iterator++ +". "+ formattedDateTime + " - " + hm.get("Name") + " - " + Message + "\n";
 			}
 			return returnStr;
 		}

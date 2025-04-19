@@ -72,7 +72,7 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
     public ArrayList<HashMap<String,String>> getUserEnquiries(String UserID){
         ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
         getAllObject()
-                //.filter(enquiry -> enquiry.getUserID().equals(UserID))
+                .filter(enquiry -> enquiry.getUserID().equals(UserID))
                 .forEach(enquiry -> {
                     enquiryList.add(toMap(enquiry));
                 });
@@ -84,7 +84,7 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
 
         newEnquiry.setMessage(newMessage);
 
-        EnquiryRepository.getInstance().update(ID,newEnquiry);
+        //EnquiryRepository.getInstance().update(ID,newEnquiry);
     }
 
     public static EnquiryLogicActions getInstance() {

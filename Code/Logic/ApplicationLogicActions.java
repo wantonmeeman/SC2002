@@ -63,39 +63,99 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
+    private Boolean checkApplicationValidity(int type, String userID, String projectID) throws ModelNotFoundException{
+        HashMap<String,String> uhm = UserLogicActions.getInstance().get(userID);
+        String applicationID = uhm.get("ApplicationID");
+        int age = Integer.parseInt(uhm.get("Age"));
+        char maritalStatus = uhm.get("MaritalStatus").charAt(0);
+
+        //Check if Single Married criteria
+        if(type == 0){
+            if((maritalStatus == 'M' && age < 21) || (maritalStatus == 'S' && age < 35)){
+                return false;
+            }
+        } else if(type == 1){
+            if(maritalStatus == 'S' || (maritalStatus == 'M' && age < 21)){
+                return false;
+            }
+        }
+
+        //Could be NULL! Handle this TODO
+        if(applicationID != null) {
+            HashMap<String, String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
+            String status = ahm.get("Status");
+
+            //Check if the User has already applied
+            if (status.equals("Pending") || status.equals("Successful") || status.equals("Booked")) {
+                return false;
+            }
+        }
+
+        String role = uhm.get("Role");
+        if(role.equals("Officer")){
+            ArrayList<HashMap<String,String>> rArr = RegistrationLogicActions.getInstance().getByOfficerID(userID);
+            if(!rArr.isEmpty()) {
+                HashMap<String, String> phm = ProjectLogicActions.getInstance().get(projectID);
+
+                long applicationOpening = Long.parseLong(phm.get("OpeningDate"));
+                long applicationClosing = Long.parseLong(phm.get("ClosingDate"));
+
+                for (HashMap<String, String> rhm : rArr) {
+
+                    //Check if the officer has another project within application period
+                    HashMap<String, String> rphm = ProjectLogicActions.getInstance().get(projectID);
+                    long registerOpening = Long.parseLong(rphm.get("OpeningDate"));
+                    long registerClosing = Long.parseLong(rphm.get("ClosingDate"));
+
+                    String registerProjectID = rhm.get("ProjectID");
+                    if (
+                            (rhm.get("Status").equals("Pending") ||
+                                    rhm.get("Status").equals("Successful") ||
+                                    rhm.get("Status").equals("Booked")) && (
+                                    registerProjectID.equals(projectID)//Cannot apply if registered
+                                            ||
+                                            !(applicationClosing < registerOpening || applicationOpening > registerClosing)//Cannot apply if already have a application date conflicting
+                            )) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    //Double check this
     public String apply(HashMap<String,String> hm) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
 
-        HashMap<String,String> uhm = UserLogicActions.getInstance().get(hm.get("UserID"));
+        int type = Integer.parseInt(hm.get("Type"));
+        String userID = hm.get("UserID");
+        String projectID = hm.get("ProjectID");
 
-        String applicationID = uhm.get("ApplicationID");
-
-        String status = ApplicationLogicActions.getInstance().get(applicationID).get("Status");
-
-        if(applicationID == null || status.equals("Withdrawn") || status.equals("Unsuccessful")) {
+        if(checkApplicationValidity(type,userID,projectID)) {
             String appID = create(hm);
-
             UserLogicActions.getInstance().apply(hm.get("UserID"), appID);
-
             return appID;
         }else{
             throw new UnauthorizedActionException();
         }
+
     }
 
     public void book(String ID, String OfficerID) throws ModelNotFoundException{
         Application application = getObject(ID);
-        application.setStatus("Booked");
-        application.setOfficerID(OfficerID);
+        if(application.getStatus().equals("Successful")) {
+            application.setStatus("Booked");
+            application.setOfficerID(OfficerID);
 
-        ApplicationRepository.getInstance().update(ID,application);
+            //ApplicationRepository.getInstance().update(ID, application);
+        }
     }
 
     public void withdraw(String ID) throws ModelNotFoundException{
         Application application = getObject(ID);
-
         application.setStatus("Withdrawn");
 
-        ApplicationRepository.getInstance().update(ID,application);
+        //ApplicationRepository.getInstance().update(ID,application);
     }
 
     public static ApplicationLogicActions getInstance() {

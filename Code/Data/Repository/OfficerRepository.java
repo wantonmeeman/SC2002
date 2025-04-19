@@ -47,7 +47,7 @@ public class OfficerRepository extends DataRepository {
             row.add(officer.getPassword());
             row.add(String.valueOf(officer.getAge())); // Convert age to String
             row.add(String.valueOf(officer.getMaritalStatus())); // Convert maritalStatus to String
-            row.add(officer.getRegistrationID());
+            row.add(officer.getApplicationID());
 
             csvData.add(row);
         });

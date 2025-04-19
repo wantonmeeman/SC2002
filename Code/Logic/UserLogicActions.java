@@ -38,7 +38,6 @@ public class UserLogicActions extends DataLogicActions<User>{
             userMap.put("Role","Officer");
 
             userMap.put("ApplicationID",((Applicant) user).getApplicationID());
-            userMap.put("RegistrationID", ((Officer) user).getRegistrationID());
         } else if (user instanceof Manager) {
             userMap.put("Role","Manager");
 
@@ -70,7 +69,8 @@ public class UserLogicActions extends DataLogicActions<User>{
                                 name,
                                 age,
                                 maritalStatus,
-                                password
+                                password,
+                                null
                         )
                 );
             } catch (ModelAlreadyExistsException e) {
@@ -87,7 +87,8 @@ public class UserLogicActions extends DataLogicActions<User>{
                                 name,
                                 age,
                                 maritalStatus,
-                                password
+                                password,
+                                null
                         )
                 );
             } catch (ModelAlreadyExistsException e) {
@@ -103,7 +104,8 @@ public class UserLogicActions extends DataLogicActions<User>{
                                 name,
                                 age,
                                 maritalStatus,
-                                password
+                                password,
+                                null
                         )
                 );
             } catch (ModelAlreadyExistsException e) {
@@ -150,7 +152,7 @@ public class UserLogicActions extends DataLogicActions<User>{
         Applicant applicant = (Applicant) getObject(ID);
         applicant.setApplicationID(applicationID);
 
-        getDataRepository((User) applicant).update(ID,applicant);
+        //getDataRepository((User) applicant).update(ID,applicant);
     }
 
 //    public HashMap<String,String> searchSettingToMap(SearchSetting ss){

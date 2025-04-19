@@ -22,7 +22,7 @@ public class ProjectsPage {
 			try {
 				projList = ProjectLogicActions.getInstance().getAllFiltered(userID);
 			}catch(ModelNotFoundException e){
-				System.out.print(e);
+				System.out.print(e.toString());
 			}
 
 			System.out.println("========================");
@@ -36,35 +36,39 @@ public class ProjectsPage {
 				HashMap<String,String> twoRoomHm,threeRoomHm;
 
 				try {
-					twoRoomHm = FlatLogicActions.getInstance().get(twoRoomID);
+					if(twoRoomID != null) {
+						twoRoomHm = FlatLogicActions.getInstance().get(twoRoomID);
 
-					int twoRoomUnits = Integer.parseInt(twoRoomHm.get("TotalUnits"));
+						int twoRoomUnits = Integer.parseInt(twoRoomHm.get("TotalUnits"));
 
-					if (twoRoomUnits > 0) {
-						System.out.println(x + ". " +
-								hm.get("Name") + " - 2 Room - $" + twoRoomHm.get("Price") +
-								" - " + twoRoomUnits + " Units left");
-						intStr.put(x++, hm.get("ID") + "2");
+						if (twoRoomUnits > 0) {
+							System.out.println(x + ". " +
+									hm.get("Name") + " - 2 Room - $" + twoRoomHm.get("Price") +
+									" - " + twoRoomUnits + " Units left");
+							intStr.put(x++, hm.get("ID") + "2");
+						}
 					}
 				} catch(ModelNotFoundException e){
 					System.out.print(e);
 				}
 
 				try{
-					threeRoomHm = FlatLogicActions.getInstance().get(threeRoomID);
-				int threeRoomUnits = Integer.parseInt(threeRoomHm.get("TotalUnits"));
-				if(threeRoomUnits > 0){
-					System.out.println(x +". "+
-							hm.get("Name")+" - 3 Room - $"+ threeRoomHm.get("Price") +
-							" - " + threeRoomUnits + " Units left");
+					if(threeRoomID != null) {
+						threeRoomHm = FlatLogicActions.getInstance().get(threeRoomID);
 
-					intStr.put(x++,hm.get("ID")+"3");
-				}
+						int threeRoomUnits = Integer.parseInt(threeRoomHm.get("TotalUnits"));
+
+						if (threeRoomUnits > 0) {
+							System.out.println(x + ". " +
+									hm.get("Name") + " - 3 Room - $" + threeRoomHm.get("Price") +
+									" - " + threeRoomUnits + " Units left");
+
+							intStr.put(x++, hm.get("ID") + "3");
+						}
+					}
 				}catch(ModelNotFoundException e){
 					System.out.print(e);
 				}
-
-
 
 			}
 
@@ -82,8 +86,6 @@ public class ProjectsPage {
 
 			int flatType = Integer.parseInt(String.valueOf(projectID.charAt(projectID.length() - 1)));
 			projectID = projectID.substring(0, projectID.length() - 1);
-
-
 
 			try{
 			System.out.println("========================");
@@ -105,13 +107,13 @@ public class ProjectsPage {
 				try {
 					ApplicationLogicActions.getInstance().apply(hm);
 				}catch(ModelAlreadyExistsException e){
-					System.out.println("123");
+					System.out.println("123");//todo
 				}catch(ModelNotFoundException e){
-					System.out.println("456");
+					System.out.println("456");//todo
 				}catch(RepositoryNotFoundException e){
-					System.out.println("789");
+					System.out.println("789");//TODO
 				}catch(UnauthorizedActionException e){
-					System.out.println("1234");
+					System.out.println("You cannot apply for this flat!");
 				}
 			}
 

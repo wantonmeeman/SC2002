@@ -72,17 +72,16 @@ public class RegistrationPage {
 		if (input == 1) {
 			//start(userID);
 		}else{
-			if(RegistrationLogicActions.getInstance().registerEligibility(userID, projList.get(input-2).get("ID"))){
 				HashMap<String,String> newHM = new HashMap<String,String>();
 
 				newHM.put("OfficerID",userID);
 				newHM.put("ProjectID",projList.get(input-2).get("ID"));
+				
 				try {
 					RegistrationLogicActions.getInstance().register(newHM);
 				}catch(Exception e){
-
+					System.out.print(e);
 				}
-			}
 		}
 	}
 }

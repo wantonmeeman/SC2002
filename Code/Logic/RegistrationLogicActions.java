@@ -9,6 +9,7 @@ import Data.Repository.RegistrationRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.RepositoryNotFoundException;
 import Exceptions.ModelNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Logic.UserLogicActions;
 import Logic.*;
 import Util.GenerateID;
@@ -72,16 +73,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public String register(HashMap<String,String> hm) throws ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
-        String registrationID = create(hm);
-
-        Officer officer = (Officer) UserLogicActions.getInstance().getObject(hm.get("UserID"));
-        officer.setRegistrationID(registrationID);
-
-        return registrationID;
-    }
-
-    public boolean registerEligibility(String userID, String projectID) {
+    private boolean registerEligibility(String userID, String projectID) {
         //First check for applications to the projectID
         try {
             String userApplicationID = UserLogicActions.getInstance().get(userID).get("ApplicationID");
@@ -110,14 +102,17 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         for(HashMap<String,String> hm:al){
 
             String ProjectID = hm.get("ProjectID");
-            HashMap<String,String> projjhm = ProjectLogicActions.getInstance().get(projectID);
+            HashMap<String,String> projjhm = ProjectLogicActions.getInstance().get(ProjectID);
 
             long openingNew = Long.parseLong(projjhm.get("OpeningDate"));
             long closingNew = Long.parseLong(projjhm.get("ClosingDate"));
-            System.out.println(openingNew + " " + closingNew);
-            System.out.println(openingApply + " " + closingApply);
-            System.out.println(hm.get("Name"));
-            if(!(closingApply < openingNew || openingApply > closingNew)){
+
+            if(
+                    (hm.get("Status").equals("Pending") ||
+                            hm.get("Status").equals("Successful") ||
+                            hm.get("Status").equals("Booked")) &&
+                    !(closingApply < openingNew || openingApply > closingNew)){
+                System.out.println("Date Conflict");
                 return false;
             }
         }
@@ -126,7 +121,16 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }catch(ModelNotFoundException e){
             return false;
         }
+}
+
+    public String register(HashMap<String,String> hm) throws ModelAlreadyExistsException, ModelNotFoundException, RepositoryNotFoundException, UnauthorizedActionException {
+
+        if(registerEligibility(hm.get("OfficerID"),hm.get("ProjectID"))) {
+            return create(hm);
+        }else{
+            throw new UnauthorizedActionException();
         }
+    }
 
     public static RegistrationLogicActions getInstance() {
         if (instance == null)
