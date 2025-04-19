@@ -38,9 +38,10 @@ try{
 				String flatType = String.valueOf(Integer.parseInt(application.get("Type")) + 2);
 				String status = application.get("Status");
 
-				System.out.println("========================");
+				System.out.println("=====================================================");
 				System.out.println("Application for " + projName + "(" + flatType + " Room)");
 				System.out.println("Current Application Status: " + status);
+				System.out.println("=====================================================");
 
 				switch(status){
 					case "Booked":

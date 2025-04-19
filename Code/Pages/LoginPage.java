@@ -25,7 +25,6 @@ public class LoginPage {
         try {
             user = UserLogicActions.getInstance().login(userid,password);
             ClearCMD.clear();
-            System.out.print(getWelcomeMessage(user.get("Role"),user.get("Name")));
 
             switch(user.get("Role")) {
                 case "Officer":
@@ -43,7 +42,6 @@ public class LoginPage {
             System.out.print("Wrong Input!\n");
             login();
         }
-
 
     }
 

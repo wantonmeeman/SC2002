@@ -17,11 +17,11 @@ public class ApplicantPage {
 				ClearCMD.clear();
 				LogoutPage.logout();
 			}
-
+			System.out.print(LoginPage.getWelcomeMessage(user.get("Role"),user.get("Name")));
 			System.out.println("========================");
-			System.out.println("1. Projects");
-			System.out.println("2. Enquiries");
-			System.out.println("3. Applications");
+			System.out.println("1. Applications");
+			System.out.println("2. Projects");
+			System.out.println("3. Enquiries");
 			System.out.println("4. Logout");
 			System.out.println("========================");
 
@@ -51,6 +51,7 @@ public class ApplicantPage {
 			start(userID);
 
 		}
+
 
 //	    public void applyProject(Applicant applicant) {
 //	        System.out.println("Applicant " + applicant.getName() + " (ID: "+
