@@ -1,17 +1,16 @@
 package Data.Repository;
 
-import java.util.ArrayList;
-
 import Data.Models.Applicant;
 import Data.Models.Model;
-
 import static Util.Config.APPLICANT_CSV;
 import static Util.Config.DATA_PATH;
+import java.util.ArrayList;
 
 public class ApplicantRepository extends DataRepository {
     private static ApplicantRepository instance;
 
     public ApplicantRepository() {
+        System.out.println("Loading from: " + DATA_PATH + APPLICANT_CSV);
         setFilepath(DATA_PATH + APPLICANT_CSV);
         fetch();
     }

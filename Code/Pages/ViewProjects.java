@@ -1,3 +1,4 @@
+package Pages;
 
 public class ViewProjects {
     public void viewByLocation(String location) {

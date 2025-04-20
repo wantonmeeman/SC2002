@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class CSVUtils {
 
     public static ArrayList<ArrayList<String>> readCSV(final String filepath) {
 
+        //System.out.println("Reading file: " + filepath);
         ArrayList<ArrayList<String>> returnArr = new ArrayList<>();
 
         try {
@@ -48,13 +48,25 @@ public class CSVUtils {
 
     public static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvData) {
         try {
-            File file = new File(filepath);
 
-            // Check if the file exists, if not, create it
-            if (!file.exists()) {
-                file.getParentFile().mkdirs(); // create directories if they don't exist
-                file.createNewFile();
+            //System.out.println("Saving to file: " + filepath);
+
+            File file = new File(filepath);
+            File parent = file.getParentFile();
+
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs(); // create directories if they don't exist
             }
+
+            if(!file.exists()){
+                file.createNewFile(); // create the file if it doesn't exist
+            }
+
+            // // Check if the file exists, if not, create it
+            // if (!file.exists()) {
+            //     file.getParentFile().mkdirs(); // create directories if they don't exist
+            //     file.createNewFile();
+            // }
 
             PrintWriter printWriter = new PrintWriter(new FileWriter(filepath));
             int y = 0;

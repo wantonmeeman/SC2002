@@ -1,20 +1,17 @@
 package Pages;
 
 import Exceptions.ModelNotFoundException;
-import Logic.UserLogicActions;
 import Logic.ApplicationLogicActions;
 import Logic.ProjectLogicActions;
-
 import Pages.Components.ApplicationView;
 import Pages.Components.Back;
 import Pages.Components.ProjectView;
 import Pages.Components.Seperator;
 import Pages.LogoutPage;
+import Logic.UserLogicActions;
 import Util.ClearCMD;
-
 import java.util.HashMap;
 import java.util.Scanner;
-
 public class ApplicationsPage {
 		public static void start(String userID) {
 			Scanner scanner = new Scanner(System.in);
@@ -59,12 +56,13 @@ try{
 						System.out.println(Back.back());
 						break;
 				}
-
+				
 				input = Integer.parseInt(scanner.nextLine());
 
 				if(input == 1){
 
 				}else if(input == 2) {
+					ClearCMD.clear();
 					//Withdraw
 					try {
 						ApplicationLogicActions.getInstance().withdraw(applicationID);
