@@ -28,7 +28,7 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         return flatMap;
     }
 
-    public String create(HashMap<String, String> hm) throws ModelAlreadyExistsException {
+    public String create(HashMap<String, String> hm) {
         String flatID = GenerateID.generateID(8);
         String type = hm.get("Type");
         int totalUnits = Integer.parseInt(hm.get("TotalUnits"));
@@ -36,7 +36,11 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
 
         Flat flat = new Flat(flatID, type, totalUnits, price);
 
-        FlatRepository.getInstance().create(flat);
+        try {
+            FlatRepository.getInstance().create(flat);
+        } catch (ModelAlreadyExistsException e) {
+            create(hm);
+        }
 
         return flatID;
     }

@@ -2,6 +2,7 @@ package Pages.Components;
 
 import Exceptions.ModelNotFoundException;
 import Logic.ProjectLogicActions;
+import Logic.RegistrationLogicActions;
 import Logic.UserLogicActions;
 import Util.Config;
 
@@ -14,5 +15,11 @@ public class RegistrationView {
         HashMap<String, String> project = ProjectLogicActions.getInstance().get(projectID);
 
         return project.get("Name") + " - " + "Registration Status: " + status;
+    }
+
+    public static String detailedView(String registrationID) throws ModelNotFoundException {
+        HashMap<String, String> rhm = RegistrationLogicActions.getInstance().get(registrationID);
+
+        return "Registration Status: " + rhm.get("Status");
     }
 }

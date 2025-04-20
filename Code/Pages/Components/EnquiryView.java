@@ -18,7 +18,7 @@ public class EnquiryView {
             String returnStr = "";
             HashMap<String,String> ehm = EnquiryLogicActions.getInstance().get(enquiryID);
 
-            Date dateObject = new Date(Integer.parseInt(ehm.get("Timestamp")) * 1000L);
+            Date dateObject = new Date(Long.parseLong(ehm.get("Timestamp")) * 1000L);
             String formattedDateTime = formatter.format(dateObject);
 
             HashMap<String,String> phm = ProjectLogicActions.getInstance().get(ehm.get("ProjectID"));//TODO handle exception
@@ -26,6 +26,7 @@ public class EnquiryView {
             returnStr += "Enquiry Time and Date: " +formattedDateTime;
             returnStr += "\n" + "Enquiry Project Name: " +phm.get("Name");
             returnStr += "\n" + "Enquiry Message:\n" + wrap(ehm.get("Message"));
+
             if(ehm.get("Reply") != null) {
                     returnStr += "\n" + "Enquiry Reply:\n" + wrap(ehm.get("Reply"));
             }
@@ -37,7 +38,7 @@ public class EnquiryView {
             SimpleDateFormat formatter = Config.DATE_FORMAT;//TODO config
             HashMap<String,String> ehm = EnquiryLogicActions.getInstance().get(enquiryID);
 
-            Date dateObject = new Date(Integer.parseInt(ehm.get("Timestamp"))*1000L);
+            Date dateObject = new Date(Long.parseLong(ehm.get("Timestamp"))*1000L);
             String formattedDateTime = formatter.format(dateObject);
 
             HashMap<String, String> hm = ProjectLogicActions.getInstance().get(ehm.get("ProjectID"));

@@ -22,24 +22,25 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
 
         applicationMap.put("ID", application.getID());
         applicationMap.put("UserID", application.getUserID());
-        applicationMap.put("ProjectID", application.getProjectID());
+        applicationMap.put("FlatID", application.getFlatID());
         applicationMap.put("Status", application.getStatus());
         applicationMap.put("OfficerID", application.getOfficerID());
-        applicationMap.put("Type", String.valueOf(application.getType()));
 
         return applicationMap;
     }
 
-    public String create(HashMap<String, String> hm) throws ModelAlreadyExistsException {
+    public String create(HashMap<String, String> hm){
         String applicationID = GenerateID.generateID(8); // assuming this exists
         String userID = hm.get("UserID");
-        String projectID = hm.get("ProjectID");
-        int type = Integer.parseInt(hm.get("Type"));
+        String flatID = hm.get("FlatID");
 
-        Application app = new Application(applicationID, userID, projectID, "Pending", null, type);
+        Application app = new Application(applicationID, userID, flatID,"Pending", null);
 
-        ApplicationRepository.getInstance().create(app); // assuming ApplicationRepository is set up
-
+        try {
+            ApplicationRepository.getInstance().create(app); // assuming ApplicationRepository is set up
+        } catch (ModelAlreadyExistsException e) {
+            create(hm);
+        }
         return applicationID;
     }
 
@@ -55,12 +56,14 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
-    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID){
+    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID) throws ModelNotFoundException {
         ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
+        String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
+        String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
 
         getAllObject()
-                .filter(application -> application.getProjectID().equals(projectID)
-                        //&& (application.getStatus().equals("Booked"))//Is this correct?
+                .filter(application ->
+                    threeRoomID.equals(application.getFlatID()) || twoRoomID.equals(application.getFlatID())
                 ).forEach(application -> {
                     applicationList.add(toMap(application));
                 });
@@ -68,18 +71,22 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         return applicationList;
     }
 
-    private Boolean checkApplicationValidity(int type, String userID, String projectID) throws ModelNotFoundException{
+    private Boolean checkApplicationValidity(String userID, String flatID) throws ModelNotFoundException{
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(userID);
+        HashMap<String,String> fhm = FlatLogicActions.getInstance().get(flatID);
+
         String applicationID = uhm.get("ApplicationID");
         int age = Integer.parseInt(uhm.get("Age"));
         char maritalStatus = uhm.get("MaritalStatus").charAt(0);
 
+        String type = fhm.get("Type");
+
         //Check if Single Married criteria
-        if(type == 0){
+        if(type.equals("2Room")){
             if((maritalStatus == 'M' && age < 21) || (maritalStatus == 'S' && age < 35)){
                 return false;
             }
-        } else if(type == 1){
+        } else if(type.equals("3Room")){
             if(maritalStatus == 'S' || (maritalStatus == 'M' && age < 21)){
                 return false;
             }
@@ -99,14 +106,17 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         String role = uhm.get("Role");
         if(role.equals("Officer")){
             ArrayList<HashMap<String,String>> rArr = RegistrationLogicActions.getInstance().getByOfficerID(userID);
+            String projectID = ProjectLogicActions.getInstance().getProjectByFlatID(flatID).get("ID");
             if(!rArr.isEmpty()) {
                 for (HashMap<String, String> rhm : rArr) {
                     String registerProjectID = rhm.get("ProjectID");
+
                     if (
                             (rhm.get("Status").equals("Pending") ||
                                     rhm.get("Status").equals("Successful") ||
-                                    rhm.get("Status").equals("Booked")) && (
-                                    registerProjectID.equals(projectID))){
+                                    rhm.get("Status").equals("Booked")
+                            ) && registerProjectID.equals(projectID)
+                    ){
                             return false;
                     }
                 }
@@ -116,13 +126,14 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
     }
 
     //Double check this
-    public String apply(HashMap<String,String> hm) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
+    public String apply(String userID, String flatID) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
 
-        int type = Integer.parseInt(hm.get("Type"));
-        String userID = hm.get("UserID");
-        String projectID = hm.get("ProjectID");
+        if(checkApplicationValidity(userID,flatID)) {
+            HashMap<String, String> hm = new HashMap<String,String>();
 
-        if(checkApplicationValidity(type,userID,projectID)) {
+            hm.put("UserID",userID);
+            hm.put("FlatID", flatID);
+
             String appID = create(hm);
             UserLogicActions.getInstance().apply(hm.get("UserID"), appID);
 
@@ -131,7 +142,12 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         }else{
             throw new UnauthorizedActionException();
         }
+    }
 
+    public void approve(String applicationID) throws ModelNotFoundException{
+        Application application = getObject(applicationID);
+        application.setStatus("Successful");
+        ApplicationRepository.getInstance().update();
     }
 
     public void book(String applicationID, String OfficerID) throws ModelNotFoundException{
@@ -140,17 +156,9 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
             application.setStatus("Booked");
             application.setOfficerID(OfficerID);
 
-            if(application.getType() == 0){
-                FlatLogicActions.getInstance().book(
-                        ProjectLogicActions.getInstance().get(
-                                application.getProjectID()
-                        ).get("TwoRoomFlatID"));
-            }else if(application.getType() == 1){
-                FlatLogicActions.getInstance().book(
-                        ProjectLogicActions.getInstance().get(
-                                application.getProjectID()
-                        ).get("ThreeRoomFlatID"));
-            }
+            String flatID = application.getFlatID();
+            FlatLogicActions.getInstance().book(flatID);
+
             ApplicationRepository.getInstance().update();
         }
     }

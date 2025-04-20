@@ -2,15 +2,20 @@ package Logic;
 
 import Data.Models.Project;
 import Data.Models.Flat;
+import Data.Models.User;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
 import Logic.SearchSettingLogicActions;
 import Logic.FlatLogicActions;
 import Data.Repository.ProjectRepository;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,26 +35,13 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         projectMap.put("OfficerSlots", String.valueOf(project.getOfficerSlots()));
         projectMap.put("OfficerIDs", String.join(",", project.getOfficersIDs()));
         projectMap.put("ManagerID", project.getManagerID());
-
-        if(project.getTwoRoomFlatID().charAt(0) == '-'){
-            projectMap.put("TwoRoomFlatID", null);
-            project.setTwoRoomFlatID(project.getTwoRoomFlatID().substring(1));
-        }else{
-            projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
-        }
-
-        if(project.getThreeRoomFlatID().charAt(0) == '-'){
-            projectMap.put("ThreeRoomFlatID", null);
-            project.setThreeRoomFlatID(project.getThreeRoomFlatID().substring(1));
-        }else{
-            projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
-        }
-
+        projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
+        projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
 
         return projectMap;
     }
 
-    public String create(HashMap<String,String> hm) throws ModelAlreadyExistsException{
+    public String create(HashMap<String,String> hm){
         String projectID = generateID();
         String name = hm.get("Name");
         String neighbourhood = hm.get("Neighbourhood");
@@ -81,6 +73,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                 .map(model -> (Project) model);
     }
 
+
     public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
@@ -91,19 +84,22 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         char status = user.get("MaritalStatus").charAt(0);
 
         projList = getAllObject()
+                .map(this::toMap)
                 .filter(proj -> {
                     //Check Marital Status and age
                     int totalTwoRoomFlats;
                     int totalThreeRoomFlats;
+                    String twoRoomFlatID = proj.get("TwoRoomFlatID");
+                    String threeRoomFlatID =  proj.get("ThreeRoomFlatID");
 
                     try {
-                        totalTwoRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getTwoRoomFlatID()).get("TotalUnits"));                        totalThreeRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getThreeRoomFlatID()).get("TotalUnits"));
+                        totalTwoRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(twoRoomFlatID).get("TotalUnits"));
                     } catch (ModelNotFoundException e) {
                         totalTwoRoomFlats = 0;
                     }
 
                     try {
-                        totalThreeRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(proj.getThreeRoomFlatID()).get("TotalUnits"));
+                        totalThreeRoomFlats = Integer.parseInt(FlatLogicActions.getInstance().get(threeRoomFlatID).get("TotalUnits"));
                     } catch (ModelNotFoundException e) {
                         totalThreeRoomFlats = 0;
                     }
@@ -112,24 +108,73 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                     || (status == 'M' && age < 21)
                     || (status == 'S' && age < 35)
                     ){
-                        proj.setTwoRoomFlatID("-"+proj.getTwoRoomFlatID());
+                        proj.put("TwoRoomFlatID",null);
                     }
 
                     if(totalThreeRoomFlats <= 0
                     || status == 'S'
                     || (status == 'M' && age < 21)){
-                        proj.setThreeRoomFlatID("-"+proj.getThreeRoomFlatID());
+                        proj.put("ThreeRoomFlatID",null);
                     }
 
-                    boolean maritalStatusAgeCheck = proj.getThreeRoomFlatID().charAt(0) != '-' || proj.getTwoRoomFlatID().charAt(0) != '-';
+                    boolean maritalStatusAgeCheck = proj.get("ThreeRoomFlatID") != null || proj.get("TwoRoomFlatID") != null;
                     boolean timeCheck = true;//proj.getOpeningDate() <= System.currentTimeMillis() / 1000L && System.currentTimeMillis() / 1000L <= proj.getClosingDate();
+                    boolean visible = Boolean.parseBoolean(proj.get("Visibility"));
 
-                    return maritalStatusAgeCheck && proj.isVisible() && timeCheck;
+                    return maritalStatusAgeCheck && visible && timeCheck;
                 })
-                .map(this::toMap)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return projList;
+    }
+
+    public HashMap<String,String> getActiveProjectByManagerID(String managerID) throws ModelNotFoundException{
+        Optional<Project> projOpt = getAllObject().filter(
+                project -> project.getManagerID().equals(managerID) //&& System.currentTimeMillis()/1000L > project.getOpeningDate() && System.currentTimeMillis()/1000L < project.getClosingDate()
+        ).findFirst();
+
+        if (projOpt.isPresent()) {
+            return toMap(projOpt.get());
+        }else{
+            throw new ModelNotFoundException();
+        }
+    }
+
+    public HashMap<String,String> getProjectByFlatID(String flatID) throws ModelNotFoundException {
+        Optional<Project> projOpt = getAllObject().filter(
+                        project -> project.getThreeRoomFlatID().equals(flatID) || project.getTwoRoomFlatID().equals(flatID)
+        ).findFirst();
+
+        if (projOpt.isPresent()) {
+            return toMap(projOpt.get());
+        }else{
+            throw new ModelNotFoundException();
+        }
+    }
+
+    public void toggle(String projectID) throws ModelNotFoundException{
+        getObject(projectID).toggleVisibility();
+        ProjectRepository.getInstance().update();
+    }
+
+    public void editName(String projectID,String name) throws ModelNotFoundException {
+        getObject(projectID).setName(name);
+
+        ProjectRepository.getInstance().update();
+    }
+    public void editNeighbourhood(String projectID,String neighbourhood) throws ModelNotFoundException{
+        getObject(projectID).setNeighbourhood(neighbourhood);
+
+        ProjectRepository.getInstance().update();
+    }
+    public void editOpeningClosing(String projectID, String opening, String closing) throws ModelNotFoundException{
+        //Processing
+        long openingLong = LocalDate.parse(opening).atStartOfDay(ZoneId.of("UTC")).toInstant().getEpochSecond();
+        long closingLong = LocalDate.parse(closing).atStartOfDay(ZoneId.of("UTC")).toInstant().getEpochSecond();
+
+        getObject(projectID).setOpeningDate(openingLong);
+        getObject(projectID).setClosingDate(closingLong);
+        ProjectRepository.getInstance().update();
     }
 
     @Override

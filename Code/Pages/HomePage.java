@@ -78,7 +78,22 @@ public class HomePage {
 
                 break;
             case "Manager":
-                System.out.println("Manager");//TODO
+                System.out.println(HomepageView.managerHomepage());
+                input = Integer.parseInt(scanner.nextLine());
+                switch(input) {
+                    case 1:
+                        //Logout
+                        LogoutPage.logout(user.get("Role"), user.get("Name"));
+                        return;
+                    case 2:
+                        //Projects
+                        ProjectsPage.adminStart(userID);
+                        break;
+                    case 3:
+                        //Enquiries
+                        EnquiriesPage.adminStart(userID);
+                        break;
+                }
                 break;
         }
 

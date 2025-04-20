@@ -34,7 +34,7 @@ public class RegistrationPage {
 					String projectID = hm.get("ProjectID");
 					String status = hm.get("Status");
 
-					System.out.println((x++) + ". "+ RegistrationView.simpleView(projectID,status) + "\n");
+					System.out.println((x++) + ". "+ RegistrationView.simpleView(projectID,status));
 				}catch(ModelNotFoundException e){
 					//TODO
 					System.out.println(e);
@@ -50,11 +50,11 @@ public class RegistrationPage {
 			register(userID);
 			start(userID);
 		}else{
-			//if(registration.get(input-3).get("Status").equals("Successful")){
+			if(registration.get(input-3).get("Status").equals("Successful")){
 				detailedRegistration(registration.get(input - 3).get("ProjectID"),userID);
-//			}else{
-//				System.out.println("Not Allowed to Access");
-//			}
+			}else{
+				System.out.println("Not Allowed to Access");
+			}
 			start(userID);
 		}
 	}
@@ -189,7 +189,6 @@ public class RegistrationPage {
 					viewEnquiries(projectID);
 					break;
 			}
-			viewEnquiries(projectID);
 		} catch (ModelNotFoundException e) {
 			throw new RuntimeException(e);//TODO
 		}

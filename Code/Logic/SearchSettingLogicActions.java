@@ -33,7 +33,7 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         return searchSettingMap;
     }
 
-    public String create(HashMap<String, String> hm) throws ModelAlreadyExistsException {
+    public String create(HashMap<String, String> hm){
         String searchSettingID = GenerateID.generateID(8);
         String location = hm.get("Location");
 
@@ -54,7 +54,11 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
                 searchSettingID, location, flatTypes, neighbourhood, openingDate, closingDate, ascending, sortBy
         );
 
-        SearchSettingRepository.getInstance().create(searchSetting);
+        try {
+            SearchSettingRepository.getInstance().create(searchSetting);
+        } catch (ModelAlreadyExistsException e) {
+            create(hm);
+        }
 
         return searchSettingID;
     }

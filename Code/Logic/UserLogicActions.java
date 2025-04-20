@@ -51,7 +51,7 @@ public class UserLogicActions extends DataLogicActions<User>{
         return userMap;
     }
 
-    public String create(HashMap<String, String> hm) throws ModelAlreadyExistsException {
+    public String create(HashMap<String, String> hm) {
         HashMap<String, String> userMap = new HashMap<String, String>();
 
         String userID = generateID();

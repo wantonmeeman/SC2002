@@ -26,9 +26,8 @@ public class ApplicationRepository extends DataRepository {
                     strArr.get(0),
                     strArr.get(1),
                     strArr.get(2),
-                    strArr.get(4),
                     strArr.get(3),
-                    Integer.parseInt(strArr.get(5))
+                    strArr.get(4)
                     )
             );
         }
@@ -46,10 +45,9 @@ public class ApplicationRepository extends DataRepository {
             ArrayList<String> row = new ArrayList<>();
             row.add(application.getID());
             row.add(application.getUserID());
-            row.add(application.getProjectID());
-            row.add(application.getOfficerID());
+            row.add(application.getFlatID());
             row.add(application.getStatus());
-            row.add(String.valueOf(application.getType()));
+            row.add(application.getOfficerID());
 
             csvData.add(row);
         });

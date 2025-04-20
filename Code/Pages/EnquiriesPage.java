@@ -17,7 +17,83 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import static Pages.RegistrationPage.replyEnquiry;
+
 public class EnquiriesPage {
+		public static void adminStart(String userID){
+			Scanner scanner = new Scanner(System.in);
+			int input;
+			ArrayList<HashMap<String, String>> enquiries = new ArrayList<>();
+
+			enquiries = EnquiryLogicActions.getInstance().getAll();
+			System.out.println(Seperator.seperate());
+			System.out.println(Back.back());
+
+			int x = 2;
+			for(HashMap<String,String> ehm: enquiries){
+				try {
+					System.out.println((x++)+". "+EnquiryView.simpleView(ehm.get("ID")));
+				}catch(ModelNotFoundException e){
+					System.out.println(e);
+				}
+			}
+
+			input = Integer.parseInt(scanner.nextLine());
+			ClearCMD.clear();
+			if(input == 1){
+
+			}else{
+				viewEnquiry(enquiries.get(input-2).get("ID"),userID);
+				adminStart(userID);
+			}
+		}
+
+		public static void viewEnquiry(String enquiryID,String userID){
+			try {
+				Scanner scanner = new Scanner(System.in);
+				int input;
+
+				System.out.println(Seperator.seperate());
+				System.out.println(EnquiryView.detailedView(enquiryID));
+
+				System.out.println(Back.back());
+
+				String managerID = ProjectLogicActions.getInstance().get(
+						EnquiryLogicActions.getInstance().get(enquiryID).get("ProjectID")
+				).get("ManagerID");
+
+				if(managerID.equals(userID)){
+					System.out.println("2. Reply");//TODO do we need to remove this
+				}
+
+				input = Integer.parseInt(scanner.nextLine());
+
+				if(input == 1){
+					return;
+				}else if(input == 2 && managerID.equals(userID)){
+					replyEnquiry(enquiryID);
+				}
+				viewEnquiry(enquiryID,userID);
+
+			} catch (ModelNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public static void replyEnquiry(String enquiryID){
+			try {
+				Scanner scanner = new Scanner(System.in);
+				System.out.println(Seperator.seperate());
+				System.out.println(EnquiryView.detailedView(enquiryID));
+				System.out.println("Reply:");
+
+				String reply = scanner.nextLine();
+				EnquiryLogicActions.getInstance().reply(enquiryID,reply);
+			} catch (ModelNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
 		public static void start(String userID){
 			Scanner scanner = new Scanner(System.in);
 			int input;

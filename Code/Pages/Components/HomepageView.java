@@ -14,10 +14,12 @@ public class HomepageView {
                 "5. Registration";
     }
 
-//    public static String managerHomepage(){
-//        return applicantHomepage() +
-//                "5. Registration" + "\n";
-//    }
+    public static String managerHomepage(){
+        return Seperator.seperate() + "\n" +
+                "1. Logout"+ "\n"+
+                "2. Projects(Admin)"+"\n"+
+                "3. Enquiries(Admin)";
+    }
 
     public static String getWelcomeMessage(String role,String name){
         String returnStr = "Welcome "+name;

@@ -1,9 +1,6 @@
 package Logic;
 
-import Data.Models.Applicant;
-import Data.Models.Application;
-import Data.Models.Registration;
-import Data.Models.Officer;
+import Data.Models.*;
 import Data.Repository.ApplicationRepository;
 import Data.Repository.RegistrationRepository;
 import Exceptions.ModelAlreadyExistsException;
@@ -14,6 +11,7 @@ import Logic.UserLogicActions;
 import Logic.*;
 import Util.GenerateID;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -35,7 +33,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         return registrationMap;
     }
 
-    public String create(HashMap<String, String> hm) throws ModelAlreadyExistsException {
+    public String create(HashMap<String, String> hm){
         String registrationID = GenerateID.generateID(8); // assuming this exists
         String officerID = hm.get("OfficerID");
         String projectID = hm.get("ProjectID");
@@ -43,7 +41,11 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
 
         Registration reg = new Registration(registrationID, officerID, projectID, status);
 
-        RegistrationRepository.getInstance().create(reg); // assuming RegistrationRepository is set up
+        try {
+            RegistrationRepository.getInstance().create(reg); // assuming RegistrationRepository is set up
+        } catch (ModelAlreadyExistsException e) {
+            create(hm);
+        }
 
         return registrationID;
     }
@@ -74,61 +76,64 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
     }
 
     private boolean registerEligibility(String userID, String projectID) {
-        //First check for applications to the projectID
         try {
             String userApplicationID = UserLogicActions.getInstance().get(userID).get("ApplicationID");
-            HashMap<String,String> projHm = ProjectLogicActions.getInstance().get(projectID);
+            ArrayList<HashMap<String,String>> ral = RegistrationLogicActions.getInstance().getByOfficerID(userID);
 
-        if (userApplicationID != null){
-            HashMap<String,String> appHm = ApplicationLogicActions.getInstance().get(userApplicationID);
+            if (userApplicationID != null) {//Check if user has an active application to same project
+                HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(userApplicationID);
+                boolean isActive = ahm.get("Status").equals("Successful") || ahm.get("Status").equals("Pending") || ahm.get("Status").equals("Booked");
+                String applicationProjectID = ProjectLogicActions.getInstance().getProjectByFlatID(ahm.get("FlatID")).get("ID");
 
-            if(appHm.get("ProjectID").equals(projectID)){
-                if(
-                        appHm.get("Status").equals("Successful")
-                ||      appHm.get("Status").equals("Pending")
-                ||      appHm.get("Status").equals("Booked")
-                ){
-                    System.out.println("You have already applied for this Project");
+                if(isActive && applicationProjectID.equals(projectID)){
                     return false;
                 }
             }
-        }
 
-        ArrayList<HashMap<String,String>> al = getByOfficerID(userID);
-        long openingApply = Long.parseLong(projHm.get("OpeningDate"));
-        long closingApply = Long.parseLong(projHm.get("ClosingDate"));
+            HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+            long openingApply = Long.parseLong(phm.get("OpeningDate"));
+            long closingApply = Long.parseLong(phm.get("ClosingDate"));
 
-        for(HashMap<String,String> hm:al){
+            for(HashMap<String,String> rhm:ral){
+                boolean isActive = rhm.get("Status").equals("Successful") || rhm.get("Status").equals("Pending") || rhm.get("Status").equals("Booked");
+               if(isActive) {
+                   String registrationProjectID = rhm.get("ProjectID");
 
-            String ProjectID = hm.get("ProjectID");
-            HashMap<String,String> projjhm = ProjectLogicActions.getInstance().get(ProjectID);
+                   //Check if user has an active registeration to same project
+                   if (registrationProjectID.equals(projectID)) {
+                       return false;
+                   }
 
-            long openingNew = Long.parseLong(projjhm.get("OpeningDate"));
-            long closingNew = Long.parseLong(projjhm.get("ClosingDate"));
+                   HashMap<String, String> newPhm = ProjectLogicActions.getInstance().get(registrationProjectID);
 
-            if(
-                    (hm.get("Status").equals("Pending") ||
-                            hm.get("Status").equals("Successful") ||
-                            hm.get("Status").equals("Booked")) &&
-                    !(closingApply < openingNew || openingApply > closingNew)){//This also handles the same project being reigstered twice
-                System.out.println("Date Conflict");
-                return false;
+                   long openingNew = Long.parseLong(newPhm.get("OpeningDate"));
+                   long closingNew = Long.parseLong(newPhm.get("ClosingDate"));
+
+                   if (closingApply < openingNew || openingApply > closingNew) {//Check if there is any time conflict with a active registration
+                        return false;
+                   }
+               }
             }
-        }
 
             return true;
-        }catch(ModelNotFoundException e){
+        }catch (ModelNotFoundException e){
             return false;
         }
-}
+    }
 
-    public String register(HashMap<String,String> hm) throws ModelAlreadyExistsException, ModelNotFoundException, RepositoryNotFoundException, UnauthorizedActionException {
+    public String register(HashMap<String,String> hm) throws ModelAlreadyExistsException,UnauthorizedActionException {
 
         if(registerEligibility(hm.get("OfficerID"),hm.get("ProjectID"))) {
             return create(hm);
         }else{
             throw new UnauthorizedActionException();
         }
+    }
+
+    public void approve(String registrationID) throws ModelNotFoundException {
+        Registration registration = getObject(registrationID);
+        registration.setStatus("Successful");
+        RegistrationRepository.getInstance().update();
     }
 
     public static RegistrationLogicActions getInstance() {

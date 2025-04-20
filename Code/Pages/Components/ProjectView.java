@@ -1,11 +1,14 @@
 package Pages.Components;
 
+import Data.Models.Model;
+import Data.Models.Project;
 import Exceptions.ModelNotFoundException;
 import Logic.ProjectLogicActions;
 import Logic.UserLogicActions;
 import Util.Config;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -28,5 +31,15 @@ public class ProjectView {
         returnStr += "\nProject Application Opening to Ending: " + formattedOpening + " to " + formattedClosing;
 
         return returnStr;
+    }
+
+    public static String simpleView(String projectID) throws ModelNotFoundException{
+        HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+        SimpleDateFormat formatter = Config.DATE_FORMAT;
+
+        String formattedOpening = formatter.format(new Date(Integer.parseInt(phm.get("OpeningDate")) * 1000L));
+        String formattedClosing = formatter.format(new Date(Integer.parseInt(phm.get("ClosingDate")) * 1000L));
+
+        return phm.get("Name") +" - "+ formattedClosing + " - " + formattedOpening;
     }
 }

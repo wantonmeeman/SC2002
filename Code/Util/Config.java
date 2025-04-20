@@ -1,5 +1,7 @@
 package Util;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 
 public class Config {
@@ -9,7 +11,7 @@ public class Config {
     // Initialize on first access
 
     
-    public static final String DATA_PATH = "C:/Users/Yong Ming Xuan/OneDrive/Desktop/SC2002_Project_NEW/SC2002/Data/";
+    public static final String DATA_PATH = Paths.get(System.getProperty("user.dir"), "Data").toString() + File.separator;
     public static final String FLAT_CSV = "FlatList.csv";
     public static final String MANAGER_CSV = "ManagerList.csv";
     public static final String OFFICER_CSV = "OfficerList.csv";

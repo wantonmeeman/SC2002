@@ -2,11 +2,9 @@ package Pages;
 
 import Exceptions.ModelNotFoundException;
 import Logic.ApplicationLogicActions;
+import Logic.FlatLogicActions;
 import Logic.ProjectLogicActions;
-import Pages.Components.ApplicationView;
-import Pages.Components.Back;
-import Pages.Components.ProjectView;
-import Pages.Components.Seperator;
+import Pages.Components.*;
 import Pages.LogoutPage;
 import Logic.UserLogicActions;
 import Util.ClearCMD;
@@ -20,7 +18,7 @@ public class ApplicationsPage {
 try{
 			user = UserLogicActions.getInstance().get(userID);
 		}catch(ModelNotFoundException e){
-		System.out.println(e);
+		System.out.println(e+"123123");
 	}
 
 
@@ -29,10 +27,15 @@ try{
 				System.out.println(Seperator.seperate());
                 try {
 					String applicationID = user.get("ApplicationID");
-                    String projectID = ApplicationLogicActions.getInstance().get(applicationID).get("ProjectID");
-					String status = ApplicationLogicActions.getInstance().get(applicationID).get("Status");
+
+					HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
+                    String flatID = ahm.get("FlatID");
+					String status = ahm.get("Status");
+
+					String projectID = ProjectLogicActions.getInstance().getProjectByFlatID(flatID).get("ID");
 
 					System.out.println(ProjectView.detailedView(projectID));
+					System.out.println(FlatView.detailedView(flatID));
 					System.out.println(ApplicationView.detailedView(applicationID));
 
 				switch(status){
@@ -72,7 +75,7 @@ try{
 				}
 
 				} catch (ModelNotFoundException e) {
-					throw new RuntimeException(e);
+					throw new RuntimeException(e+"44444");
 				}
 			}else{
 
