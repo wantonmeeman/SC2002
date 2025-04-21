@@ -21,15 +21,10 @@ public class ProjectRepository extends DataRepository {
     public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> projectArr = new ArrayList<>();
 
+
+
         for (ArrayList<String> strArr : csv) {
-
-            int officerSlots = Integer.parseInt(strArr.get(6));
-
-            String[] officerIDArr = new String[officerSlots];
-
-            for(int x = 0;x < officerSlots;x++){
-                officerIDArr[x] = strArr.get(6+x+1);
-            }
+            String[] officerIDArr = strArr.get(7).split(",");
 
             projectArr.add(new Project(
                     strArr.get(0),
@@ -38,11 +33,11 @@ public class ProjectRepository extends DataRepository {
                     Long.parseLong(strArr.get(3)),
                     Long.parseLong(strArr.get(4)),
                     Boolean.parseBoolean(strArr.get(5)),
-                    officerSlots,
+                    Integer.parseInt(strArr.get(6)),
                     officerIDArr,
-                    strArr.get(officerSlots+6+1),
-                    strArr.get(officerSlots+6+2),
-                    strArr.get(officerSlots+6+3)
+                    strArr.get(8),
+                    strArr.get(9),
+                    strArr.get(10)
                     )
             );
         }

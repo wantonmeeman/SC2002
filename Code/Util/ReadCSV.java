@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class ReadCSV {
     public static ArrayList<ArrayList<String>> readCSV(final String filepath) {
@@ -15,14 +16,14 @@ public class ReadCSV {
             File file = new File(filepath);
             Scanner scanner = new Scanner(file);
 
-           // scanner.nextLine(); skips first line as it is the header
-
             while (scanner.hasNextLine()) {
                 String[] lineList = scanner.nextLine().split(",");
                 if(lineList.length > 0) {
                     for (int x = 0; lineList.length > x; x++) {
                         if (lineList[x].equals("null")) {
                             lineList[x] = null;
+                        }else{
+                            lineList[x] = lineList[x].replace('␟',',').replace('§','\n');
                         }
                     }
 
@@ -40,4 +41,5 @@ public class ReadCSV {
         }
         return returnArr;
     }
+
 }

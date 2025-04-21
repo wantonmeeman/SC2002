@@ -198,6 +198,12 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().update();
     }
 
+    public void reject(String applicationID) throws ModelNotFoundException{
+        Application application = getObject(applicationID);
+        application.setStatus("Unsuccessful");
+        ApplicationRepository.getInstance().update();
+    }
+
     public void book(String applicationID, String OfficerID) throws ModelNotFoundException{
         Application application = getObject(applicationID);
         if(application.getStatus().equals("Successful")) {
@@ -208,7 +214,7 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
             FlatLogicActions.getInstance().book(flatID);
 
             ApplicationRepository.getInstance().update();
-        }
+        }//todo
     }
 
     public void withdraw(String ID) throws ModelNotFoundException{

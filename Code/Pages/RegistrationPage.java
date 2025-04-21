@@ -7,6 +7,7 @@ import Logic.*;
 import Pages.Components.*;
 import Util.ClearCMD;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,12 +61,7 @@ public class RegistrationPage {
 	}
 
 	public static void register(String userID){
-		ArrayList<HashMap<String, String>> projList = new ArrayList<>();
-		try {
-			projList = ProjectLogicActions.getInstance().getAllFiltered(userID);
-		}catch(ModelNotFoundException e){
-
-		}
+		ArrayList<HashMap<String, String>> projList = ProjectLogicActions.getInstance().getAll();
 		int x = 2;
 		Scanner scanner = new Scanner(System.in);
 		int input;
@@ -203,7 +199,7 @@ public class RegistrationPage {
 
 			HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(uhm.get("ApplicationID"));
 			System.out.println(ApplicationView.detailedView(uhm.get("ApplicationID")));
-			System.out.println(ProjectView.detailedView(ahm.get("ProjectID")));
+			System.out.println(FlatView.detailedView(ahm.get("FlatID")));
 
 			System.out.println(Back.back());
 
@@ -219,19 +215,40 @@ public class RegistrationPage {
 
 			input = Integer.parseInt(scanner.nextLine());
 
-			switch(input){
-				case 1:
-					return;
-				case 2:
-					ApplicationLogicActions.getInstance().book(uhm.get("ApplicationID"),officerID);
-					break;
+			if(input == 1){
 
+			}else if(input == 2){
+				String status = ahm.get("Status");
+				if(status.equals("Successful")) {
+					ApplicationLogicActions.getInstance().book(uhm.get("ApplicationID"), officerID);
+				}else if(status.equals("Booked")){
+					printReceipt(uhm.get("ApplicationID"));
+				}
+
+				viewApplicant(applicantID,officerID);
 			}
 
-			viewApplicant(applicantID,officerID);
 
 		}catch(Exception e){
 			System.out.println(e);
+		}
+	}
+
+	public static void printReceipt(String applicationID){
+        HashMap<String,String> ahm = null;
+        try {
+            ahm = ApplicationLogicActions.getInstance().get(applicationID);
+			HashMap<String,String> phm = ProjectLogicActions.getInstance().getProjectByFlatID(ahm.get("FlatID"));
+
+			System.out.println(Seperator.seperate());
+			System.out.println(UserView.detailedView(ahm.get("UserID")));
+			System.out.println(ProjectView.detailedView(phm.get("ID")));
+			System.out.println(FlatView.detailedView(ahm.get("FlatID")));
+			System.out.println(ApplicationView.detailedView(applicationID));
+			System.out.println(Seperator.seperate());
+
+		} catch (ModelNotFoundException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -256,7 +273,6 @@ public class RegistrationPage {
 			}
 
 			input = Integer.parseInt(scanner.nextLine());
-
 			switch(input){
 				case 1:
 

@@ -140,6 +140,47 @@ public class SearchSettingsPage {
         }
     }
 
+    public static void adminStart(String userID){
+        Scanner scanner = new Scanner(System.in);
+        int input;
+
+        try {
+            System.out.println(Seperator.seperate());
+            System.out.println(SearchSettingView.detailedView(userID));
+            System.out.println(Back.back());
+            System.out.println("2. Toggle Ascending");
+            System.out.println("3. Name Filter");
+            System.out.println("4. Neighbourhood Filter");
+            System.out.println("5. Manager Filter");
+        } catch (ModelNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        input = Integer.parseInt(scanner.nextLine());
+
+        try {
+            if(input == 1){
+
+            }else {
+                if (input == 2) {
+                    SearchSettingLogicActions.getInstance().toggleSort(userID);
+                    //Ascending toggle
+                } else if (input == 3) {
+                    //Manual name search filtering
+                    name(userID);
+                } else if (input == 4) {
+                    //Neighbourhood filtering
+                    neighbourhood(userID);
+                } else if (input == 5) {
+                    manager(userID);
+                }
+                adminStart(userID);
+            }
+        } catch (ModelNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void start(String userID) {
         Scanner scanner = new Scanner(System.in);
         int input;

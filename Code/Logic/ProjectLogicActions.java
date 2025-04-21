@@ -97,7 +97,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                 })
                 .filter(proj->{
                     String filter = ss.get("ProjectName");
-                    return filter == null || filter.equals(proj.getName());
+                    return filter == null || Pattern.compile(filter).matcher(proj.getName()).find();
                 })
                 .map(this::toMap)
                 .sorted(naturalOrder)
@@ -105,8 +105,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
         return projList;
     }
-
-    public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
+        public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
         HashMap<String,String> user = UserLogicActions.getInstance().get(userID);
@@ -174,7 +173,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                     }
 
                     boolean maritalStatusAgeCheck = proj.get("ThreeRoomFlatID") != null || proj.get("TwoRoomFlatID") != null;
-                    boolean timeCheck = true;//proj.getOpeningDate() <= System.currentTimeMillis() / 1000L && System.currentTimeMillis() / 1000L <= proj.getClosingDate();
+                    boolean timeCheck = Long.parseLong(proj.get("OpeningDate")) <= System.currentTimeMillis() / 1000L && System.currentTimeMillis() / 1000L <= Long.parseLong(proj.get("ClosingDate"));
                     boolean visible = Boolean.parseBoolean(proj.get("Visibility"));
 
                     return maritalStatusAgeCheck && visible && timeCheck;
@@ -186,8 +185,11 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
     }
 
     public HashMap<String,String> getActiveProjectByManagerID(String managerID) throws ModelNotFoundException{
+
         Optional<Project> projOpt = getAllObject().filter(
-                project -> project.getManagerID().equals(managerID) //&& System.currentTimeMillis()/1000L > project.getOpeningDate() && System.currentTimeMillis()/1000L < project.getClosingDate()
+                project -> project.getManagerID().equals(managerID)
+                            && System.currentTimeMillis() / 1000L > project.getOpeningDate()
+                            && System.currentTimeMillis() / 1000L < project.getClosingDate()
         ).findFirst();
 
         if (projOpt.isPresent()) {

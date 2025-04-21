@@ -20,6 +20,7 @@ public class Config {
     public static final String APPLICANT_CSV = "ApplicantList.csv";
     public static final String APPLICATION_CSV = "ApplicationList.csv";
     public static final String REGISTRATION_CSV = "RegistrationList.csv";
+    public static final String WITHDRAWAL_CSV = "WithdrawalList.csv";
     public static final String SEARCH_SETTING_CSV = "SearchSettingList.csv";
     public static final String NEIGHBOURHOOD_CSV = "NeighbourhoodList.csv";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");

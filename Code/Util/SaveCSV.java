@@ -35,14 +35,11 @@ public class SaveCSV {
                 for(int x = 0;line.size() > x;x++) {
                     String value = line.get(x);
 
-                    if (value != null && (value.contains(",") || value.contains("\"") || value.contains("\n"))) {
-                        // Escape double quotes by doubling them
-                        value = value.replace("\"", "\"\"");
-                        // Wrap the value in quotes
-                        value = "\"" + value + "\"";
+                    if (value != null){
+                        value = value.replace(',','␟').replace('\n','§');
                     }
 
-                    printWriter.print(line.get(x)+(x==line.size()-1 ?"":","));
+                    printWriter.print(value+(x==line.size()-1 ?"":","));
                 }
                 if (y < csvData.size() - 1) {
                     printWriter.print("\n");

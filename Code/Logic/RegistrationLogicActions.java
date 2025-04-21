@@ -109,7 +109,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                    long openingNew = Long.parseLong(newPhm.get("OpeningDate"));
                    long closingNew = Long.parseLong(newPhm.get("ClosingDate"));
 
-                   if (closingApply < openingNew || openingApply > closingNew) {//Check if there is any time conflict with a active registration
+                   if (!(closingApply < openingNew || openingApply > closingNew)) {//Check if there is any time conflict with a active registration
                         return false;
                    }
                }
@@ -133,6 +133,12 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
     public void approve(String registrationID) throws ModelNotFoundException {
         Registration registration = getObject(registrationID);
         registration.setStatus("Successful");
+        RegistrationRepository.getInstance().update();
+    }
+
+    public void reject(String registrationID) throws ModelNotFoundException {
+        Registration registration = getObject(registrationID);
+        registration.setStatus("Unsuccessful");
         RegistrationRepository.getInstance().update();
     }
 

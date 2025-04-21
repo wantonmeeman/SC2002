@@ -1,12 +1,9 @@
 package Pages;
 
 import Exceptions.ModelNotFoundException;
-import Logic.ApplicationLogicActions;
-import Logic.FlatLogicActions;
-import Logic.ProjectLogicActions;
+import Logic.*;
 import Pages.Components.*;
 import Pages.LogoutPage;
-import Logic.UserLogicActions;
 import Util.ClearCMD;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -25,25 +22,45 @@ try{
 			if(user.get("ApplicationID") != null) {
 
 				System.out.println(Seperator.seperate());
+				String flatID;
+				String status;
+				String projectID;
+				String applicationID;
                 try {
-					String applicationID = user.get("ApplicationID");
+					applicationID = user.get("ApplicationID");
 
 					HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
-                    String flatID = ahm.get("FlatID");
-					String status = ahm.get("Status");
+                    flatID = ahm.get("FlatID");
+					status = ahm.get("Status");
 
-					String projectID = ProjectLogicActions.getInstance().getProjectByFlatID(flatID).get("ID");
+					projectID = ProjectLogicActions.getInstance().getProjectByFlatID(flatID).get("ID");
 
 					System.out.println(ProjectView.detailedView(projectID));
 					System.out.println(FlatView.detailedView(flatID));
 					System.out.println(ApplicationView.detailedView(applicationID));
 
+				} catch (ModelNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+				String withdrawalStatus;
+				try {
+					withdrawalStatus = WithdrawalLogicActions.getInstance().get(applicationID).get("Status");
+					System.out.println(WithdrawalView.detailedView(applicationID));
+
+				} catch (ModelNotFoundException e) {
+					withdrawalStatus = null;
+				}
+				String withdrawStr = "";
+				if(withdrawalStatus == null || withdrawalStatus.equals("Unsuccessful")){
+					withdrawStr = "2. Withdraw";
+				}
+
 				switch(status){
 					case "Booked":
 						try{
-						System.out.println("Booked with Officer: "+UserLogicActions.getInstance().get(
-								ApplicationLogicActions.getInstance().get(applicationID).get("OfficerID")
-						).get("Name"));
+							System.out.println("Booked with Officer: "+UserLogicActions.getInstance().get(
+									ApplicationLogicActions.getInstance().get(applicationID).get("OfficerID")
+							).get("Name"));
 						}catch(ModelNotFoundException e){
 
 						}
@@ -51,32 +68,19 @@ try{
 					case "Pending":
 					case "Unsuccessful":
 					case "Successful":
-						System.out.println(Back.back());
-						System.out.println("2. Withdraw");
-					break;
 					case "Withdrawn":
-
 						System.out.println(Back.back());
 						break;
 				}
-				
+				System.out.println(withdrawStr);
 				input = Integer.parseInt(scanner.nextLine());
-
 				if(input == 1){
 
-				}else if(input == 2) {
-					ClearCMD.clear();
-					//Withdraw
-					try {
-						ApplicationLogicActions.getInstance().withdraw(applicationID);
-					} catch (ModelNotFoundException e) {
-						System.out.println("Cant");
-					}
+				}else if(input == 2 && !withdrawStr.equals("")){
+					WithdrawalLogicActions.getInstance().withdraw(applicationID);
 				}
 
-				} catch (ModelNotFoundException e) {
-					throw new RuntimeException(e);
-				}
+
 			}else{
 
 				System.out.println(Seperator.seperate());

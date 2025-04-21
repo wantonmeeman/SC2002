@@ -24,8 +24,12 @@ public class SearchSettingView {
         if(sshm.get("ProjectNeighbourhoodID") == null){
             returnStr += "Project - Neighbourhood Filter: None\n";
         }else{
-            HashMap<String,String> nhm = NeighbourhoodLogicActions.getInstance().get(sshm.get("ProjectNeighbourhoodID"));
-            returnStr += "Project - Neighbourhood Filter: " + (sshm.get("ProjectNeighbourhoodID") == null ? "None" : nhm.get("Name")) + "\n";
+            try {
+                HashMap<String, String> nhm = NeighbourhoodLogicActions.getInstance().get(sshm.get("ProjectNeighbourhoodID"));
+                returnStr += "Project - Neighbourhood Filter: " + (sshm.get("ProjectNeighbourhoodID") == null ? "None" : nhm.get("Name")) + "\n";
+            }catch(ModelNotFoundException e){
+                returnStr += "Project - Neighbourhood Filter: Neighbourhood no longer exists\n";
+            }
         }
 
         returnStr += "Project - Get Two Room Flat: " + (twoRoomFilter ? "Yes":"No") + "\n";

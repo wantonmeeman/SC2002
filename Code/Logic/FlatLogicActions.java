@@ -65,6 +65,14 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         FlatRepository.getInstance().update();
     }
 
+    public void editPrice(String flatID, Float price) throws ModelNotFoundException{
+
+        Flat flat = getObject(flatID);
+        flat.setPrice(price);
+
+        FlatRepository.getInstance().update();
+    }
+
     public static FlatLogicActions getInstance() {
         if (instance == null)
             instance = new FlatLogicActions();
