@@ -211,13 +211,13 @@ public class EnquiriesPage {
 			try {
 				enquiry = EnquiryLogicActions.getInstance().get(enquiryID);
 
-				String simulatedInput = enquiry.get("Message");
+				String message = enquiry.get("Message");
 				Scanner scanner = new Scanner(System.in);
 
 
 				System.out.println(Seperator.seperate());
 				System.out.println("Old Message:");
-				System.out.println(simulatedInput);
+				System.out.println(message);
 				System.out.println("New Message:");
 				String NewMsg = scanner.nextLine();
 

@@ -1,90 +1,70 @@
 package Data.Models;
 
-public class SearchSetting extends Model{
-    private String location;
-    private Boolean[] flatTypes;
-    private String neighbourhood;
-    private long openingDate;
-    private long closingDate;
-    private Boolean ascending;
-    private int sortBy;
+public class SearchSetting extends Model {
+    private String projectName;
+    private boolean projectAscending;
+    private String projectNeighbourhoodID;
+    private boolean projectThreeRoomFlat;
+    private boolean projectTwoRoomFlat;
+    private String projectManagerID;
 
-    public SearchSetting(String userID){
-        //These are the default values and we will use these to check if they are in use or not
-        super(userID);
-        this.location = ""; // 0
-        this.flatTypes = new Boolean[] {true, true}; //1
-        this.neighbourhood = ""; // 2
-        this.openingDate = 0;// 3
-        this.closingDate = 0; // 4
-        this.ascending = true;
-        this.sortBy = 0;
+    public SearchSetting(String ID, String projectName, boolean projectAscending,
+                         String projectNeighbourhoodID, boolean projectThreeRoomFlat,
+                         boolean projectTwoRoomFlat, String projectManagerID) {
+        super(ID);
+        this.projectName = projectName;
+        this.projectAscending = projectAscending;
+        this.projectNeighbourhoodID = projectNeighbourhoodID;
+        this.projectThreeRoomFlat = projectThreeRoomFlat;
+        this.projectTwoRoomFlat = projectTwoRoomFlat;
+        this.projectManagerID = projectManagerID;
     }
 
-    public SearchSetting(String userID, String location, Boolean[] flatTypes, String neighbourhood, long openingDate, long closingDate, Boolean ascending, int sortBy){
-        super(userID);
-        this.location = location;
-        this.flatTypes = flatTypes;
-        this.neighbourhood = neighbourhood;
-        this.openingDate = openingDate;
-        this.closingDate = closingDate;
-        this.ascending = ascending;
-        this.sortBy = sortBy;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public String getLocation() {
-        return location;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public boolean getProjectAscending() {
+        return projectAscending;
     }
 
-    public Boolean[] getFlatTypes() {
-        return flatTypes;
+    public void setProjectAscending(boolean projectAscending) {
+        this.projectAscending = projectAscending;
     }
 
-    public void setFlatTypes(Boolean[] flatTypes) {
-        this.flatTypes = flatTypes;
+    public String getProjectNeighbourhoodID() {
+        return projectNeighbourhoodID;
     }
 
-    public String getNeighbourhood() {
-        return neighbourhood;
+    public void setProjectNeighbourhoodID(String projectNeighbourhood) {
+        this.projectNeighbourhoodID = projectNeighbourhood;
     }
 
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
+    public boolean getProjectThreeRoomFlat() {
+        return projectThreeRoomFlat;
     }
 
-    public long getOpeningDate() {
-        return openingDate;
+    public void setProjectThreeRoomFlat(boolean projectThreeRoomFlat) {
+        this.projectThreeRoomFlat = projectThreeRoomFlat;
     }
 
-    public void setOpeningDate(long openingDate) {
-        this.openingDate = openingDate;
+    public boolean getProjectTwoRoomFlat() {
+        return projectTwoRoomFlat;
     }
 
-    public long getClosingDate() {
-        return closingDate;
+    public void setProjectTwoRoomFlat(boolean projectTwoRoomFlat) {
+        this.projectTwoRoomFlat = projectTwoRoomFlat;
     }
 
-    public void setClosingDate(long closingDate) {
-        this.closingDate = closingDate;
+    public String getProjectManagerID() {
+        return projectManagerID;
     }
 
-    public Boolean getAscending() {
-        return ascending;
-    }
-
-    public void setAscending(Boolean ascending) {
-        this.ascending = ascending;
-    }
-
-    public int getSortBy() {
-        return sortBy;
-    }
-
-    public void setSortBy(int sortBy) {
-        this.sortBy = sortBy;
+    public void setProjectManagerID(String projectManagerID) {
+        this.projectManagerID = projectManagerID;
     }
 }

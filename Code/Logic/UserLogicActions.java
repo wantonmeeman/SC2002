@@ -17,6 +17,7 @@ import Exceptions.ModelAlreadyExistsException;
 import Exceptions.WrongInputException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -160,48 +161,6 @@ public class UserLogicActions extends DataLogicActions<User>{
         getDataRepository(getObject(ID)).update();
     }
 
-//    public HashMap<String,String> searchSettingToMap(SearchSetting ss){
-//        HashMap<String,String> hm = new HashMap<String, String>();
-//
-//        hm.put("Location",ss.getLocation());
-//        hm.put("2Room",String.valueOf(ss.getFlatTypes()[0]));
-//        hm.put("3Room",String.valueOf(ss.getFlatTypes()[1]));
-//        hm.put("Neighbourhood",ss.getNeighbourhood());
-//        hm.put("OpeningDate",String.valueOf(ss.getOpeningDate()));
-//        hm.put("ClosingDate",String.valueOf(ss.getClosingDate()));
-//        hm.put("Ascending",String.valueOf(ss.getAscending()));
-//        hm.put("SortBy",String.valueOf(ss.getSortBy()));
-//
-//        return hm;
-//    }
-//
-//    public SearchSetting mapToSearchSetting(HashMap<String,String> hm){
-//        return new SearchSetting(
-//                hm.get("Location"),
-//                new Boolean[] {
-//                        Boolean.parseBoolean(hm.get("2Room")),
-//                        Boolean.parseBoolean(hm.get("3Room"))
-//                },
-//                hm.get("Neighbourhood"),
-//                Long.parseLong(hm.get("OpeningDate")),
-//                Long.parseLong(hm.get("ClosingDate")),
-//                Boolean.parseBoolean(hm.get("Ascending")),
-//                Integer.parseInt(hm.get("SortBy"))
-//        );
-//    }
-
-//    public HashMap<String,String> getSearchSetting(String userID) throws ModelNotFoundException{
-//         return searchSettingToMap(getObject(userID).getSearchSetting());
-//    }
-
-//    public void updateSearchSetting(String userID,HashMap<String,String> hm) throws ModelNotFoundException, RepositoryNotFoundException{
-//        User user = getObject(userID);
-//
-//        user.setSearchSetting(mapToSearchSetting(hm));
-//
-//        getDataRepository(user).update(userID,user);
-//    }
-
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
 
         System.out.println("[DEBUG] Attempting login for userID: " + userID);
@@ -215,6 +174,14 @@ public class UserLogicActions extends DataLogicActions<User>{
         }else{
             throw new WrongInputException();
         }
+    }
+
+    public ArrayList<HashMap<String,String>> getAllManager(){
+        return Stream.of(ManagerRepository.getInstance().getAll())
+                .flatMap(Collection::stream)  // Flatten the list of lists to a stream of users
+                .map(model -> (Manager) model)
+                .map(this::toMap)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public static UserLogicActions getInstance() {

@@ -18,7 +18,7 @@ public class ApplicationsPage {
 try{
 			user = UserLogicActions.getInstance().get(userID);
 		}catch(ModelNotFoundException e){
-		System.out.println(e+"123123");
+		System.out.println(e);
 	}
 
 
@@ -75,7 +75,7 @@ try{
 				}
 
 				} catch (ModelNotFoundException e) {
-					throw new RuntimeException(e+"44444");
+					throw new RuntimeException(e);
 				}
 			}else{
 

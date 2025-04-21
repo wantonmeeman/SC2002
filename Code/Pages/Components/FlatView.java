@@ -26,5 +26,18 @@ public class FlatView {
         String modifiedType = type.charAt(0) + " " + type.substring(1);
         return modifiedType+" - " + fhm.get("TotalUnits") + " Units left - $"+fhm.get("Price");
     }
+
+    public static String applicantView(String flatID) throws ModelNotFoundException {
+        String returnStr = "";
+
+        HashMap<String,String> fhm = FlatLogicActions.getInstance().get(flatID);
+        String type = fhm.get("Type");
+        String modifiedType = type.charAt(0) + " " + type.substring(1);
+
+        returnStr += "Flat Type: " + modifiedType +"\n";
+        returnStr += "Flats Price: $" + fhm.get("Price");
+
+        return returnStr;
+    }
 }
 

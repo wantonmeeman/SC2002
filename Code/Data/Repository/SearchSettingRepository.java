@@ -21,17 +21,13 @@ public class SearchSettingRepository extends DataRepository {
 
         for (ArrayList<String> strArr : csv) {
             searchSettingArr.add(new SearchSetting(
-                    strArr.get(0), // userID (String)
-                    strArr.get(1), // location (String)
-                    new Boolean[] {
-                            Boolean.parseBoolean(strArr.get(2)), // flatTypes[0]
-                            Boolean.parseBoolean(strArr.get(3))  // flatTypes[1]
-                    },
-                    strArr.get(4), // neighbourhood (String)
-                    Long.parseLong(strArr.get(5)), // openingDate (long)
-                    Long.parseLong(strArr.get(6)), // closingDate (long)
-                    Boolean.parseBoolean(strArr.get(7)), // ascending (Boolean)
-                    Integer.parseInt(strArr.get(8)) // sortBy (int)
+                    strArr.get(0),
+                    strArr.get(1),
+                    Boolean.parseBoolean(strArr.get(2)),
+                    strArr.get(3),
+                    Boolean.parseBoolean(strArr.get(4)),
+                    Boolean.parseBoolean(strArr.get(5)),
+                    strArr.get(6)
             ));
         }
 
@@ -48,14 +44,12 @@ public class SearchSettingRepository extends DataRepository {
 
             ArrayList<String> row = new ArrayList<>();
             row.add(searchSetting.getID());                                // userID
-            row.add(searchSetting.getLocation());                          // location
-            row.add(String.valueOf(searchSetting.getFlatTypes()[0]));      // flatType 0
-            row.add(String.valueOf(searchSetting.getFlatTypes()[1]));      // flatType 1
-            row.add(searchSetting.getNeighbourhood());                     // neighbourhood
-            row.add(String.valueOf(searchSetting.getOpeningDate()));       // openingDate
-            row.add(String.valueOf(searchSetting.getClosingDate()));       // closingDate
-            row.add(String.valueOf(searchSetting.getAscending()));         // ascending
-            row.add(String.valueOf(searchSetting.getSortBy()));            // sortBy
+            row.add(searchSetting.getProjectName());
+            row.add(String.valueOf(searchSetting.getProjectAscending()));
+            row.add(searchSetting.getProjectNeighbourhoodID());
+            row.add(String.valueOf(searchSetting.getProjectThreeRoomFlat()));
+            row.add(String.valueOf(searchSetting.getProjectTwoRoomFlat()));
+            row.add(searchSetting.getProjectManagerID());           // sortBy
 
             csvData.add(row);
         });

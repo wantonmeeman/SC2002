@@ -1,10 +1,11 @@
 package Data.Repository;
 
-import Util.CSVUtils;
+import Util.ReadCSV;
+import Util.SaveCSV;
 
 import java.util.ArrayList;
 
-public class Storable extends CSVUtils{
+public class Storable{
     private String filepath;
 
     protected void setFilepath(String filepath) {
@@ -12,10 +13,10 @@ public class Storable extends CSVUtils{
 }
 
     protected void save(ArrayList<ArrayList<String>> csvArrList){
-        saveCSV(filepath,csvArrList);
+        SaveCSV.saveCSV(filepath,csvArrList);
     };
 
     protected ArrayList<ArrayList<String>> load(){
-        return readCSV(filepath);
+        return ReadCSV.readCSV(filepath);
     };
 }

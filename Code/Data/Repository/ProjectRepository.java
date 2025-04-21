@@ -63,7 +63,7 @@ public class ProjectRepository extends DataRepository {
             ArrayList<String> row = new ArrayList<>();
             row.add(project.getID());                    // Add project ID (assumed to exist)
             row.add(project.getName());                  // Add name
-            row.add(project.getNeighbourhood());         // Add neighbourhood
+            row.add(project.getNeighbourhoodID());         // Add neighbourhood
             row.add(String.valueOf(project.getOpeningDate()));           // Add opening date
             row.add(String.valueOf(project.getClosingDate()));           // Add closing date
             row.add(String.valueOf(project.isVisible()));             // Add visibility (boolean)

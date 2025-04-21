@@ -18,40 +18,33 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         HashMap<String, String> searchSettingMap = new HashMap<>();
 
         searchSettingMap.put("ID", searchSetting.getID());
-        searchSettingMap.put("Location", searchSetting.getLocation());
-
-        // Convert Boolean[] to a comma-separated string
-        Boolean[] flatTypes = searchSetting.getFlatTypes();
-        searchSettingMap.put("FlatTypes", flatTypes[0] + "," + flatTypes[1]);
-
-        searchSettingMap.put("Neighbourhood", searchSetting.getNeighbourhood());
-        searchSettingMap.put("OpeningDate", String.valueOf(searchSetting.getOpeningDate()));
-        searchSettingMap.put("ClosingDate", String.valueOf(searchSetting.getClosingDate()));
-        searchSettingMap.put("Ascending", String.valueOf(searchSetting.getAscending()));
-        searchSettingMap.put("SortBy", String.valueOf(searchSetting.getSortBy()));
+        searchSettingMap.put("ProjectName", searchSetting.getProjectName());
+        searchSettingMap.put("ProjectAscending", String.valueOf(searchSetting.getProjectAscending()));
+        searchSettingMap.put("ProjectNeighbourhoodID", searchSetting.getProjectNeighbourhoodID());
+        searchSettingMap.put("ProjectThreeRoomFlat", String.valueOf(searchSetting.getProjectThreeRoomFlat()));
+        searchSettingMap.put("ProjectTwoRoomFlat",String.valueOf(searchSetting.getProjectTwoRoomFlat()));
+        searchSettingMap.put("ProjectManagerID",searchSetting.getProjectManagerID());
 
         return searchSettingMap;
     }
 
     public String create(HashMap<String, String> hm){
-        String searchSettingID = GenerateID.generateID(8);
-        String location = hm.get("Location");
-
-        // Parse FlatTypes from string to Boolean[]
-        String[] flatTypeStr = hm.get("FlatTypes").split(",");
-        Boolean[] flatTypes = new Boolean[] {
-                Boolean.parseBoolean(flatTypeStr[0]),
-                Boolean.parseBoolean(flatTypeStr[1])
-        };
-
-        String neighbourhood = hm.get("Neighbourhood");
-        long openingDate = Long.parseLong(hm.get("OpeningDate"));
-        long closingDate = Long.parseLong(hm.get("ClosingDate"));
-        Boolean ascending = Boolean.parseBoolean(hm.get("Ascending"));
-        int sortBy = Integer.parseInt(hm.get("SortBy"));
+        String searchSettingID = hm.get("ID");//GenerateID.generateID(8);
+        String projectName = hm.get("ProjectName");
+        boolean projectAscending = Boolean.parseBoolean(hm.get("ProjectAscending"));
+        String projectNeighbourhoodID = hm.get("ProjectNeighbourhoodID");
+        boolean projectThreeRoomFlat = Boolean.parseBoolean(hm.get("ProjectThreeRoomFlat"));
+        boolean projectTwoRoomFlat = Boolean.parseBoolean(hm.get("ProjectTwoRoomFlat"));
+        String projectManagerID = hm.get("ProjectManagerID");
 
         SearchSetting searchSetting = new SearchSetting(
-                searchSettingID, location, flatTypes, neighbourhood, openingDate, closingDate, ascending, sortBy
+                searchSettingID,
+                projectName,
+                projectAscending,
+                projectNeighbourhoodID,
+                projectThreeRoomFlat,
+                projectTwoRoomFlat,
+                projectManagerID
         );
 
         try {
@@ -73,6 +66,45 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
     @Override
     public void delete(String ID) throws ModelNotFoundException{
         SearchSettingRepository.getInstance().delete(ID);
+    }
+
+    public void toggleSort(String userID) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectAscending(!ss.getProjectAscending());
+        SearchSettingRepository.getInstance().update();
+    }
+
+    public void editNeighbourhood(String userID, String neighbourhoodID) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectNeighbourhoodID(neighbourhoodID);
+
+        SearchSettingRepository.getInstance().update();
+    }
+
+    public void editName(String userID, String name) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectName(name);
+
+        SearchSettingRepository.getInstance().update();
+    }
+
+    public void editManager(String userID, String managerID) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectManagerID(managerID);
+
+        SearchSettingRepository.getInstance().update();
+    }
+
+    public void toggleTwoRoomFilter(String userID) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectTwoRoomFlat(!ss.getProjectTwoRoomFlat());
+        SearchSettingRepository.getInstance().update();
+    }
+
+    public void toggleThreeRoomFilter(String userID) throws ModelNotFoundException{
+        SearchSetting ss = getObject(userID);
+        ss.setProjectThreeRoomFlat(!ss.getProjectThreeRoomFlat());
+        SearchSettingRepository.getInstance().update();
     }
 
     public static SearchSettingLogicActions getInstance() {

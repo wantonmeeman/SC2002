@@ -21,6 +21,7 @@ public class Config {
     public static final String APPLICATION_CSV = "ApplicationList.csv";
     public static final String REGISTRATION_CSV = "RegistrationList.csv";
     public static final String SEARCH_SETTING_CSV = "SearchSettingList.csv";
+    public static final String NEIGHBOURHOOD_CSV = "NeighbourhoodList.csv";
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final int MAX_LINE_WIDTH = 80;
     public static final int MAX_SIMPLE_TEXT_LENGTH = 50;

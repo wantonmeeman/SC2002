@@ -71,6 +71,54 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         return applicationList;
     }
 
+    public ArrayList<HashMap<String, String>> getFilteredApplicationsByProjectID(String projectID, HashMap<String,String> ashm) throws ModelNotFoundException {
+        ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
+        String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
+        String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
+
+        getAllObject()
+                .filter(application ->
+                        threeRoomID.equals(application.getFlatID()) || twoRoomID.equals(application.getFlatID())
+                )
+                .filter(application -> {
+                    HashMap<String,String> uhm;
+                    HashMap<String,String> fhm;
+
+                    try {
+                        uhm = UserLogicActions.getInstance().get(application.getUserID());
+                    } catch (ModelNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fhm = FlatLogicActions.getInstance().get(application.getFlatID());
+                    } catch (ModelNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    boolean maritalType;
+                    boolean flatType;
+
+                    if(ashm.get("MaritalStatus") == null || ashm.get("MaritalStatus").equals(uhm.get("MaritalStatus"))){
+                        maritalType = true;
+                    }else{
+                        maritalType = false;
+                    }
+
+                    if(ashm.get("FlatType") == null || ashm.get("FlatType").equals(fhm.get("Type"))){
+                        flatType = true;
+                    }else{
+                        flatType = false;
+                    }
+
+                    return flatType && maritalType;
+                })
+                .forEach(application -> {
+                    applicationList.add(toMap(application));
+                });
+
+        return applicationList;
+    }
+
     private Boolean checkApplicationValidity(String userID, String flatID) throws ModelNotFoundException{
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(userID);
         HashMap<String,String> fhm = FlatLogicActions.getInstance().get(flatID);

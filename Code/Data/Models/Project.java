@@ -8,7 +8,7 @@ import java.util.Date;
 public class Project extends Model {
 
     private String name;
-    private String neighbourhood;
+    private String neighbourhoodID;
     private long openingDate;
     private long closingDate;
     private boolean visibility;
@@ -19,7 +19,7 @@ public class Project extends Model {
     private String threeRoomFlatID;
 
     public Project(String projectID,
-                    String name, String neighbourhood,
+                    String name, String neighbourhoodID,
                    long openingDate, long closingDate,
                    boolean visible,
                    int officerSlots, String[] officerIDs,
@@ -27,7 +27,7 @@ public class Project extends Model {
                     String threeRoomFlatID) {
         super(projectID);//Generate random
         this.name = name;
-        this.neighbourhood = neighbourhood;
+        this.neighbourhoodID = neighbourhoodID;
 
         this.openingDate = openingDate;
         this.closingDate = closingDate;
@@ -48,12 +48,12 @@ public class Project extends Model {
         this.name = name;
     }
 
-    public String getNeighbourhood() {
-        return neighbourhood;
+    public String getNeighbourhoodID() {
+        return neighbourhoodID;
     }
 
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
+    public void setNeighbourhoodID(String neighbourhoodID) {
+        this.neighbourhoodID = neighbourhoodID;
     }
 
     public long getOpeningDate() {

@@ -14,8 +14,10 @@ import Data.Repository.ProjectRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +30,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
         projectMap.put("ID", project.getID());
         projectMap.put("Name", project.getName());
-        projectMap.put("Neighbourhood", project.getNeighbourhood());
+        projectMap.put("NeighbourhoodID", project.getNeighbourhoodID());
         projectMap.put("OpeningDate", String.valueOf(project.getOpeningDate()));
         projectMap.put("ClosingDate", String.valueOf(project.getClosingDate()));
         projectMap.put("Visibility", String.valueOf(project.isVisible()));
@@ -44,7 +46,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
     public String create(HashMap<String,String> hm){
         String projectID = generateID();
         String name = hm.get("Name");
-        String neighbourhood = hm.get("Neighbourhood");
+        String neighbourhoodID = hm.get("NeighbourhoodID");
         long openingDate = Long.parseLong(hm.get("OpeningDate"));
         long closingDate = Long.parseLong(hm.get("ClosingDate"));
         boolean visibility = Boolean.parseBoolean(hm.get("Visibility"));
@@ -57,7 +59,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         try {
             ProjectRepository.getInstance().create(
                     new Project(
-                            projectID, name, neighbourhood, openingDate,
+                            projectID, name, neighbourhoodID, openingDate,
                     closingDate, visibility ,officerSlots, officerIDs, managerID, twoRoomFlatID, threeRoomFlatID));
         }catch(ModelAlreadyExistsException e){
             create(hm);//Try again
@@ -73,6 +75,36 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                 .map(model -> (Project) model);
     }
 
+    public ArrayList<HashMap<String,String>> getAllManager(String userID) throws ModelNotFoundException{
+        ArrayList<HashMap<String, String>> projList = new ArrayList<>();
+
+        HashMap<String, String> ss = SearchSettingLogicActions.getInstance().get(userID);
+
+        boolean ascending = Boolean.parseBoolean(ss.get("ProjectAscending"));
+
+        Comparator<HashMap<String,String>> naturalOrder = Comparator.comparing(s -> s.get("Name"));
+
+        naturalOrder = ascending ? naturalOrder : naturalOrder.reversed();
+
+        projList = getAllObject()
+                .filter(proj -> {
+                    String filter = ss.get("ProjectManagerID");
+                    return filter == null || filter.equals(proj.getManagerID());
+                })
+                .filter(proj->{
+                    String filter = ss.get("ProjectNeighbourhoodID");
+                    return filter == null || filter.equals(proj.getNeighbourhoodID());
+                })
+                .filter(proj->{
+                    String filter = ss.get("ProjectName");
+                    return filter == null || filter.equals(proj.getName());
+                })
+                .map(this::toMap)
+                .sorted(naturalOrder)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return projList;
+    }
 
     public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
@@ -83,7 +115,27 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         int age = Integer.parseInt(user.get("Age"));
         char status = user.get("MaritalStatus").charAt(0);
 
+        boolean ascending = Boolean.parseBoolean(ss.get("ProjectAscending"));
+        boolean threeRoomFlatFilter = Boolean.parseBoolean(ss.get("ProjectThreeRoomFlat"));
+        boolean twoRoomFlatFilter = Boolean.parseBoolean(ss.get("ProjectTwoRoomFlat"));
+
+        Comparator<HashMap<String,String>> naturalOrder = Comparator.comparing(s -> s.get("Name"));
+
+        naturalOrder = ascending ? naturalOrder : naturalOrder.reversed();
+
         projList = getAllObject()
+                .filter(proj -> {
+                    String filter = ss.get("ProjectManagerID");
+                    return filter == null || filter.equals(proj.getManagerID());
+                })
+                .filter(proj->{
+                    String filter = ss.get("ProjectNeighbourhoodID");
+                    return filter == null || filter.equals(proj.getNeighbourhoodID());
+                })
+                .filter(proj->{
+                    String filter = ss.get("ProjectName");
+                    return filter == null || Pattern.compile(filter).matcher(proj.getName()).find();
+                })
                 .map(this::toMap)
                 .filter(proj -> {
                     //Check Marital Status and age
@@ -104,16 +156,20 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                         totalThreeRoomFlats = 0;
                     }
 
+                    boolean twoRoomMaritalAgeCheck = (status == 'M' && age < 21) || (status == 'S' && age < 35);
+                    boolean threeRoomMaritalAgeCheck = status == 'S' || (status == 'M' && age < 21);
+
                     if(totalTwoRoomFlats <= 0
-                    || (status == 'M' && age < 21)
-                    || (status == 'S' && age < 35)
+                    || twoRoomMaritalAgeCheck
+                    || !twoRoomFlatFilter
                     ){
                         proj.put("TwoRoomFlatID",null);
                     }
 
                     if(totalThreeRoomFlats <= 0
-                    || status == 'S'
-                    || (status == 'M' && age < 21)){
+                    || threeRoomMaritalAgeCheck
+                    || !threeRoomFlatFilter
+                    ){
                         proj.put("ThreeRoomFlatID",null);
                     }
 
@@ -123,6 +179,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
                     return maritalStatusAgeCheck && visible && timeCheck;
                 })
+                .sorted(naturalOrder)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return projList;
@@ -162,9 +219,8 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
         ProjectRepository.getInstance().update();
     }
-    public void editNeighbourhood(String projectID,String neighbourhood) throws ModelNotFoundException{
-        getObject(projectID).setNeighbourhood(neighbourhood);
-
+    public void editNeighbourhood(String projectID,String neighbourhoodID) throws ModelNotFoundException{
+        getObject(projectID).setNeighbourhoodID(neighbourhoodID);
         ProjectRepository.getInstance().update();
     }
     public void editOpeningClosing(String projectID, String opening, String closing) throws ModelNotFoundException{

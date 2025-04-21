@@ -2,6 +2,7 @@ package Pages;
 
 
 import Data.Models.Applicant;
+import Data.Models.Application;
 import Data.Models.Project;
 import Data.Models.User;
 import Logic.*;
@@ -33,8 +34,9 @@ public class ProjectsPage {
 
 			System.out.println(Seperator.seperate());
 			System.out.println(Back.back());
+			System.out.println("2. Filter Settings");
 
-			int x = 2;
+			int x = 3;
 			for(HashMap<String,String> hm: projList){
 				String threeRoomFlatID = hm.get("ThreeRoomFlatID");
 				String twoRoomFlatID = hm.get("TwoRoomFlatID");
@@ -60,7 +62,12 @@ public class ProjectsPage {
 			input = Integer.parseInt(scanner.nextLine());
 
 			ClearCMD.clear();
-			if(input != 1){
+			if(input == 1) {
+
+			}else if(input == 2){
+  				SearchSettingsPage.start(userID);
+				start(userID);
+            }else{
 				detailedFlat(inputToIDMap.get(input),userID);
 			}
 		}
@@ -116,10 +123,12 @@ public class ProjectsPage {
             }
             System.out.println(Seperator.seperate());
 			System.out.println(Back.back());
+			System.out.println("2. Neighbourhoods");
+			System.out.println("3. Filter Settings");
 
 			ArrayList<HashMap<String,String>> pal = ProjectLogicActions.getInstance().getAll();
 
-			int x = 3;
+			int x = 5;
 
 			String projectsStr = "";
 			String activeProjectID = null;
@@ -139,8 +148,8 @@ public class ProjectsPage {
 				String name = uhm.get("Name");
 
 				if(activeProjectID.equals(phm.get("ID"))) {
-					activeProjectStr = "2. "+ProjectView.simpleView(phm.get("ID"))+" - "+name+" (Active)";
-					inputToIDMap.put(2,phm.get("ID"));
+					activeProjectStr = "4. "+ProjectView.simpleView(phm.get("ID"))+" - "+name+" (Active)";
+					inputToIDMap.put(4,phm.get("ID"));
 				}else{
 					projectsStr += x + ". " + ProjectView.simpleView(phm.get("ID"))+" - "+name+"\n";
 					inputToIDMap.put(x++,phm.get("ID"));
@@ -148,12 +157,10 @@ public class ProjectsPage {
 				} catch (ModelNotFoundException e) {
 					throw new RuntimeException(e);
 				}
-
-
             }
 
-			if(activeProjectStr.equals("")) {
-				System.out.println("2. Create new Project");//Either create new project or active project
+			if(activeProjectStr.isEmpty()) {
+				System.out.println("4. Create new Project");//Either create new project or active project
 
 				System.out.print(projectsStr);
 
@@ -162,7 +169,18 @@ public class ProjectsPage {
 				if(input == 1){
 
 				}else if(input == 2){
+					//Neighbourhoods
+					NeighbourhoodPage.start();
+					adminStart(userID);
+				}else if(input == 3){
+					//Filter Settings
+					SearchSettingsPage.start(userID);
+					adminStart(userID);
+				}else if(input == 4){
 					createProject(userID);
+					adminStart(userID);
+				}else{
+					detailedProject(activeProjectID,userID);
 					adminStart(userID);
 				}
 			}else{
@@ -175,15 +193,18 @@ public class ProjectsPage {
 				if(input == 1){
 
 				}else if(input == 2){
-					detailedProject(activeProjectID,userID);
+					//Neighbourhoods
+					NeighbourhoodPage.start();
+					adminStart(userID);
+				}else if(input == 3){
+					//Filter Settings
+					SearchSettingsPage.start(userID);
 					adminStart(userID);
 				}else{
 					detailedProject(inputToIDMap.get(input),userID);
 					adminStart(userID);
 				}
 			}
-
-
 		}
 
 		public static void detailedProject(String projectID, String userID){
@@ -219,7 +240,7 @@ public class ProjectsPage {
 					viewOfficers(projectID,isManager);
 					detailedProject(projectID, userID);
 				}else if(input == 3){
-					viewApplicants(projectID,isManager);
+					viewApplicants(projectID,isManager,null);
 					detailedProject(projectID, userID);
 				}else if(input == 4 && isManager){
 					editProject(projectID);
@@ -284,14 +305,20 @@ public class ProjectsPage {
 		public static void editNeighbourhood(String projectID){
             try {
 				Scanner scanner = new Scanner(System.in);
-                HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+				int input;
 
-				System.out.println("Old Neighbourhood: "+phm.get("Neighbourhood"));
-				System.out.println("New Neighbourhood: ");
+				System.out.println("Neighbourhood: ");
 
-				String neighbourhood = scanner.nextLine();
+				ArrayList<HashMap<String,String>> nal = NeighbourhoodLogicActions.getInstance().getAll();
 
-				ProjectLogicActions.getInstance().editNeighbourhood(projectID,neighbourhood);
+				int x = 1;
+				for(HashMap<String,String> nhm:nal){
+					System.out.println((x++) + ". "+ NeighbourhoodView.simpleView(nhm.get("ID")));
+				}
+
+				input = Integer.parseInt(scanner.nextLine());
+
+				ProjectLogicActions.getInstance().editNeighbourhood(projectID,nal.get(input-1).get("ID"));
             } catch (ModelNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -394,34 +421,75 @@ public class ProjectsPage {
 			}
 		}
 
-		public static void viewApplicants(String projectID,boolean isManager){
+		public static void viewApplicants(String projectID,boolean isManager, HashMap<String,String> ashm){
             try {
+
+				if(ashm == null){
+					ashm = new HashMap<String,String>();
+					ashm.put("Marital",null);
+					ashm.put("FlatType",null);
+				}
+
 				Scanner scanner = new Scanner(System.in);
 				int input;
 
-				ArrayList<HashMap<String,String>> aal = ApplicationLogicActions.getInstance().getApplicationsByProjectID(projectID);
+				ArrayList<HashMap<String,String>> aal = ApplicationLogicActions.getInstance().getFilteredApplicationsByProjectID(projectID,ashm);
 
 				System.out.println(Seperator.seperate());
-				int x = 2;
+				int x = 4;
 
 				System.out.println(Back.back());
+				System.out.println("2. Filter Settings");
+				System.out.println("3. Print Receipt");
 
 				for(HashMap<String,String> hm: aal){
-					String Name = UserLogicActions.getInstance().get(hm.get("UserID")).get("Name");
-
-					System.out.println((x++)+". "+ Name +" - "+hm.get("Status"));
+						String Name = UserLogicActions.getInstance().get(hm.get("UserID")).get("Name");
+						System.out.println((x++) + ". " + Name + " - " + hm.get("Status"));
 				}
 				input = Integer.parseInt(scanner.nextLine());
 				if(input == 1){
 
+				}else if(input == 2){
+					SearchSettingsPage.applicantSearch(ashm);
+					viewApplicants(projectID,isManager,ashm);
+				}else if(input == 3){
+					printReceipt(projectID,ashm);
+					viewApplicants(projectID,isManager,ashm);
 				}else{
-					detailedApplicant(aal.get(input-2).get("ID"),isManager);
-					viewApplicants(projectID,isManager);
+					detailedApplicant(aal.get(input-3).get("ID"),isManager);
+					viewApplicants(projectID,isManager,ashm);
 				}
             } catch (ModelNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
+
+		public static void printReceipt(String projectID, HashMap<String,String> ashm){
+			Scanner scanner = new Scanner(System.in);
+			int input;
+
+            try {
+                ArrayList<HashMap<String,String>> aal = ApplicationLogicActions.getInstance().getFilteredApplicationsByProjectID(projectID,ashm);
+				System.out.println(ProjectView.detailedView(projectID));
+				System.out.println(Seperator.seperate());
+
+				for(HashMap<String,String> hm: aal){
+					System.out.println(UserView.detailedView(hm.get("UserID")));
+					System.out.println(ApplicationView.detailedView(hm.get("ID")));
+					System.out.println(FlatView.applicantView(hm.get("FlatID")));
+					System.out.println(Seperator.seperate());
+				}
+            } catch (ModelNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+			System.out.println(Back.back());
+
+			input = Integer.parseInt(scanner.nextLine());
+			if(input == 1){
+
+			}
+		}
 
 		public static void detailedApplicant(String applicationID,boolean isManager){
             try {

@@ -18,4 +18,10 @@ public class UserView {
 
         return returnStr;
     }
+
+    public static String simpleView(String ID) throws ModelNotFoundException{
+        HashMap<String,String> uhm = UserLogicActions.getInstance().get(ID);
+
+        return uhm.get("Name");
+    }
 }
