@@ -59,6 +59,9 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
     public void approve(String withdrawalID) throws ModelNotFoundException{
         Withdrawal w = getObject(withdrawalID);
         w.setStatus("Successful");
+
+        ApplicationLogicActions.getInstance().withdraw(withdrawalID);
+
         WithdrawalRepository.getInstance().update();
     }
 

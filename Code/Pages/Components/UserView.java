@@ -24,4 +24,11 @@ public class UserView {
 
         return uhm.get("Name");
     }
+
+    public static String applicantView(String ID, String applicationID) throws ModelNotFoundException{
+
+        HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
+
+        return simpleView(ID) + " - "+ ahm.get("Status");
+    }
 }

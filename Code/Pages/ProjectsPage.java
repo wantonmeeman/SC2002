@@ -1,10 +1,7 @@
 package Pages;
 
 
-import Data.Models.Applicant;
-import Data.Models.Application;
-import Data.Models.Project;
-import Data.Models.User;
+import Data.Models.*;
 import Logic.*;
 import Pages.Components.*;
 import Util.ClearCMD;
@@ -472,8 +469,17 @@ public class ProjectsPage {
 				System.out.println("3. Print Receipt");
 
 				for(HashMap<String,String> hm: aal){
-						String Name = UserLogicActions.getInstance().get(hm.get("UserID")).get("Name");
-						System.out.println((x++) + ". " + Name + " - " + hm.get("Status"));
+						String userID = hm.get("UserID");
+						String applicationID = hm.get("ID");
+						String withdrawalStatus = "";
+
+						try {
+							withdrawalStatus += " - " + WithdrawalLogicActions.getInstance().get(applicationID).get("Status");
+						}catch (ModelNotFoundException e){
+
+						}
+					System.out.println((x++) + ". " + UserView.applicantView(userID,applicationID) + withdrawalStatus);
+
 				}
 				input = Integer.parseInt(scanner.nextLine());
 				if(input == 1){
@@ -533,23 +539,60 @@ public class ProjectsPage {
 				System.out.println(Seperator.seperate());
                 System.out.println(UserView.detailedView(ahm.get("UserID")));
 				System.out.println(ApplicationView.detailedView(applicationID));
+				boolean canApproveWithdrawal = false;
+				try{
+					HashMap<String,String> whm = WithdrawalLogicActions.getInstance().get(applicationID);
+					System.out.println(WithdrawalView.detailedView(applicationID));
+					String approvalStatus =  whm.get("Status");
+					canApproveWithdrawal = approvalStatus.equals("Pending");
+				}catch(ModelNotFoundException e){
+
+				}
+
 				System.out.println(FlatView.detailedView(flatID));
 				System.out.println(Back.back());
 
-				boolean canApprove = status.equals("Pending") && Integer.parseInt(fhm.get("TotalUnits")) > 0 && isManager;
+				boolean canApproveApplication = status.equals("Pending") && Integer.parseInt(fhm.get("TotalUnits")) > 0 && isManager;
 
-				if(canApprove){
-					System.out.println("2. Approve");
-					System.out.println("3. Reject");
+				int x = 2;
+
+				if(canApproveApplication){
+					System.out.println((x++)+". Approve Application");
+					System.out.println((x++)+". Reject Application");
+				}
+
+				if(canApproveWithdrawal){
+					System.out.println((x++)+". Approve Withdrawal");
+					System.out.println((x++)+". Reject Withdrawal");
 				}
 
 				input = Integer.parseInt(scanner.nextLine());
 				if(input == 1){
 
-				}else if(input == 2 && canApprove){
-					ApplicationLogicActions.getInstance().approve(applicationID);
-				}else if(input == 3&& canApprove){
-					ApplicationLogicActions.getInstance().reject(applicationID);
+				}else{
+					if(canApproveApplication && canApproveWithdrawal){
+						if(input == 2){
+							ApplicationLogicActions.getInstance().approve(applicationID);
+						}else if(input == 3){
+							ApplicationLogicActions.getInstance().reject(applicationID);
+						}else if(input == 4){
+							WithdrawalLogicActions.getInstance().approve(applicationID);
+						}else if(input == 5){
+							WithdrawalLogicActions.getInstance().reject(applicationID);
+						}
+					}else if(canApproveApplication){
+						if(input == 2){
+							ApplicationLogicActions.getInstance().approve(applicationID);
+						}else if(input == 3){
+							ApplicationLogicActions.getInstance().reject(applicationID);
+						}
+					} else if(canApproveWithdrawal){
+						if(input == 2){
+							WithdrawalLogicActions.getInstance().approve(applicationID);
+						}else if(input == 3){
+							WithdrawalLogicActions.getInstance().reject(applicationID);
+						}
+					}
 				}
 
             } catch (ModelNotFoundException e) {
