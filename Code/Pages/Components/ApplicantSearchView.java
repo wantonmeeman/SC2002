@@ -5,8 +5,8 @@ import Logic.SearchSettingLogicActions;
 
 import java.util.HashMap;
 
-public class ApplicantSearchView {
-    public static String detailedView(HashMap<String,String> ashm) throws ModelNotFoundException {
+public interface ApplicantSearchView {
+    static String detailedView(HashMap<String,String> ashm) throws ModelNotFoundException {
         String returnStr = "";
 
         String flatType = ashm.get("FlatType");

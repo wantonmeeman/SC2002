@@ -5,7 +5,7 @@ import Util.SaveCSV;
 
 import java.util.ArrayList;
 
-public class Storable{
+public class Storable implements SaveCSV, ReadCSV{
     private String filepath;
 
     protected void setFilepath(String filepath) {

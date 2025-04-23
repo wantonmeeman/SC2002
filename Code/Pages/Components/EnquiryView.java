@@ -12,8 +12,8 @@ import java.util.HashMap;
 import static Util.WrapText.wrap;
 import static Util.TruncateText.truncate;
 
-public class EnquiryView {
-    public static String detailedView(String enquiryID) throws ModelNotFoundException {
+public interface EnquiryView {
+    static String detailedView(String enquiryID) throws ModelNotFoundException {
             SimpleDateFormat formatter = Config.DATE_FORMAT;//TODO config
             String returnStr = "";
             HashMap<String,String> ehm = EnquiryLogicActions.getInstance().get(enquiryID);
@@ -34,7 +34,7 @@ public class EnquiryView {
             return returnStr;
     }
 
-    public static String simpleView(String enquiryID) throws ModelNotFoundException{
+    static String simpleView(String enquiryID) throws ModelNotFoundException{
             SimpleDateFormat formatter = Config.DATE_FORMAT;//TODO config
             HashMap<String,String> ehm = EnquiryLogicActions.getInstance().get(enquiryID);
 

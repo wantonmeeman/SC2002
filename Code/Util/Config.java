@@ -11,7 +11,7 @@ public class Config {
     // Initialize on first access
 
     
-    public static final String DATA_PATH = Paths.get(System.getProperty("user.dir"), "Data").toString() + File.separator;
+    public static final String DATA_PATH = Paths.get(System.getProperty("user.dir"), "Data").toString() + File.separator;//If files are not loading, change this to a dorect path
     public static final String FLAT_CSV = "FlatList.csv";
     public static final String MANAGER_CSV = "ManagerList.csv";
     public static final String OFFICER_CSV = "OfficerList.csv";

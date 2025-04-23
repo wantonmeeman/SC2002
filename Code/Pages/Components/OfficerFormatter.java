@@ -6,8 +6,8 @@ import Logic.UserLogicActions;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class OfficerFormatter {
-    public static String formatOfficers(String officerString) throws ModelNotFoundException {
+public interface OfficerFormatter {
+    static String formatOfficers(String officerString) throws ModelNotFoundException {
         String[] officerIDs = officerString.split(",");
         String returnStr = "";
 

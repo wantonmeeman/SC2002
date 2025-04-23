@@ -8,8 +8,8 @@ import Logic.UserLogicActions;
 
 import java.util.HashMap;
 
-public class SearchSettingView {
-    public static String detailedView(String searchSettingID) throws ModelNotFoundException {
+public interface SearchSettingView {
+    static String detailedView(String searchSettingID) throws ModelNotFoundException {
         String returnStr = "";
         HashMap<String,String> sshm = SearchSettingLogicActions.getInstance().get(searchSettingID);
 

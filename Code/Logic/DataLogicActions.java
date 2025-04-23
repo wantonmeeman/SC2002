@@ -8,22 +8,23 @@ import Data.Models.Model;
 import Exceptions.ModelNotFoundException;
 
 import Exceptions.ModelAlreadyExistsException;
+import Logic.Interfaces.LogicCreatable;
+import Logic.Interfaces.LogicDeletable;
+import Logic.Interfaces.LogicGetable;
+import Logic.Interfaces.LogicIdentifiable;
 import Util.GenerateID;
 
-public abstract class DataLogicActions<T extends Model>{
-    protected HashMap<String,String> toMap(T t){
-        //throw new Exception TODO UNAUTH
-        return null;
-    };
+public abstract class DataLogicActions<T extends Model>
+        implements LogicIdentifiable, LogicCreatable, LogicGetable, LogicDeletable {
+
+    abstract protected HashMap<String,String> toMap(T t);
+
+    public String generateID(){return GenerateID.generateID(8);}
 
     abstract public String create(HashMap<String,String> hm) throws ModelAlreadyExistsException;
 
     protected Stream<T> getAllObject(){
         return Stream.empty();
-    }
-
-    protected String generateID(){
-        return GenerateID.generateID(8);
     }
 
     protected T getObject(String ID) throws ModelNotFoundException{
@@ -51,5 +52,5 @@ public abstract class DataLogicActions<T extends Model>{
         return modelList;
     }
 
-    abstract void delete(String ID) throws ModelNotFoundException;
+    abstract public void delete(String ID) throws ModelNotFoundException;
 }

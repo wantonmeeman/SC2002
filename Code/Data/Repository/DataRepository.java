@@ -3,10 +3,11 @@ package Data.Repository;
 import java.util.ArrayList;
 import Data.Models.Model;
 
+import Data.Repository.Interfaces.*;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 
-abstract public class DataRepository extends Storable{
+abstract public class DataRepository extends Storable implements Fetchable, Writeable, RepositoryGetable, RepositoryCreatable, RepositoryDeletable,RepositoryUpdatable {
 
     //Mapping Model to String and vice versa
     protected abstract ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv);

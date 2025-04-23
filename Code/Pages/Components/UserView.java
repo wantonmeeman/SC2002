@@ -6,8 +6,8 @@ import Logic.UserLogicActions;
 
 import java.util.HashMap;
 
-public class UserView {
-    public static String detailedView(String ID) throws ModelNotFoundException {
+public interface UserView {
+    static String detailedView(String ID) throws ModelNotFoundException {
         String returnStr = "";
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(ID);
 
@@ -19,13 +19,13 @@ public class UserView {
         return returnStr;
     }
 
-    public static String simpleView(String ID) throws ModelNotFoundException{
+    static String simpleView(String ID) throws ModelNotFoundException{
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(ID);
 
         return uhm.get("Name");
     }
 
-    public static String applicantView(String ID, String applicationID) throws ModelNotFoundException{
+    static String applicantView(String ID, String applicationID) throws ModelNotFoundException{
 
         HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(applicationID);
 

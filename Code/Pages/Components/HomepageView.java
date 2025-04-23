@@ -1,7 +1,7 @@
 package Pages.Components;
 
-public class HomepageView {
-    public static String applicantHomepage(){
+public interface HomepageView {
+    static String applicantHomepage(){
         return Seperator.seperate()+"\n"+
         "1. Logout"+"\n"+
         "2. Projects"+"\n"+
@@ -9,33 +9,15 @@ public class HomepageView {
         "4. Applications";
     }
 
-    public static String officerHomepage(){
+    static String officerHomepage(){
         return applicantHomepage() + "\n" +
                 "5. Registration";
     }
 
-    public static String managerHomepage(){
+    static String managerHomepage(){
         return Seperator.seperate() + "\n" +
                 "1. Logout"+ "\n"+
                 "2. Projects(Admin)"+"\n"+
                 "3. Enquiries(Admin)";
-    }
-
-    public static String getWelcomeMessage(String role,String name){
-        String returnStr = "Welcome "+name;
-
-        switch(role) {
-            case "Officer":
-                returnStr += " (Officer)";
-                break;
-            case "Manager":
-                returnStr += " (Manager)";
-                break;
-            case "Applicant":
-                returnStr += " (Applicant)";
-                break;
-        }
-
-        return returnStr;
     }
 }

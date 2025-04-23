@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class SaveCSV {
-    public static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvData) {
+public interface SaveCSV {
+    static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvData) {
         try {
 
             //System.out.println("Saving to file: " + filepath);

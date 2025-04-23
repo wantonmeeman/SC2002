@@ -10,14 +10,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class RegistrationView {
-    public static String simpleView(String projectID, String status) throws ModelNotFoundException {
+public interface RegistrationView {
+    static String simpleView(String projectID, String status) throws ModelNotFoundException {
         HashMap<String, String> project = ProjectLogicActions.getInstance().get(projectID);
 
         return project.get("Name") + " - " + "Registration Status: " + status;
     }
 
-    public static String detailedView(String registrationID) throws ModelNotFoundException {
+    static String detailedView(String registrationID) throws ModelNotFoundException {
         HashMap<String, String> rhm = RegistrationLogicActions.getInstance().get(registrationID);
 
         return "Registration Status: " + rhm.get("Status");

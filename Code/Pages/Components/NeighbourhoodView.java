@@ -5,8 +5,8 @@ import Logic.NeighbourhoodLogicActions;
 
 import java.util.HashMap;
 
-public class NeighbourhoodView {
-    public static String simpleView(String neighbourhoodID){
+public interface NeighbourhoodView {
+    static String simpleView(String neighbourhoodID){
         try{
             HashMap<String,String> nhm = NeighbourhoodLogicActions.getInstance().get(neighbourhoodID);
             return nhm.get("Name");

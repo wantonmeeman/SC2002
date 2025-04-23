@@ -15,8 +15,8 @@ import java.util.HashMap;
 
 import static Pages.Components.OfficerFormatter.formatOfficers;
 
-public class ProjectView {
-    public static String detailedView(String projectID) throws ModelNotFoundException {
+public interface ProjectView {
+    static String detailedView(String projectID) throws ModelNotFoundException {
         String returnStr = "";
         SimpleDateFormat formatter = Config.DATE_FORMAT;
         HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
@@ -34,7 +34,7 @@ public class ProjectView {
         return returnStr;
     }
 
-    public static String simpleView(String projectID) throws ModelNotFoundException{
+    static String simpleView(String projectID) throws ModelNotFoundException{
         HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
         SimpleDateFormat formatter = Config.DATE_FORMAT;
 

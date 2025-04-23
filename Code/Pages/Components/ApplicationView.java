@@ -7,8 +7,8 @@ import Logic.WithdrawalLogicActions;
 
 import java.util.HashMap;
 
-public class ApplicationView {
-    public static String detailedView(String ID) throws ModelNotFoundException {
+public interface ApplicationView {
+    static String detailedView(String ID) throws ModelNotFoundException {
         HashMap<String,String> ahm = ApplicationLogicActions.getInstance().get(ID);
 
         return "Application Status: " + ahm.get("Status");

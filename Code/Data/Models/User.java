@@ -15,10 +15,6 @@ abstract public class User extends Model {
         this.password = password;
     }
 
-    public boolean login(String id, String password) {//Remove this?
-        return id.equals(getID()) && password.equals(this.password);
-    }
-
     public char getMaritalStatus() {
         return maritalStatus;
     }

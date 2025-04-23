@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class ReadCSV {
-    public static ArrayList<ArrayList<String>> readCSV(final String filepath) {
+public interface ReadCSV {
+    static ArrayList<ArrayList<String>> readCSV(final String filepath) {
 
         //System.out.println("Reading file: " + filepath);
         ArrayList<ArrayList<String>> returnArr = new ArrayList<>();

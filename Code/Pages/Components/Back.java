@@ -1,7 +1,7 @@
 package Pages.Components;
 
-public class Back {
-    public static String back(){
+public interface Back {
+    static String back(){
         return "1. Back";
     }
 }

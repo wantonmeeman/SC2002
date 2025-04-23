@@ -134,21 +134,50 @@ public class UserLogicActions extends DataLogicActions<User>{
                 .map(model -> (User) model);
     }
 
-    private DataRepository getDataRepository(User user) throws RepositoryNotFoundException{
-        if (user instanceof Officer) {
-            return OfficerRepository.getInstance();
-        } else if (user instanceof Manager){
-            return ManagerRepository.getInstance();
-        } else if (user instanceof Applicant) {
-            return ApplicantRepository.getInstance();
-        }
-        throw new RepositoryNotFoundException();
+    private DataRepository getDataRepository(String role) throws RepositoryNotFoundException{
+        return switch(role){
+            case "Officer"->OfficerRepository.getInstance();
+            case "Manager"->ManagerRepository.getInstance();
+            case "Applicant"->ApplicantRepository.getInstance();
+            default->throw new RepositoryNotFoundException();
+        };
     }
 
+    private String getRole(User user) throws ModelNotFoundException {
+        if (user instanceof Officer) {
+            return "Officer";
+        } else if (user instanceof Manager) {
+            return "Manager";
+        } else if (user instanceof Applicant) {
+            return "Applicant";
+        } else {
+            throw new ModelNotFoundException();
+        }
+    }
+
+    public String getLogoutMessage(String userID) throws ModelNotFoundException {
+        User u = getObject(userID);
+
+        String returnStr = "Logging out "+u.getName();
+
+        switch(getRole(u)) {
+            case "Officer":
+                returnStr += " (Officer)";
+                break;
+            case "Manager":
+                returnStr += " (Manager)";
+                break;
+            case "Applicant":
+                returnStr += " (Applicant)";
+                break;
+        }
+
+        return returnStr;
+    }
     @Override
     public void delete(String ID) throws ModelNotFoundException{
         try {
-            getDataRepository(getObject(ID)).delete(ID);
+            getDataRepository(getRole(getObject(ID))).delete(ID);
         }catch(RepositoryNotFoundException e){
             throw new ModelNotFoundException();//Better
         }
@@ -158,7 +187,7 @@ public class UserLogicActions extends DataLogicActions<User>{
         Applicant applicant = (Applicant) getObject(ID);
         applicant.setApplicationID(applicationID);
 
-        getDataRepository(getObject(ID)).update();
+        getDataRepository(getRole(getObject(ID))).update();
     }
 
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
@@ -166,7 +195,8 @@ public class UserLogicActions extends DataLogicActions<User>{
         System.out.println("[DEBUG] Attempting login for userID: " + userID);
 
         Optional<User> userOpt = getAllObject().filter(
-                        user -> user.login(userID, password))//Do we want the user to handle authentication
+                        user -> user.getID().equals(userID) && user.getPassword().equals(password)
+                )//Do we want the user to handle authentication
                 .findFirst();
 
         if (userOpt.isPresent()) {
