@@ -5,6 +5,7 @@ import Logic.SearchSettingLogicActions;
 import Pages.Components.Back;
 import Pages.Components.SearchSettingView;
 import Pages.Components.Seperator;
+import Util.ClearCMD;
 
 import java.util.Scanner;
 
@@ -24,10 +25,15 @@ public class ApplicantProjectFilterSettingsPage implements ProjectFilterSettings
             System.out.println("6. Toggle 3 Room Filter");
             System.out.println("7. Manager Filter");
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
+        ClearCMD.clear();
 
         try {
             if(input == 1){
@@ -50,11 +56,13 @@ public class ApplicantProjectFilterSettingsPage implements ProjectFilterSettings
                     //3 Room filtering
                 } else if (input == 7) {
                     ProjectFilterSettings.manager(userID);
+                } else {
+                    System.out.println("Could not find object");
                 }
                 start(userID);
             }
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 }

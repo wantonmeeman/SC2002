@@ -27,29 +27,33 @@ public class ApplicantEnquiryPage {
             try {
                 System.out.println((x++)+". "+ EnquiryView.simpleView(ehm.get("ID")));
             }catch(ModelNotFoundException e){
-                System.out.println(e);
+                System.out.println("Couldn't get an enquiry's information, ID:"+ehm.get("ID"));
             }
         }
 
-        input = Integer.parseInt(scanner.nextLine());
-        ClearCMD.clear();
-        switch (input) {
-            case 1 -> {}
-            case 2 -> {
-                createEnquiry(userID);
-                start(userID);
-            }
-            default -> {
-                detailedEnquiry(enquiries.get(input - 3).get("ID"));
-                start(userID);
-            }
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
         }
+        ClearCMD.clear();
+        if (input == 1) {
+            // Do nothing
+            return;
+        } else if (input == 2) {
+            createEnquiry(userID);
+        } else if(x > 0 && input < x){
+            detailedEnquiry(enquiries.get(input - 3).get("ID"));
+        }   else{
+            System.out.println("Invalid Input");
+        }
+        start(userID);
     }
 
     private static void createEnquiry(String userID){
         HashMap<String,String> hm = new HashMap<String,String>();
 
-        hm.put("ProjectID",chooseProject(userID));
+        hm.put("ProjectID",chooseProject());
         hm.put("Message",writeMessage());
         hm.put("UserID", userID);
 
@@ -57,7 +61,7 @@ public class ApplicantEnquiryPage {
         ClearCMD.clear();
     }
 
-    private static String chooseProject(String userID){
+    private static String chooseProject(){
         Scanner scanner = new Scanner(System.in);
         int input;
 
@@ -71,8 +75,19 @@ public class ApplicantEnquiryPage {
             System.out.println((x++) +". "+hm.get("Name"));
         }
 
-        input = Integer.parseInt(scanner.nextLine());
-        return projList.get(input-1).get("ID");
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch (Exception e){
+            input = -1;
+        }
+
+        if(x > 0 && input < x){
+            return projList.get(input-1).get("ID");
+        }else{
+            System.out.println("Invalid Input");
+            chooseProject();
+        }
+        return null;
     }
 
     private static String writeMessage(){
@@ -97,20 +112,27 @@ public class ApplicantEnquiryPage {
             System.out.println("2. Edit");
             System.out.println("3. Delete");
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
 
             ClearCMD.clear();
 
-            switch (input) {
-                case 1 -> {}
-                case 2 -> {
-                    editEnquiry(enquiryID);
-                    detailedEnquiry(enquiryID);
-                }
-                case 3 -> deleteEnquiry(enquiryID);
+            if (input == 1) {
+                // Do nothing
+            } else if (input == 2) {
+                editEnquiry(enquiryID);
+                detailedEnquiry(enquiryID);
+            } else if (input == 3) {
+                deleteEnquiry(enquiryID);
+            } else {
+                System.out.println("Invalid Input");
+                detailedEnquiry(enquiryID);
             }
         }catch(ModelNotFoundException e){
-
+            System.out.println("Could not get Enquiry Information");
         }
     }
 
@@ -128,20 +150,21 @@ public class ApplicantEnquiryPage {
             String NewMsg = scanner.nextLine();
 
             EnquiryLogicActions.getInstance().editMessage(enquiryID,NewMsg);
+
+            ClearCMD.clear();
+            System.out.println("Changes Saved!");
         }catch(ModelNotFoundException e){
-            System.out.println(e);
+            System.out.println("Could not perform action");
         }
-        ClearCMD.clear();
-        System.out.println("Changes Saved!");
     }
 
     private static void deleteEnquiry(String enquiryID) {
         try {
             EnquiryLogicActions.getInstance().delete(enquiryID);
+            System.out.println("Changes Saved!");
         } catch (ModelNotFoundException e) {
-
+            System.out.println("Could not perform action");
         }
         //ClearCMD.clear(); don't need to clear
-        System.out.println("Changes Saved!");
     }
 }

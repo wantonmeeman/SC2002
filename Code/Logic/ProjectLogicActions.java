@@ -10,6 +10,8 @@ import Logic.UserLogicActions;
 import Logic.SearchSettingLogicActions;
 import Logic.FlatLogicActions;
 import Data.Repository.ProjectRepository;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,6 +25,10 @@ import java.util.stream.Stream;
 
 public class ProjectLogicActions extends DataLogicActions<Project>{
     private static ProjectLogicActions instance;
+
+    public ProjectLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Project project) {
@@ -75,10 +81,31 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                 .map(model -> (Project) model);
     }
 
-    public ArrayList<HashMap<String,String>> getAllManager(String userID) throws ModelNotFoundException{
+    public ArrayList<HashMap<String,String>> getAllManagerFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
+        HashMap<String, String> ss = new HashMap<>();
+        try {
+            ss = SearchSettingLogicActions.getInstance().get(userID);
+        }catch(ModelNotFoundException e){
+            //Create a new ss
 
-        HashMap<String, String> ss = SearchSettingLogicActions.getInstance().get(userID);
+            ss = new HashMap<String,String>();
+
+            ss.put("ID", userID);
+            ss.put("ProjectName", null);
+            ss.put("ProjectAscending", "true");
+            ss.put("ProjectNeighbourhoodID", null);
+            ss.put("ProjectThreeRoomFlat", "true");
+            ss.put("ProjectTwoRoomFlat","true");
+            ss.put("ProjectManagerID",null);
+
+            SearchSettingLogicActions.getInstance().create(ss);
+        }
+
+        String projectManagerID = ss.get("ProjectManagerID");
+        String projectNeighbourhood = ss.get("ProjectNeighbourhoodID");
+        String projectName = ss.get("ProjectName");
+
 
         boolean ascending = Boolean.parseBoolean(ss.get("ProjectAscending"));
 
@@ -87,18 +114,9 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         naturalOrder = ascending ? naturalOrder : naturalOrder.reversed();
 
         projList = getAllObject()
-                .filter(proj -> {
-                    String filter = ss.get("ProjectManagerID");
-                    return filter == null || filter.equals(proj.getManagerID());
-                })
-                .filter(proj->{
-                    String filter = ss.get("ProjectNeighbourhoodID");
-                    return filter == null || filter.equals(proj.getNeighbourhoodID());
-                })
-                .filter(proj->{
-                    String filter = ss.get("ProjectName");
-                    return filter == null || Pattern.compile(filter).matcher(proj.getName()).find();
-                })
+                .filter(proj -> projectManagerID == null || projectManagerID.equals(proj.getManagerID()))
+                .filter(proj->projectNeighbourhood == null || projectNeighbourhood.equals(proj.getNeighbourhoodID()))
+                .filter(proj-> projectName == null || Pattern.compile(projectName).matcher(proj.getName()).find())
                 .map(this::toMap)
                 .sorted(naturalOrder)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -109,7 +127,24 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
         HashMap<String,String> user = UserLogicActions.getInstance().get(userID);
-        HashMap<String, String> ss = SearchSettingLogicActions.getInstance().get(userID);
+            HashMap<String, String> ss;
+        try {
+            ss = SearchSettingLogicActions.getInstance().get(userID);
+        }catch(ModelNotFoundException e){
+            //Create a new ss
+
+            ss = new HashMap<String,String>();
+
+            ss.put("ID", userID);
+            ss.put("ProjectName", null);
+            ss.put("ProjectAscending", "true");
+            ss.put("ProjectNeighbourhoodID", null);
+            ss.put("ProjectThreeRoomFlat", "true");
+            ss.put("ProjectTwoRoomFlat","true");
+            ss.put("ProjectManagerID",null);
+
+            SearchSettingLogicActions.getInstance().create(ss);
+        }
 
         int age = Integer.parseInt(user.get("Age"));
         char status = user.get("MaritalStatus").charAt(0);
@@ -118,24 +153,21 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         boolean threeRoomFlatFilter = Boolean.parseBoolean(ss.get("ProjectThreeRoomFlat"));
         boolean twoRoomFlatFilter = Boolean.parseBoolean(ss.get("ProjectTwoRoomFlat"));
 
+            String projectManagerID = ss.get("ProjectManagerID");
+            String projectNeighbourhood = ss.get("ProjectNeighbourhoodID");
+            String projectName = ss.get("ProjectName");
+
         Comparator<HashMap<String,String>> naturalOrder = Comparator.comparing(s -> s.get("Name"));
 
         naturalOrder = ascending ? naturalOrder : naturalOrder.reversed();
 
         projList = getAllObject()
-                .filter(proj -> {
-                    String filter = ss.get("ProjectManagerID");
-                    return filter == null || filter.equals(proj.getManagerID());
-                })
-                .filter(proj->{
-                    String filter = ss.get("ProjectNeighbourhoodID");
-                    return filter == null || filter.equals(proj.getNeighbourhoodID());
-                })
-                .filter(proj->{
-                    String filter = ss.get("ProjectName");
-                    return filter == null || Pattern.compile(filter).matcher(proj.getName()).find();
-                })
-                .map(this::toMap)
+                    .filter(proj -> projectManagerID == null || projectManagerID.equals(proj.getManagerID()))
+                    .filter(proj->projectNeighbourhood == null || projectNeighbourhood.equals(proj.getNeighbourhoodID()))
+                    .filter(proj-> projectName == null || Pattern.compile(projectName).matcher(proj.getName()).find())
+
+
+                    .map(this::toMap)
                 .filter(proj -> {
                     //Check Marital Status and age
                     int totalTwoRoomFlats;
@@ -242,7 +274,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
     public static ProjectLogicActions getInstance() {
         if (instance == null)
-            instance = new ProjectLogicActions();
+            instance = new ProjectLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

@@ -1,2 +1,3 @@
-T8765432F,Michael,password,36,S,null
-S5678901G,Jessica,password,26,M,null
+T8765432F,Michael,password,36,S
+S5678901G,Jessica,password,26,M
+T1234567G,TestManager,password,25,M

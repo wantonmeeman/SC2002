@@ -2,6 +2,7 @@ package Pages.FilterSettingPages;
 
 import Exceptions.ModelNotFoundException;
 import Pages.Components.*;
+import Util.ClearCMD;
 
 import java.util.Scanner;
 
@@ -19,10 +20,15 @@ public class ManagerProjectFilterSettingsPage implements ProjectFilterSettings {
             System.out.println("4. Neighbourhood Filter");
             System.out.println("5. Manager Filter");
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
+        ClearCMD.clear();
 
         try {
             if(input == 1){
@@ -39,11 +45,13 @@ public class ManagerProjectFilterSettingsPage implements ProjectFilterSettings {
                     ProjectFilterSettings.neighbourhood(userID);
                 } else if (input == 5) {
                     ProjectFilterSettings.manager(userID);
+                }else{
+                    System.out.println("Invalid Input");
                 }
                 start(userID);
             }
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 }

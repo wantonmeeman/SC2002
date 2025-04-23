@@ -11,8 +11,23 @@ import java.util.HashMap;
 public interface SearchSettingView {
     static String detailedView(String searchSettingID) throws ModelNotFoundException {
         String returnStr = "";
-        HashMap<String,String> sshm = SearchSettingLogicActions.getInstance().get(searchSettingID);
+        HashMap<String, String> sshm;
+        try {
+            sshm = SearchSettingLogicActions.getInstance().get(searchSettingID);
+        }catch(ModelNotFoundException e){
+            //Create a new ss
+            sshm = new HashMap<String,String>();
 
+            sshm.put("ID", searchSettingID);
+            sshm.put("ProjectName", null);
+            sshm.put("ProjectAscending", "true");
+            sshm.put("ProjectNeighbourhoodID", null);
+            sshm.put("ProjectThreeRoomFlat", "true");
+            sshm.put("ProjectTwoRoomFlat","true");
+            sshm.put("ProjectManagerID",null);
+
+            SearchSettingLogicActions.getInstance().create(sshm);
+        }
 
         boolean ascending = Boolean.parseBoolean(sshm.get("ProjectAscending"));
         boolean twoRoomFilter = Boolean.parseBoolean(sshm.get("ProjectTwoRoomFlat"));

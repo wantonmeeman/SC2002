@@ -1,17 +1,13 @@
 package Logic;
 
 import Data.Models.*;
-import Data.Repository.ApplicationRepository;
 import Data.Repository.RegistrationRepository;
 import Exceptions.ModelAlreadyExistsException;
-import Exceptions.RepositoryNotFoundException;
 import Exceptions.ModelNotFoundException;
 import Exceptions.UnauthorizedActionException;
-import Logic.UserLogicActions;
-import Logic.*;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -20,6 +16,10 @@ import java.util.stream.Stream;
 
 public class RegistrationLogicActions extends DataLogicActions<Registration>{
     private static RegistrationLogicActions instance;
+
+    public RegistrationLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Registration registration) {
@@ -34,7 +34,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
     }
 
     public String create(HashMap<String, String> hm){
-        String registrationID = GenerateID.generateID(8); // assuming this exists
+        String registrationID = generateID(); // assuming this exists
         String officerID = hm.get("OfficerID");
         String projectID = hm.get("ProjectID");
         String status = "Pending"; // default status
@@ -144,7 +144,7 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
 
     public static RegistrationLogicActions getInstance() {
         if (instance == null)
-            instance = new RegistrationLogicActions();
+            instance = new RegistrationLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

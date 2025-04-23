@@ -1,20 +1,21 @@
 package Logic;
 
-import Data.Models.Applicant;
 import Data.Models.Flat;
 import Data.Repository.FlatRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
-import Exceptions.RepositoryNotFoundException;
-import Logic.DataLogicActions;
-import Logic.UserLogicActions;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class FlatLogicActions extends DataLogicActions<Flat>{
     private static FlatLogicActions instance;
+
+    public FlatLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Flat flat) {
@@ -29,7 +30,7 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
     }
 
     public String create(HashMap<String, String> hm) {
-        String flatID = GenerateID.generateID(8);
+        String flatID = generateID();
         String type = hm.get("Type");
         int totalUnits = Integer.parseInt(hm.get("TotalUnits"));
         float price = Float.parseFloat(hm.get("Price"));
@@ -75,7 +76,7 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
 
     public static FlatLogicActions getInstance() {
         if (instance == null)
-            instance = new FlatLogicActions();
+            instance = new FlatLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

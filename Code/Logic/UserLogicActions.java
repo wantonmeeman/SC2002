@@ -15,6 +15,8 @@ import Exceptions.RepositoryNotFoundException;
 import Exceptions.ModelNotFoundException;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.WrongInputException;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +27,10 @@ import java.util.stream.Stream;
 
 public class UserLogicActions extends DataLogicActions<User>{
     private static UserLogicActions instance;
+
+    public UserLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     protected HashMap<String,String> toMap(User user){
         HashMap<String,String> userMap = new HashMap<String, String>();
@@ -41,8 +47,6 @@ public class UserLogicActions extends DataLogicActions<User>{
             userMap.put("ApplicationID",((Applicant) user).getApplicationID());
         } else if (user instanceof Manager) {
             userMap.put("Role","Manager");
-
-            userMap.put("ProjectID", ((Manager) user).getProjectID());
         } else if (user instanceof Applicant) {
             userMap.put("Role","Applicant");
 
@@ -88,8 +92,7 @@ public class UserLogicActions extends DataLogicActions<User>{
                                 name,
                                 age,
                                 maritalStatus,
-                                password,
-                                null
+                                password
                         )
                 );
             } catch (ModelAlreadyExistsException e) {
@@ -190,6 +193,13 @@ public class UserLogicActions extends DataLogicActions<User>{
         getDataRepository(getRole(getObject(ID))).update();
     }
 
+    public void changePassword(String ID, String newPassword) throws ModelNotFoundException, RepositoryNotFoundException{
+        User u = getObject(ID);
+        u.setPassword(newPassword);
+
+        getDataRepository(getRole(u)).update();
+    }
+
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
 
         System.out.println("[DEBUG] Attempting login for userID: " + userID);
@@ -216,7 +226,7 @@ public class UserLogicActions extends DataLogicActions<User>{
 
     public static UserLogicActions getInstance() {
         if (instance == null)
-            instance = new UserLogicActions();
+            instance = new UserLogicActions(new DefaultGenerateID());
         return instance;
     }
 

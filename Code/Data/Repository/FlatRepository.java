@@ -16,7 +16,7 @@ public class FlatRepository extends DataRepository {
     }
 
     @Override
-    public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
+    protected ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> flatArr = new ArrayList<>();
 
         for (ArrayList<String> strArr : csv) {
@@ -32,7 +32,7 @@ public class FlatRepository extends DataRepository {
     }
 
     @Override
-    public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
+    protected ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
         alm.forEach(model -> {

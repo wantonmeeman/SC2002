@@ -23,9 +23,9 @@ public class RegistrationPage implements ReplyEnquiry {
 		System.out.println(Seperator.seperate());
 		System.out.println(Back.back());
 		System.out.println("2. Register for new Project");
-
+		int x = 0;
 		if (!registration.isEmpty()) {
-			int x = 3;
+			x = 3;
 			for(HashMap<String,String> hm: registration){
 				try {
 					String projectID = hm.get("ProjectID");
@@ -34,25 +34,31 @@ public class RegistrationPage implements ReplyEnquiry {
 					System.out.println((x++) + ". "+ RegistrationView.simpleView(projectID,status));
 				}catch(ModelNotFoundException e){
 					//TODO
-					System.out.println(e);
+					System.out.println("Registration not found");
 				}
 			}
 		}
 
-		input = Integer.parseInt(scanner.nextLine());
+		try {
+			input = Integer.parseInt(scanner.nextLine());
+		}catch(NumberFormatException e){
+			input = -1;//pass to default handler
+		}
 		ClearCMD.clear();
 		if (input == 1) {
 			//start(userID);
 		}else if(input == 2){
 			register(userID);
 			start(userID);
-		}else{
+		}else if(x > 0 && input < x){
 			if(registration.get(input-3).get("Status").equals("Successful")){
 				detailedRegistration(registration.get(input - 3).get("ProjectID"),userID);
 			}else{
 				System.out.println("Not Allowed to Access");
 			}
 			start(userID);
+		}else{
+			System.out.println("Invalid Input");
 		}
 	}
 
@@ -62,16 +68,21 @@ public class RegistrationPage implements ReplyEnquiry {
 		Scanner scanner = new Scanner(System.in);
 		int input;
 
-
 		System.out.println(Seperator.seperate());
 		System.out.println(Back.back());
 		for(HashMap<String,String> hm: projList){
 			System.out.println((x++) +". "+hm.get("Name"));
 		}
-		input = Integer.parseInt(scanner.nextLine());
+		try {
+			input = Integer.parseInt(scanner.nextLine());
+		}catch(NumberFormatException e){
+			input = -1;//pass to default handler
+		}
+		ClearCMD.clear();
+
 		if (input == 1) {
 			//start(userID);
-		}else{
+		}else if(x > 0 && input < x){
 			HashMap<String,String> newHM = new HashMap<String,String>();
 
 			newHM.put("OfficerID",userID);
@@ -80,8 +91,11 @@ public class RegistrationPage implements ReplyEnquiry {
 			try {
 				RegistrationLogicActions.getInstance().register(newHM);
 			}catch(Exception e){
-				System.out.println(e);
+				System.out.println("Could not register");
 			}
+		}else{
+			System.out.println("Invalid Input");
+			register(userID);
 		}
 	}
 
@@ -90,26 +104,38 @@ public class RegistrationPage implements ReplyEnquiry {
 		int input;
 
         try {
+			System.out.println(Seperator.seperate());
+
             System.out.println(ProjectView.detailedView(projectID));
+
+			HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+			System.out.println(Seperator.seperate());
+			System.out.println(FlatView.detailedView(phm.get("ThreeRoomFlatID")));
+			System.out.println(FlatView.detailedView(phm.get("TwoRoomFlatID")));
+
 			System.out.println(Back.back());
 			System.out.println("2. Enquiries");
 			System.out.println("3. Applicants");
 
-		input = Integer.parseInt(scanner.nextLine());
+			try {
+				input = Integer.parseInt(scanner.nextLine());
+			}catch(NumberFormatException e){
+				input = -1;//pass to default handler
+			}
+			ClearCMD.clear();
 
-		switch(input){
-			case 1:
+			if (input == 1) {
 				return;
-			case 2:
+			} else if (input == 2) {
 				viewEnquiries(projectID);
-				break;
-			case 3:
-				viewApplicants(projectID,userID);
-				break;
-		}
+			} else if (input == 3) {
+				viewApplicants(projectID, userID);
+			}else{
+				System.out.println("Invalid Input");
+			}
 		detailedRegistration(projectID, userID);
 		} catch (ModelNotFoundException e) {
-			throw new RuntimeException(e);
+			System.out.println("Could not find object");
 		}
 	}
 
@@ -124,18 +150,25 @@ public class RegistrationPage implements ReplyEnquiry {
 			System.out.println(Back.back());
 			System.out.println("2. Reply");
 
-			input = Integer.parseInt(scanner.nextLine());
+			try {
+				input = Integer.parseInt(scanner.nextLine());
+			}catch(NumberFormatException e){
+				input = -1;//pass to default handler
+			}
+			ClearCMD.clear();
 
 			if(input == 1){
 
 			}else if(input == 2){
 				ReplyEnquiry.replyEnquiry(enquiryID);
-			}else {
+				viewEnquiry(enquiryID);
+			}else{
+				System.out.println("Invalid Input");
 				viewEnquiry(enquiryID);
 			}
 
 		} catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+			System.out.println("Could not find registration");
         }
     }
 
@@ -183,7 +216,7 @@ public class RegistrationPage implements ReplyEnquiry {
 					break;
 			}
 		} catch (ModelNotFoundException e) {
-			throw new RuntimeException(e);//TODO
+			System.out.println("Could not find object");
 		}
 	}
 
@@ -210,7 +243,12 @@ public class RegistrationPage implements ReplyEnquiry {
 					break;
 			}
 
-			input = Integer.parseInt(scanner.nextLine());
+			try {
+				input = Integer.parseInt(scanner.nextLine());
+			}catch(NumberFormatException e){
+				input = -1;//pass to default handler
+			}
+			ClearCMD.clear();
 
 			if(input == 1){
 
@@ -223,11 +261,14 @@ public class RegistrationPage implements ReplyEnquiry {
 				}
 
 				viewApplicant(applicantID,officerID);
+			}else{
+				System.out.println("Invalid Input");
+				viewApplicant(applicantID,officerID);
 			}
 
 
 		}catch(Exception e){
-			System.out.println(e);
+			System.out.println("Could not find object");
 		}
 	}
 
@@ -245,7 +286,7 @@ public class RegistrationPage implements ReplyEnquiry {
 			System.out.println(Seperator.seperate());
 
 		} catch (ModelNotFoundException e) {
-			throw new RuntimeException(e);
+			System.out.println("Could not find object");
 		}
 	}
 
@@ -257,33 +298,38 @@ public class RegistrationPage implements ReplyEnquiry {
 			HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
 			System.out.println(phm.get("Name")+"'s Applicants: ");
 
-			ArrayList<HashMap<String,String>> appArr = ApplicationLogicActions.getInstance().getApplicationsByProjectID(projectID);
+			ArrayList<HashMap<String,String>> appArr = ApplicationLogicActions.getInstance().getFilteredApplicationsByProjectID(projectID,null);
 
 			int x = 2;
 
 			System.out.println(Back.back());
 
 			for(HashMap<String,String> hm: appArr){
-				String Name = UserLogicActions.getInstance().get(hm.get("UserID")).get("Name");
-
-				System.out.println((x++)+". "+ Name +" - "+hm.get("Status"));
+				HashMap<String,String> uhm = UserLogicActions.getInstance().get(hm.get("UserID"));
+				String Name = uhm.get("Name");
+				String ID = uhm.get("ID");
+				System.out.println((x++)+". "+ Name +" - "+ID+" - "+hm.get("Status"));
 			}
 
-			input = Integer.parseInt(scanner.nextLine());
-			switch(input){
-				case 1:
-
+			try {
+				input = Integer.parseInt(scanner.nextLine());
+			}catch(NumberFormatException e){
+				input = -1;//pass to default handler
+			}
+			ClearCMD.clear();
+			if (input == 1) {
 				return;
-				default:
-					viewApplicant(appArr.get(input-2).get("UserID"), userID);
-					//viewApplicants(projectID);, then print
-				break;
+			} else if(x > 0 && input < x) {
+				viewApplicant(appArr.get(input - 2).get("UserID"), userID);
+				// viewApplicants(projectID);, then print
+			} else{
+				System.out.println("Invalid Input");
 			}
 
 			viewApplicants(projectID,userID);
 
 		} catch (ModelNotFoundException e) {
-			throw new RuntimeException(e);//TODO
+			System.out.println("Could not find Applicant");
 		}
 	}
 

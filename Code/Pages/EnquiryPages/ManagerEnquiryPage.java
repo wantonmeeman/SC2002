@@ -27,21 +27,25 @@ public class ManagerEnquiryPage implements ReplyEnquiry {
             try {
                 System.out.println((x++)+". "+ EnquiryView.simpleView(ehm.get("ID")));
             }catch(ModelNotFoundException e){
-                System.out.println(e);
+                System.out.println("Could not find enquiry");
             }
         }
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
         ClearCMD.clear();
-        switch (input) {
-            case 1 -> {
 
-            }
-            default -> {
-                viewEnquiry(enquiries.get(input - 2).get("ID"), userID);
-                start(userID);
-            }
+        if(input == 1){
+            return;
+        }else if(x > 0 && input < x){
+            viewEnquiry(enquiries.get(input - 2).get("ID"), userID);
+        }else{
+            System.out.println("Invalid Input");
         }
+        start(userID);
     }
 
     public static void viewEnquiry(String enquiryID,String userID){
@@ -62,19 +66,25 @@ public class ManagerEnquiryPage implements ReplyEnquiry {
                 System.out.println("2. Reply");//TODO do we need to remove this
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             ClearCMD.clear();
 
             if(input == 1){
-
+                return;
             }else if(input == 2){
                 ReplyEnquiry.replyEnquiry(enquiryID);
-            }else {
-                viewEnquiry(enquiryID,userID);
+            }else{
+                System.out.println("Invalid Input");
             }
 
+            viewEnquiry(enquiryID,userID);
+
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find enquiry");
         }
     }
 }

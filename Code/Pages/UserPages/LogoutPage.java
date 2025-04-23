@@ -2,7 +2,7 @@ package Pages.UserPages;
 
 import Exceptions.ModelNotFoundException;
 import Logic.UserLogicActions;
-import Util.PrintToCMD;
+import Util.Interfaces.PrintToCMD;
 
 public class LogoutPage{
     public static void start(String userID) {

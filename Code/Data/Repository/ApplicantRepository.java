@@ -10,13 +10,12 @@ public class ApplicantRepository extends DataRepository {
     private static ApplicantRepository instance;
 
     public ApplicantRepository() {
-        System.out.println("Loading from: " + DATA_PATH + APPLICANT_CSV);
         setFilepath(DATA_PATH + APPLICANT_CSV);
         fetch();
     }
 
     @Override
-    public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
+    protected ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> applicantArr = new ArrayList<>();
 
         for (ArrayList<String> strArr : csv) {
@@ -34,7 +33,7 @@ public class ApplicantRepository extends DataRepository {
     }
 
     @Override
-    public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
+    protected ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
         // Loop through each Model in alm

@@ -12,6 +12,8 @@ import Data.Repository.EnquiryRepository;
 import Exceptions.ModelNotFoundException;
 import Exceptions.WrongInputException;
 import Exceptions.ModelAlreadyExistsException;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +24,10 @@ import java.time.Instant;
 
 public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
     private static EnquiryLogicActions instance;
+
+    public EnquiryLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String,String> toMap(Enquiry enquiry){
@@ -107,7 +113,7 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
 
     public static EnquiryLogicActions getInstance() {
         if (instance == null)
-            instance = new EnquiryLogicActions();
+            instance = new EnquiryLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

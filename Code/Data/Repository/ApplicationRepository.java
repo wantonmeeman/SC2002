@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import static Util.Config.APPLICATION_CSV;
 import static Util.Config.DATA_PATH;
 
-public class ApplicationRepository extends DataRepository {
+public class ApplicationRepository extends DataRepository{
     private static ApplicationRepository instance;
 
     public ApplicationRepository() {
@@ -18,7 +18,7 @@ public class ApplicationRepository extends DataRepository {
     }
 
     @Override
-    public ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
+    protected ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> applicationArr = new ArrayList<>();
 
         for (ArrayList<String> strArr : csv) {
@@ -36,7 +36,7 @@ public class ApplicationRepository extends DataRepository {
     }
 
     @Override
-    public ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
+    protected ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm) {
         ArrayList<ArrayList<String>> csvData = new ArrayList<>();
 
         alm.forEach(model -> {

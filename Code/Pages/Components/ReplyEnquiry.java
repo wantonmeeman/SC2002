@@ -19,7 +19,7 @@ public interface ReplyEnquiry {
 
             ClearCMD.clear();
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find enquiry");
         }
     }
 }

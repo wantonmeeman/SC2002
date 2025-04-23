@@ -28,15 +28,6 @@ public class Flat extends Model{
         this.totalUnits = totalUnits;
     }
 
-    @Override
-    public String toString() {
-        return "TypeFlat{" +
-                "type='" + type + '\'' +
-                ", totalUnits=" + totalUnits +
-                ", price=" + price +
-                '}';
-    }
-
     public float getPrice() {
         return price;
     }

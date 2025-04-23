@@ -4,15 +4,17 @@ import Data.Models.SearchSetting;
 import Data.Repository.SearchSettingRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
-import Logic.DataLogicActions;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
     private static SearchSettingLogicActions instance;
-
+    public SearchSettingLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
     @Override
     protected HashMap<String, String> toMap(SearchSetting searchSetting) {
         HashMap<String, String> searchSettingMap = new HashMap<>();
@@ -109,7 +111,7 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
 
     public static SearchSettingLogicActions getInstance() {
         if (instance == null)
-            instance = new SearchSettingLogicActions();
+            instance = new SearchSettingLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

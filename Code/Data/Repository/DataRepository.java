@@ -6,8 +6,10 @@ import Data.Models.Model;
 import Data.Repository.Interfaces.*;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Util.Storable;
 
-abstract public class DataRepository extends Storable implements Fetchable, Writeable, RepositoryGetable, RepositoryCreatable, RepositoryDeletable,RepositoryUpdatable {
+abstract public class DataRepository extends Storable implements
+        RepositoryGetable, RepositoryCreatable, RepositoryDeletable,RepositoryUpdatable {
 
     //Mapping Model to String and vice versa
     protected abstract ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv);

@@ -25,18 +25,23 @@ public class NeighbourhoodPage {
 			for(HashMap<String,String> nhm:nal){
 				System.out.println((x++) + ". "+ NeighbourhoodView.simpleView(nhm.get("ID")));
             }
-			input = Integer.parseInt(scanner.nextLine());
+			try {
+				input = Integer.parseInt(scanner.nextLine());
+			}catch(NumberFormatException e){
+				input = -1;//pass to default handler
+			}
 			ClearCMD.clear();
 
-			switch (input) {
-				case 1 -> {
-					// handle input == 1 here
-				}
-				case 2 -> {
-					createNeighbourhood();
-					start();
-				}
-				default -> detailedNeighbourhood(nal.get(input - 3).get("ID"));
+			if (input == 1) {
+				// handle input == 1 here
+			} else if (input == 2) {
+				createNeighbourhood();
+				start();
+			} else if(x > 0 && input < x){
+				detailedNeighbourhood(nal.get(input - 3).get("ID"));
+			}else{
+				System.out.println("Invalid Input");
+				start();
 			}
 		}
 
@@ -50,21 +55,23 @@ public class NeighbourhoodPage {
 		System.out.println("2. Edit");
 		System.out.println("3. Delete");
 
-		input = Integer.parseInt(scanner.nextLine());
+		try {
+			input = Integer.parseInt(scanner.nextLine());
+		}catch(NumberFormatException e){
+			input = -1;//pass to default handler
+		}
 		ClearCMD.clear();
 
-		switch (input) {
-			case 1 -> {
-				// handle input == 1 here
-			}
-			case 2 -> {
-				editNeighbourhood(neighbourhoodID);
-				detailedNeighbourhood(neighbourhoodID);
-			}
-			case 3 -> {
-				deleteNeighbourhood(neighbourhoodID);
-				detailedNeighbourhood(neighbourhoodID);
-			}
+		if (input == 1) {
+			// handle input == 1 here
+		} else if (input == 2) {
+			editNeighbourhood(neighbourhoodID);
+			detailedNeighbourhood(neighbourhoodID);
+		} else if (input == 3) {
+			deleteNeighbourhood(neighbourhoodID);
+		} else{
+			System.out.println("Invalid Input");
+			detailedNeighbourhood(neighbourhoodID);
 		}
 	}
 
@@ -93,22 +100,21 @@ public class NeighbourhoodPage {
 			String NewMsg = scanner.nextLine();
 
 			NeighbourhoodLogicActions.getInstance().editName(neighbourhoodID,NewMsg);
+			ClearCMD.clear();
+			System.out.println("Changes Saved!");
 		}catch(ModelNotFoundException e){
-			//TODO
-			System.out.println(e);
+			ClearCMD.clear();
+			System.out.println("Could not find neighbourhood");
 		}
-
-		ClearCMD.clear();
-		System.out.println("Changes Saved!");
 	}
 
 	private static void deleteNeighbourhood(String neighbourhoodID){
             try {
                 NeighbourhoodRepository.getInstance().delete(neighbourhoodID);
+				System.out.println("Changes Saved!");
             } catch (ModelNotFoundException e) {
-                throw new RuntimeException(e);
+				System.out.println("Could not find neighbourhood");
             }
-		System.out.println("Changes Saved!");
         }
 }
 

@@ -5,6 +5,7 @@ import Pages.Components.HomepageView;
 import Pages.EnquiryPages.ApplicantEnquiryPage;
 import Pages.ProjectPages.ApplicantProjectPages;
 import Pages.UserPages.LogoutPage;
+import Pages.UserPages.UserPage;
 import Util.ClearCMD;
 
 import java.util.Scanner;
@@ -15,7 +16,11 @@ public class ApplicantHomepage {
         int input;
 
         System.out.println(HomepageView.applicantHomepage());
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
         ClearCMD.clear();
 
         switch(input){
@@ -35,8 +40,11 @@ public class ApplicantHomepage {
                 //Applications
                 ApplicationsPage.start(userID);
                 break;
+            case 5:
+                UserPage.start(userID);
+                break;
             default:
-                System.out.println("Wrong Input, Please try again.");
+                System.out.println("Invalid Input");
         }
         start(userID);
     }

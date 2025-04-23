@@ -26,7 +26,8 @@ public class ApplicantProjectPages {
         try {
             projList = ProjectLogicActions.getInstance().getAllFiltered(userID);
         }catch(ModelNotFoundException e){
-            System.out.println(e.toString());
+            System.out.println("User not found");
+            return;
         }
 
         System.out.println(Seperator.seperate());
@@ -52,11 +53,15 @@ public class ApplicantProjectPages {
                 }
 
             } catch (ModelNotFoundException e) {
-                throw new RuntimeException(e);
+                System.out.println("Project not found");
             }
         }
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
 
         ClearCMD.clear();
         if(input == 1) {
@@ -64,9 +69,12 @@ public class ApplicantProjectPages {
         }else if(input == 2){
             ApplicantProjectFilterSettingsPage.start(userID);
             start(userID);
-        }else if(input < x){
+        }else if(x > 0 && input < x){
             detailedFlat(inputToIDMap.get(input),userID);
-        }//TODO handle error
+        }else{
+            System.out.println("Invalid Input");
+            start(userID);
+            }
     }
 
     public static void detailedFlat(String flatID,String userID){
@@ -77,7 +85,8 @@ public class ApplicantProjectPages {
         try {
             projectID = ProjectLogicActions.getInstance().getProjectByFlatID(flatID).get("ID");
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
+            return;
         }
 
         System.out.println(Seperator.seperate());
@@ -85,26 +94,25 @@ public class ApplicantProjectPages {
         try {
             System.out.println(ProjectView.detailedView(projectID));
             System.out.println(FlatView.detailedView(flatID));
-        }catch (Exception e){
-            System.out.println(e);
+        }catch (ModelNotFoundException e){
+            System.out.print("Could not find Project or Flat");
         }
 
         System.out.println(Back.back());
         System.out.println("2. Apply");
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
 
         if(input != 1){
             try {
                 ApplicationLogicActions.getInstance().apply(userID,flatID);
-            } catch (UnauthorizedActionException e) {
-                throw new RuntimeException(e);
-            } catch (ModelAlreadyExistsException e) {
-                throw new RuntimeException(e);
-            } catch (ModelNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (RepositoryNotFoundException e) {
-                throw new RuntimeException(e);
+            } catch (UnauthorizedActionException | ModelAlreadyExistsException | ModelNotFoundException |
+                     RepositoryNotFoundException e) {
+                System.out.println("Could not apply");
             }
         }
     }

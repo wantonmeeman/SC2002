@@ -28,7 +28,11 @@ public interface ProjectFilterSettings {
                 System.out.println((x++)+". "+ NeighbourhoodView.simpleView(nhm.get("ID")));
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
 
             if(input == 1){
                 SearchSettingLogicActions.getInstance().editNeighbourhood(userID, null);
@@ -37,7 +41,7 @@ public interface ProjectFilterSettings {
             }
 
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find user");
         }
     }
 
@@ -56,14 +60,18 @@ public interface ProjectFilterSettings {
                 System.out.println((x++)+". "+ UserView.simpleView(mhm.get("ID")));
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             if(input == 1){
                 SearchSettingLogicActions.getInstance().editManager(userID, null);
             }else {
                 SearchSettingLogicActions.getInstance().editManager(userID, mal.get(input - 2).get("ID"));
             }
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find user");
         }
     }
 
@@ -79,7 +87,7 @@ public interface ProjectFilterSettings {
 
             SearchSettingLogicActions.getInstance().editName(userID,input);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find user");
         }
     }
 

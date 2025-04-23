@@ -46,13 +46,4 @@ abstract public class User extends Model {
     public void setAge(int age) {
         this.age = age;
     }
-
-    @Override
-    public String toString() {
-        return "User {" +
-                "ID='" + getID() + '\'' +
-                ", Name='" + name + '\'' +
-                ", Age=" + age +
-                ", Marital Status=" + maritalStatus;
-    }
 }

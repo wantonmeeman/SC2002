@@ -4,12 +4,18 @@ import Data.Models.Withdrawal;
 import Data.Repository.WithdrawalRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
     private static WithdrawalLogicActions instance;
+
+    public WithdrawalLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Withdrawal withdrawal) {
@@ -80,7 +86,7 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
 
     public static WithdrawalLogicActions getInstance() {
         if (instance == null)
-            instance = new WithdrawalLogicActions();
+            instance = new WithdrawalLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

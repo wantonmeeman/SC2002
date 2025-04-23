@@ -1,17 +1,21 @@
 package Logic;
 
 import Data.Models.Neighbourhood;
-import Data.Models.Neighbourhood;
 import Data.Repository.NeighbourhoodRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class NeighbourhoodLogicActions extends DataLogicActions<Neighbourhood>{
     private static NeighbourhoodLogicActions instance;
+
+    public NeighbourhoodLogicActions(IDGenerator idGenerator) {
+        super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Neighbourhood neighbourhood) {
@@ -24,7 +28,7 @@ public class NeighbourhoodLogicActions extends DataLogicActions<Neighbourhood>{
     }
 
     public String create(HashMap<String, String> hm){
-        String neighbourhoodID = GenerateID.generateID(8);
+        String neighbourhoodID = generateID();
         String name = hm.get("Name");
 
         Neighbourhood neighbourhood = new Neighbourhood(
@@ -60,7 +64,7 @@ public class NeighbourhoodLogicActions extends DataLogicActions<Neighbourhood>{
 
     public static NeighbourhoodLogicActions getInstance() {
         if (instance == null)
-            instance = new NeighbourhoodLogicActions();
+            instance = new NeighbourhoodLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

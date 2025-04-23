@@ -36,6 +36,7 @@ public class LoginPage {
                 case "Applicant"-> ApplicantHomepage.start(userID);
                 case "Manager"-> ManagerHomepage.start(userID);
                 case "Officer"-> OfficerHomepage.start(userID);
+                default -> System.out.println("Could not find user role");
             }
 
             start();

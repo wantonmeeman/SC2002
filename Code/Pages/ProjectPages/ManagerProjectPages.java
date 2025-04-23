@@ -6,6 +6,7 @@ import Pages.Components.*;
 import Pages.FilterSettingPages.ApplicantFilterSettingsPage;
 import Pages.FilterSettingPages.ManagerProjectFilterSettingsPage;
 import Pages.NeighbourhoodPages.NeighbourhoodPage;
+import Util.ClearCMD;
 import Util.Config;
 
 import java.text.SimpleDateFormat;
@@ -25,11 +26,11 @@ public class ManagerProjectPages {
         System.out.println("2. Neighbourhoods");
         System.out.println("3. Filter Settings");
 
-        ArrayList<HashMap<String,String>> pal = null;
+        ArrayList<HashMap<String,String>> pal = new ArrayList<>();
         try {
-            pal = ProjectLogicActions.getInstance().getAllManager(userID);
+            pal = ProjectLogicActions.getInstance().getAllManagerFiltered(userID);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find user");
         }
 
         int x = 5;
@@ -41,7 +42,7 @@ public class ManagerProjectPages {
         try {
             activeProjectID= ProjectLogicActions.getInstance().getActiveProjectByManagerID(userID).get("ID");
         } catch (ModelNotFoundException e) {
-            //throw new RuntimeException(e);
+            //This just means that there is not active project
         }
 
         for(HashMap<String,String> phm: pal){
@@ -58,7 +59,7 @@ public class ManagerProjectPages {
                     inputToIDMap.put(x++,phm.get("ID"));
                 }
             } catch (ModelNotFoundException e) {
-                throw new RuntimeException(e);
+                System.out.println("Could not find User");
             }
         }
 
@@ -67,46 +68,53 @@ public class ManagerProjectPages {
 
             System.out.print(projectsStr);
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
+            ClearCMD.clear();
 
             if(input == 1){
-
+                return;
             }else if(input == 2){
                 //Neighbourhoods
                 NeighbourhoodPage.start();
-                start(userID);
             }else if(input == 3){
                 //Filter Settings
                 ManagerProjectFilterSettingsPage.start(userID);
-                start(userID);
-            }else{
+            }else if(x > 0 && input < x){
                 detailedProject(inputToIDMap.get(input),userID);
-                start(userID);
+            }else{
+                System.out.println("Invalid Input");
             }
+            start(userID);
         }else{
             System.out.println("4. Create new Project");//Either create new project or active project
 
             System.out.print(projectsStr);
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
+            ClearCMD.clear();
 
             if(input == 1){
-
+                return;
             }else if(input == 2){
                 //Neighbourhoods
                 NeighbourhoodPage.start();
-                start(userID);
             }else if(input == 3){
                 //Filter Settings
                 ManagerProjectFilterSettingsPage.start(userID);
-                start(userID);
             }else if(input == 4){
                 createProject(userID);
-                start(userID);
-            }else{
+            }else if(x > 0 && input < x){
                 detailedProject(inputToIDMap.get(input),userID);
-                start(userID);
             }
+            start(userID);
         }
     }
     public static void detailedProject(String projectID, String userID){
@@ -134,42 +142,35 @@ public class ManagerProjectPages {
                 System.out.println("4. Edit Project");
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
 
             if(input == 1){
-
+                return;
             }else if(input == 2){
                 viewOfficers(projectID,isManager);
-                detailedProject(projectID, userID);
             }else if(input == 3){
                 viewApplicants(projectID,isManager,null);
-                detailedProject(projectID, userID);
             }else if(input == 4 && isManager){
                 editProject(projectID);
-                detailedProject(projectID, userID);
+            }else{
+                System.out.println("Invalid Input");
             }
+            detailedProject(projectID, userID);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 
-    public static void createProject(String userID){
-        Scanner scanner = new Scanner(System.in);
-
-        HashMap<String,String> phm = new HashMap<>();
-        HashMap<String,String> twoFlathm = new HashMap<>();
-        twoFlathm.put("Type","2Room");
-        HashMap<String,String> threeFlathm = new HashMap<>();
-        threeFlathm.put("Type","3Room");
-
-        phm.put("ManagerID",userID);
-        phm.put("OfficerIDs","");
-        phm.put("Visibility","true");
-        //Validation
-
+    public static String createProjectName(Scanner scanner){
         System.out.println("Project Name:");
-        phm.put("Name",scanner.nextLine());
+        return scanner.nextLine();
+    }
 
+    public static String createProjectNeighbourhood(Scanner scanner){
         System.out.println("Project Neighbourhood: ");
         int input;
 
@@ -180,49 +181,163 @@ public class ManagerProjectPages {
             System.out.println((x++) + ". "+ NeighbourhoodView.simpleView(nhm.get("ID")));
         }
 
-        input = Integer.parseInt(scanner.nextLine());
-        phm.put("NeighbourhoodID", nal.get(input-1).get("ID"));
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
 
+        if(input < x) {
+            return nal.get(input - 1).get("ID");
+        }else{
+            System.out.println("Invalid Input");
+            return createProjectNeighbourhood(scanner);
+        }
+    }
+
+    public static String createProjectOpening(Scanner scanner){
         System.out.println("Opening Date(YYYY-MM-DD): ");
 
-        String openingDateString = String.valueOf(
+        return String.valueOf(
                 java.time.LocalDate.parse(scanner.nextLine())
                         .atStartOfDay()
                         .toEpochSecond(java.time.ZoneOffset.UTC)
         );
+    }
 
-        phm.put("OpeningDate",openingDateString);
-
+    public static String createProjectClosing(Scanner scanner){
         System.out.println("Closing Date(YYYY-MM-DD): ");
 
-        String closingDateString = String.valueOf(
+        return String.valueOf(
                 java.time.LocalDate.parse(scanner.nextLine())
                         .atStartOfDay()
                         .toEpochSecond(java.time.ZoneOffset.UTC)
         );
+    }
 
-        phm.put("ClosingDate",closingDateString);
-
+    public static String createProjectOfficerSlots(Scanner scanner){
         System.out.println("Officer Slots(Max 10):");
         String officerSlots = scanner.nextLine();
-        phm.put("OfficerSlots",officerSlots);
+        int officerSlotsInt;
+        try {
+            officerSlotsInt = Integer.parseInt(officerSlots);
+        }catch(NumberFormatException e){
+            officerSlotsInt = -1;
+        }
+            if (officerSlotsInt >= 1 && officerSlotsInt <= 10){
+                return officerSlots;
+            }else{
+                System.out.println("Invalid Input");
+                return createProjectOfficerSlots(scanner);
+            }
 
-        //2 Room Flat
+    }
+
+    public static String createTwoRoomFlat(Scanner scanner){
+        HashMap<String,String> twoFlathm = new HashMap<>();
+        twoFlathm.put("Type","2Room");
+
         System.out.println("2 Room Flat Units: ");
-        twoFlathm.put("TotalUnits",scanner.nextLine());
+
+        String units = scanner.nextLine();
+        int unitsInt;
+        try {
+            unitsInt = Integer.parseInt(units);
+        }catch(NumberFormatException e){
+            unitsInt = -1;
+        }
+
+        if(unitsInt >= 0){
+            twoFlathm.put("TotalUnits",units);
+        }else{
+            System.out.println("Invalid Input");
+            return createTwoRoomFlat(scanner);
+        }
 
         System.out.println("2 Room Flat Price: ");
-        twoFlathm.put("Price",scanner.nextLine());
 
-        phm.put("TwoRoomFlatID", FlatLogicActions.getInstance().create(twoFlathm));
-        //3 Room Flat
+        String price = scanner.nextLine();
+        float priceFloat;
+        try{
+            priceFloat = Float.parseFloat(price);
+        }catch(NumberFormatException e){
+            priceFloat = -1;
+        }
+
+        if(priceFloat >= 0){
+            twoFlathm.put("Price", price);
+        }else{
+            System.out.println("Invalid Input");
+            return createTwoRoomFlat(scanner);
+        }
+
+        return FlatLogicActions.getInstance().create(twoFlathm);
+    }
+
+    public static String createThreeRoomFlat(Scanner scanner){
+        HashMap<String,String> threeFlathm = new HashMap<>();
+        threeFlathm.put("Type","3Room");
+
         System.out.println("3 Room Flat Units: ");
-        threeFlathm.put("TotalUnits",scanner.nextLine());
+
+        String units = scanner.nextLine();
+        int unitsInt;
+        try {
+            unitsInt = Integer.parseInt(units);
+        }catch(NumberFormatException e){
+            unitsInt = -1;
+        }
+
+        if(unitsInt >= 0){
+            threeFlathm.put("TotalUnits",units);
+        }else{
+            System.out.println("Invalid Input");
+            return createTwoRoomFlat(scanner);
+        }
 
         System.out.println("3 Room Flat Price: ");
-        threeFlathm.put("Price",scanner.nextLine());
 
-        phm.put("ThreeRoomFlatID",FlatLogicActions.getInstance().create(threeFlathm));
+        String price = scanner.nextLine();
+        float priceFloat;
+        try{
+            priceFloat = Float.parseFloat(price);
+        }catch(NumberFormatException e){
+            priceFloat = -1;
+        }
+
+        if(priceFloat >= 0){
+            threeFlathm.put("Price", price);
+        }else{
+            System.out.println("Invalid Input");
+            return createTwoRoomFlat(scanner);
+        }
+
+        return FlatLogicActions.getInstance().create(threeFlathm);
+    }
+
+    public static void createProject(String userID){
+        Scanner scanner = new Scanner(System.in);
+
+        HashMap<String,String> phm = new HashMap<>();
+
+        phm.put("ManagerID",userID);
+        phm.put("OfficerIDs","");
+        phm.put("Visibility","true");
+        //Validation
+
+        phm.put("Name",createProjectName(scanner));
+
+        phm.put("NeighbourhoodID",createProjectNeighbourhood(scanner));
+
+        phm.put("OpeningDate",createProjectOpening(scanner));
+
+        phm.put("ClosingDate",createProjectClosing(scanner));
+
+        phm.put("OfficerSlots",createProjectOfficerSlots(scanner));
+        //2 Room Flat
+        phm.put("TwoRoomFlatID",createTwoRoomFlat(scanner));
+        //3 Room Flat
+        phm.put("ThreeRoomFlatID",createThreeRoomFlat(scanner));
 
         ProjectLogicActions.getInstance().create(phm);
     }
@@ -261,21 +376,25 @@ public class ManagerProjectPages {
                 System.out.println((x++) + ". " + UserView.applicantView(userID,applicationID) + withdrawalStatus);
 
             }
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             if(input == 1){
-
+                return;
             }else if(input == 2){
                 ApplicantFilterSettingsPage.start(ashm);
-                viewApplicants(projectID,isManager,ashm);
             }else if(input == 3){
                 printReceipt(projectID,ashm);
-                viewApplicants(projectID,isManager,ashm);
-            }else{
+            }else if(x > 0 && input < x){
                 detailedApplicant(aal.get(input-4).get("ID"),isManager);
-                viewApplicants(projectID,isManager,ashm);
+            }else{
+                System.out.println("Invalid Input");
             }
+            viewApplicants(projectID,isManager,ashm);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 
@@ -295,14 +414,21 @@ public class ManagerProjectPages {
                 System.out.println(Seperator.seperate());
             }
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
 
         System.out.println(Back.back());
 
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
         if(input == 1){
 
+        }else{
+            System.out.println("Invalid Input");
+            printReceipt(projectID,ashm);
         }
     }
 
@@ -326,7 +452,7 @@ public class ManagerProjectPages {
                 String approvalStatus =  whm.get("Status");
                 canApproveWithdrawal = approvalStatus.equals("Pending");
             }catch(ModelNotFoundException e){
-
+                //This means that no withdrawal was found
             }
 
             System.out.println(FlatView.detailedView(flatID));
@@ -346,7 +472,12 @@ public class ManagerProjectPages {
                 System.out.println((x++)+". Reject Withdrawal");
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
+
             if(input == 1){
 
             }else{
@@ -359,24 +490,31 @@ public class ManagerProjectPages {
                         WithdrawalLogicActions.getInstance().approve(applicationID);
                     }else if(input == 5){
                         WithdrawalLogicActions.getInstance().reject(applicationID);
+                    }else{
+                        System.out.println("Invalid Input");
                     }
                 }else if(canApproveApplication){
                     if(input == 2){
                         ApplicationLogicActions.getInstance().approve(applicationID);
                     }else if(input == 3){
                         ApplicationLogicActions.getInstance().reject(applicationID);
+                    }else{
+                        System.out.println("Invalid Input");
                     }
                 } else if(canApproveWithdrawal){
                     if(input == 2){
                         WithdrawalLogicActions.getInstance().approve(applicationID);
                     }else if(input == 3){
                         WithdrawalLogicActions.getInstance().reject(applicationID);
+                    }else{
+                        System.out.println("Invalid Input");
                     }
                 }
+                detailedApplicant(applicationID,isManager);
             }
 
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 
@@ -395,7 +533,11 @@ public class ManagerProjectPages {
         System.out.println("7. Edit 3 Room Price");
 
         try {
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             if(input == 1){
 
             }else{
@@ -413,11 +555,13 @@ public class ManagerProjectPages {
                 }else if(input == 7){
                     HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
                     editFlat(phm.get("ThreeRoomFlatID"));
+                }else{
+                    System.out.println("Invalid Input");
                 }
                 editProject(projectID);
             }
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 
@@ -431,9 +575,8 @@ public class ManagerProjectPages {
 
             FlatLogicActions.getInstance().editPrice(flatID, Float.parseFloat(priceStr));
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find flat");
         }
-
     }
 
     public static void editName(String projectID){
@@ -448,7 +591,7 @@ public class ManagerProjectPages {
 
             ProjectLogicActions.getInstance().editName(projectID,name);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find flat");
         }
     }
 
@@ -466,11 +609,15 @@ public class ManagerProjectPages {
                 System.out.println((x++) + ". "+ NeighbourhoodView.simpleView(nhm.get("ID")));
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
 
             ProjectLogicActions.getInstance().editNeighbourhood(projectID,nal.get(input-1).get("ID"));
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find flat");
         }
     }
 
@@ -498,7 +645,7 @@ public class ManagerProjectPages {
 
             ProjectLogicActions.getInstance().editOpeningClosing(projectID,openingDateString,closingDateString);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find flat");
         }
     }
 
@@ -529,15 +676,21 @@ public class ManagerProjectPages {
                     }
                 }
             }
-            input = Integer.parseInt(scanner.nextLine());
-            if(input == 1){
-
-            }else{
-                detailedOfficer(registrationIDArr.get(input-2),isManager);
-                viewOfficers(projectID,isManager);
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
             }
+            if(input == 1){
+                return;
+            }else if(x > 0 && input < x){
+                detailedOfficer(registrationIDArr.get(input-2),isManager);
+            }else{
+                System.out.println("Invalid Input");
+            }
+            viewOfficers(projectID,isManager);
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 
@@ -561,17 +714,24 @@ public class ManagerProjectPages {
                 System.out.println("3. Reject");
             }
 
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             if(input == 1){
-
+                return;
             }else if(input == 2 && canApprove){
                 RegistrationLogicActions.getInstance().approve(registrationID);
             }else if(input == 3&& canApprove){
                 RegistrationLogicActions.getInstance().reject(registrationID);
+            }else{
+                System.out.println("Invalid Input");
             }
+            detailedOfficer(registrationID,isManager);
 
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
     }
 }

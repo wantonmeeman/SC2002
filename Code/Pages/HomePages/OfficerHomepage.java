@@ -7,6 +7,7 @@ import Pages.EnquiryPages.ApplicantEnquiryPage;
 import Pages.ProjectPages.ApplicantProjectPages;
 import Pages.RegistrationPage;
 import Pages.UserPages.LogoutPage;
+import Pages.UserPages.UserPage;
 import Util.ClearCMD;
 
 import java.util.Scanner;
@@ -17,8 +18,11 @@ public class OfficerHomepage {
         int input;
 
         System.out.println(HomepageView.officerHomepage());
-        try {
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             ClearCMD.clear();
         switch(input) {
             case 1:
@@ -40,11 +44,11 @@ public class OfficerHomepage {
             case 5:
                 RegistrationPage.start(userID);
                 break;
+            case 6:
+                UserPage.start(userID);
+                break;
             default:
-                System.out.println("Wrong Input, Please try again.");
-        }
-        }catch(NumberFormatException e){
-            System.out.println("Wrong Input, Please try again.");
+                System.out.println("Invalid Input");
         }
         start(userID);
     }

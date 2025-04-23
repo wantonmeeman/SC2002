@@ -2,6 +2,7 @@ package Pages.FilterSettingPages;
 
 import Exceptions.ModelNotFoundException;
 import Pages.Components.*;
+import Util.ClearCMD;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -54,9 +55,14 @@ public class ApplicantFilterSettingsPage {
             System.out.println("2. Marital Status Toggle");
             System.out.println("3. Flat Type Toggle");
         } catch (ModelNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
-        input = Integer.parseInt(scanner.nextLine());
+        try {
+            input = Integer.parseInt(scanner.nextLine());
+        }catch(NumberFormatException e){
+            input = -1;//pass to default handler
+        }
+        ClearCMD.clear();
 
         try {
             if(input == 1){
@@ -65,9 +71,12 @@ public class ApplicantFilterSettingsPage {
                 start(maritalToggle(ashm));
             }else if(input == 3){
                 start(flatTypeToggle(ashm));
+            }else{
+                System.out.println("Invalid Input");
+                start(ashm);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not find object");
         }
 
         return ashm;

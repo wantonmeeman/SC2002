@@ -19,6 +19,13 @@ public interface UserView {
         return returnStr;
     }
 
+    static String profileView(String ID) throws ModelNotFoundException{
+        HashMap<String,String> uhm = UserLogicActions.getInstance().get(ID);
+
+        return detailedView(ID) + "\n" +
+               "User Role: "+uhm.get("Role");
+    }
+
     static String simpleView(String ID) throws ModelNotFoundException{
         HashMap<String,String> uhm = UserLogicActions.getInstance().get(ID);
 

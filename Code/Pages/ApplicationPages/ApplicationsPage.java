@@ -13,12 +13,14 @@ public class ApplicationsPage {
         Scanner scanner = new Scanner(System.in);
         int input;
         HashMap<String, String> user = new HashMap<>();
+
         try {
             user = UserLogicActions.getInstance().get(userID);
         } catch (ModelNotFoundException e) {
-            System.out.println(e);
+            ClearCMD.clear();
+            System.out.println("User not found");
+            return;
         }
-
 
         if (user.get("ApplicationID") != null) {
 
@@ -41,7 +43,8 @@ public class ApplicationsPage {
                 System.out.println(ApplicationView.detailedView(applicationID));
 
             } catch (ModelNotFoundException e) {
-                throw new RuntimeException(e);
+               System.out.println("Could not find Application");
+               return;
             }
             String withdrawalStatus;
             try {
@@ -74,19 +77,22 @@ public class ApplicationsPage {
                     break;
             }
             System.out.println(withdrawStr);
-            input = Integer.parseInt(scanner.nextLine());
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
             ClearCMD.clear();
-            switch (input) {
-                case 1 -> {
-                    // handle input == 1 here
+            if (input == 1) {
+                // handle input == 1 here
+            } else if (input == 2) {
+                if (!withdrawStr.isEmpty()) {
+                    WithdrawalLogicActions.getInstance().withdraw(applicationID);
+                    start(userID);
                 }
-                case 2 -> {
-                    if (!withdrawStr.isEmpty()) {
-                        WithdrawalLogicActions.getInstance().withdraw(applicationID);
-
-                        start(userID);
-                    }
-                }
+            }else{
+                System.out.println("Invalid Input");
+                start(userID);
             }
 
         } else {
@@ -95,7 +101,16 @@ public class ApplicationsPage {
             System.out.println("No Application Made");
             System.out.println(Back.back());
 
-            input = Integer.parseInt(scanner.nextLine());//TODO
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            }catch(NumberFormatException e){
+                input = -1;//pass to default handler
+            }
+            ClearCMD.clear();
+            if(input != 1){
+                System.out.print("Invalid Input");
+                start(userID);
+            }
         }
     }
 

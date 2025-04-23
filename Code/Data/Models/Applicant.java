@@ -18,16 +18,4 @@ public class Applicant extends User{
         this.applicationID = applicationID;
     }
 
-    @Override
-    public String toString() {
-        return "Applicant {" +
-                "ID='" + getID() + '\'' +
-                ", Name='" + getName() + '\'' +
-                ", Age=" + getAge() +
-                ", Marital Status=" + getMaritalStatus() +
-                ", ApplicationID='" + applicationID + '\'' +
-               // ", SearchSetting=" + (getSearchSetting() != null ? getSearchSetting().toString() : "null") +
-                '}';
-    }
-
 }

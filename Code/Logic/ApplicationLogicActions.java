@@ -7,14 +7,20 @@ import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 import Exceptions.RepositoryNotFoundException;
 import Exceptions.UnauthorizedActionException;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ApplicationLogicActions extends DataLogicActions<Application>{
     private static ApplicationLogicActions instance;
+
+    public ApplicationLogicActions(IDGenerator idGenerator) {
+       super(idGenerator);
+    }
 
     @Override
     protected HashMap<String, String> toMap(Application application) {
@@ -30,7 +36,7 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
     }
 
     public String create(HashMap<String, String> hm){
-        String applicationID = GenerateID.generateID(8); // assuming this exists
+        String applicationID = generateID(); // assuming this exists
         String userID = hm.get("UserID");
         String flatID = hm.get("FlatID");
 
@@ -56,67 +62,69 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
-    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID) throws ModelNotFoundException {
-        ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
-        String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
-        String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
-
-        getAllObject()
-                .filter(application ->
-                    threeRoomID.equals(application.getFlatID()) || twoRoomID.equals(application.getFlatID())
-                ).forEach(application -> {
-                    applicationList.add(toMap(application));
-                });
-
-        return applicationList;
-    }
+//    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID) throws ModelNotFoundException {
+//        ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
+//        String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
+//        String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
+//
+//        getAllObject()
+//                .filter(application ->
+//                    threeRoomID.equals(application.getFlatID()) || twoRoomID.equals(application.getFlatID())
+//                ).forEach(application -> {
+//                    applicationList.add(toMap(application));
+//                });
+//
+//        return applicationList;
+//    }
 
     public ArrayList<HashMap<String, String>> getFilteredApplicationsByProjectID(String projectID, HashMap<String,String> ashm) throws ModelNotFoundException {
-        ArrayList<HashMap<String, String>> applicationList = new ArrayList<>();
         String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
         String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
 
-        getAllObject()
+        boolean hasSearchSetting = (ashm == null);
+
+        return getAllObject()
                 .filter(application ->
                         threeRoomID.equals(application.getFlatID()) || twoRoomID.equals(application.getFlatID())
                 )
                 .filter(application -> {
                     HashMap<String,String> uhm;
-                    HashMap<String,String> fhm;
+                    boolean maritalType;
 
                     try {
                         uhm = UserLogicActions.getInstance().get(application.getUserID());
                     } catch (ModelNotFoundException e) {
                         throw new RuntimeException(e);
                     }
+
+                    if(hasSearchSetting || ashm.get("MaritalStatus") == null || ashm.get("MaritalStatus").equals(uhm.get("MaritalStatus"))){
+                        maritalType = true;
+                    }else{
+                        maritalType = false;
+                    }
+
+                    return maritalType;
+                })
+                .filter(application ->{
+                    HashMap<String,String> fhm;
+                    boolean flatType;
+
                     try {
                         fhm = FlatLogicActions.getInstance().get(application.getFlatID());
                     } catch (ModelNotFoundException e) {
                         throw new RuntimeException(e);
                     }
 
-                    boolean maritalType;
-                    boolean flatType;
-
-                    if(ashm.get("MaritalStatus") == null || ashm.get("MaritalStatus").equals(uhm.get("MaritalStatus"))){
-                        maritalType = true;
-                    }else{
-                        maritalType = false;
-                    }
-
-                    if(ashm.get("FlatType") == null || ashm.get("FlatType").equals(fhm.get("Type"))){
+                    if(hasSearchSetting || ashm.get("FlatType") == null || ashm.get("FlatType").equals(fhm.get("Type"))){
                         flatType = true;
                     }else{
                         flatType = false;
                     }
 
-                    return flatType && maritalType;
+                    return flatType;
                 })
-                .forEach(application -> {
-                    applicationList.add(toMap(application));
-                });
-
-        return applicationList;
+                .map(this::toMap)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private Boolean checkApplicationValidity(String userID, String flatID) throws ModelNotFoundException{
@@ -174,8 +182,8 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
     }
 
     //Double check this
+    //Returns string in case we need it.
     public String apply(String userID, String flatID) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
-
         if(checkApplicationValidity(userID,flatID)) {
             HashMap<String, String> hm = new HashMap<String,String>();
 
@@ -214,7 +222,7 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
             FlatLogicActions.getInstance().book(flatID);
 
             ApplicationRepository.getInstance().update();
-        }//todo
+        }
     }
 
     public void withdraw(String ID) throws ModelNotFoundException{
@@ -226,7 +234,7 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
 
     public static ApplicationLogicActions getInstance() {
         if (instance == null)
-            instance = new ApplicationLogicActions();
+            instance = new ApplicationLogicActions(new DefaultGenerateID());
         return instance;
     }
 }

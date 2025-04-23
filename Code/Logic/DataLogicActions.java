@@ -12,14 +12,22 @@ import Logic.Interfaces.LogicCreatable;
 import Logic.Interfaces.LogicDeletable;
 import Logic.Interfaces.LogicGetable;
 import Logic.Interfaces.LogicIdentifiable;
-import Util.GenerateID;
+import Util.DefaultGenerateID;
+import Util.Interfaces.IDGenerator;
 
 public abstract class DataLogicActions<T extends Model>
         implements LogicIdentifiable, LogicCreatable, LogicGetable, LogicDeletable {
+    private IDGenerator idGenerator;
+
+    public DataLogicActions(IDGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
+
+    public String generateID() {
+        return idGenerator.generateID(8);
+    }
 
     abstract protected HashMap<String,String> toMap(T t);
-
-    public String generateID(){return GenerateID.generateID(8);}
 
     abstract public String create(HashMap<String,String> hm) throws ModelAlreadyExistsException;
 
