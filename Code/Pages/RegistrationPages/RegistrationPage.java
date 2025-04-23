@@ -50,7 +50,8 @@ public class RegistrationPage implements ReplyEnquiry {
 		}else if(input == 2){
 			register(userID);
 			start(userID);
-		}else if(x > 0 && input < x){
+		}else if(
+				input > 0 && input < x){
 			if(registration.get(input-3).get("Status").equals("Successful")){
 				detailedRegistration(registration.get(input - 3).get("ProjectID"),userID);
 			}else{
@@ -82,7 +83,8 @@ public class RegistrationPage implements ReplyEnquiry {
 
 		if (input == 1) {
 			//start(userID);
-		}else if(x > 0 && input < x){
+		}else if(
+				input > 0 && input < x){
 			HashMap<String,String> newHM = new HashMap<String,String>();
 
 			newHM.put("OfficerID",userID);
@@ -319,7 +321,8 @@ public class RegistrationPage implements ReplyEnquiry {
 			ClearCMD.clear();
 			if (input == 1) {
 				return;
-			} else if(x > 0 && input < x) {
+			} else if(
+					input > 0 && input < x) {
 				viewApplicant(appArr.get(input - 2).get("UserID"), userID);
 				// viewApplicants(projectID);, then print
 			} else{

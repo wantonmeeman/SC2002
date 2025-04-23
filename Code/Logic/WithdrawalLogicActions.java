@@ -7,7 +7,10 @@ import Exceptions.ModelNotFoundException;
 import Util.DefaultGenerateID;
 import Util.Interfaces.IDGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
@@ -82,6 +85,16 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
         whm.put("ID",applicationID);
         whm.put("Status","Pending");
         create(whm);
+    }
+
+    public void deleteByApplicationID(String applicationID) throws ModelNotFoundException{
+        Optional<Withdrawal> match = getAllObject()
+                .filter(withdrawal -> withdrawal.getID().equals(applicationID))
+                .findFirst();
+
+        if (match.isPresent()) {
+            delete(match.get().getID());
+        }
     }
 
     public static WithdrawalLogicActions getInstance() {

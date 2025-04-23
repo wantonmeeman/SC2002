@@ -2,7 +2,9 @@ package Logic;
 
 import Data.Models.Application;
 
+import Data.Models.Model;
 import Data.Repository.ApplicationRepository;
+import Data.Repository.WithdrawalRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 import Exceptions.RepositoryNotFoundException;
@@ -12,6 +14,7 @@ import Util.Interfaces.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,6 +63,19 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
     @Override
     public void delete(String ID) throws ModelNotFoundException{
         ApplicationRepository.getInstance().delete(ID);
+    }
+
+    public void deleteByFlatID(String flatID) throws ModelNotFoundException{
+        List<String> toDeleteIDs = getAllObject()
+                .filter(application -> application.getFlatID().equals(flatID))
+                .map(Model::getID)
+                .toList();
+
+        for (String id : toDeleteIDs) {
+                WithdrawalLogicActions.getInstance().deleteByApplicationID(id);
+                UserLogicActions.getInstance().removeApplications(id);
+                delete(id);
+        }
     }
 
 //    public ArrayList<HashMap<String, String>> getApplicationsByProjectID(String projectID) throws ModelNotFoundException {

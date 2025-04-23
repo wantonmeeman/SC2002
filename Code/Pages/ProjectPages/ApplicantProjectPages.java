@@ -69,7 +69,8 @@ public class ApplicantProjectPages {
         }else if(input == 2){
             ApplicantProjectFilterSettingsPage.start(userID);
             start(userID);
-        }else if(x > 0 && input < x){
+        }else if(
+                input > 0 && input < x){
             detailedFlat(inputToIDMap.get(input),userID);
         }else{
             System.out.println("Invalid Input");
@@ -103,6 +104,7 @@ public class ApplicantProjectPages {
 
         try {
             input = Integer.parseInt(scanner.nextLine());
+            ClearCMD.clear();
         }catch(NumberFormatException e){
             input = -1;//pass to default handler
         }

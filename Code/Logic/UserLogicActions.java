@@ -216,6 +216,19 @@ public class UserLogicActions extends DataLogicActions<User>{
         }
     }
 
+    public void removeApplications(String applicationID){
+        Stream.of(OfficerRepository.getInstance().getAll(),ApplicantRepository.getInstance().getAll())
+                .flatMap(Collection::stream)
+                .map(model->(Applicant)model)
+                .filter(applicant -> applicationID.equals(applicant.getApplicationID()))
+                .forEach(applicant -> {
+                    applicant.setApplicationID(null);
+                });
+
+        OfficerRepository.getInstance().update();
+        ApplicantRepository.getInstance().update();
+    }
+
     public ArrayList<HashMap<String,String>> getAllManager(){
         return Stream.of(ManagerRepository.getInstance().getAll())
                 .flatMap(Collection::stream)  // Flatten the list of lists to a stream of users

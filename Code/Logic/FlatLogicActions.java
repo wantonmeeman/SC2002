@@ -7,7 +7,10 @@ import Exceptions.ModelNotFoundException;
 import Util.DefaultGenerateID;
 import Util.Interfaces.IDGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class FlatLogicActions extends DataLogicActions<Flat>{
@@ -72,6 +75,22 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         flat.setPrice(price);
 
         FlatRepository.getInstance().update();
+    }
+
+    public void deleteAllLinked(String flatID) throws ModelNotFoundException{
+        Optional<Flat> matchedFlat = getAllObject()
+                .filter(flat -> flat.getID().equals(flatID))
+                .findFirst();
+
+        if (matchedFlat.isPresent()) {
+            Flat flat = matchedFlat.get();
+
+            ApplicationLogicActions.getInstance().deleteByFlatID(flat.getID());
+
+            delete(flat.getID());
+        }else{
+            throw new ModelNotFoundException();
+        }
     }
 
     public static FlatLogicActions getInstance() {

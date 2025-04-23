@@ -41,6 +41,6 @@ public interface ProjectView {
         String formattedOpening = formatter.format(new Date(Integer.parseInt(phm.get("OpeningDate")) * 1000L));
         String formattedClosing = formatter.format(new Date(Integer.parseInt(phm.get("ClosingDate")) * 1000L));
 
-        return phm.get("Name") +" - "+ formattedClosing + " - " + formattedOpening;
+        return phm.get("Name") +" - " + formattedOpening + " - " + formattedClosing;
     }
 }

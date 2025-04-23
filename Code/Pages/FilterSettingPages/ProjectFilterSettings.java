@@ -7,6 +7,7 @@ import Logic.UserLogicActions;
 import Pages.Components.NeighbourhoodView;
 import Pages.Components.Seperator;
 import Pages.Components.UserView;
+import Util.ClearCMD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public interface ProjectFilterSettings {
 
             try {
                 input = Integer.parseInt(scanner.nextLine());
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
@@ -62,6 +64,7 @@ public interface ProjectFilterSettings {
 
             try {
                 input = Integer.parseInt(scanner.nextLine());
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
@@ -84,6 +87,7 @@ public interface ProjectFilterSettings {
             System.out.println("Name Search: ");
 
             input = scanner.nextLine();
+            ClearCMD.clear();
 
             SearchSettingLogicActions.getInstance().editName(userID,input);
         } catch (ModelNotFoundException e) {
@@ -93,5 +97,6 @@ public interface ProjectFilterSettings {
 
     static void sort(String userID) throws ModelNotFoundException {
         SearchSettingLogicActions.getInstance().toggleSort(userID);
+        ClearCMD.clear();
     }
 }

@@ -40,7 +40,8 @@ public class ManagerEnquiryPage implements ReplyEnquiry {
 
         if(input == 1){
             return;
-        }else if(x > 0 && input < x){
+        }else if(
+                input > 0 && input < x){
             viewEnquiry(enquiries.get(input - 2).get("ID"), userID);
         }else{
             System.out.println("Invalid Input");

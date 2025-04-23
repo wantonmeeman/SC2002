@@ -10,6 +10,7 @@ import Util.Interfaces.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -127,6 +128,17 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
             return create(hm);
         }else{
             throw new UnauthorizedActionException();
+        }
+    }
+
+    public void deleteByProjectID(String projectID) throws ModelNotFoundException{
+        List<String> toDeleteIDs = getAllObject()
+                .filter(registration -> registration.getProjectID().equals(projectID))
+                .map(Model::getID)
+                .toList(); // or .collect(Collectors.toList()) for older Java versions
+
+        for (String id : toDeleteIDs) {
+            delete(id);
         }
     }
 

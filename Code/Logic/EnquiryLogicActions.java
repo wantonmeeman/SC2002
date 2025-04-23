@@ -1,10 +1,6 @@
 package Logic;
 
-import Data.Models.Applicant;
-import Data.Models.Manager;
-import Data.Models.Officer;
-import Data.Models.User;
-import Data.Models.Enquiry;
+import Data.Models.*;
 import Data.Repository.ApplicantRepository;
 import Data.Repository.ManagerRepository;
 import Data.Repository.OfficerRepository;
@@ -15,10 +11,8 @@ import Exceptions.ModelAlreadyExistsException;
 import Util.DefaultGenerateID;
 import Util.Interfaces.IDGenerator;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.time.Instant;
 
@@ -109,6 +103,17 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         newEnquiry.setReply(reply);
 
         EnquiryRepository.getInstance().update();
+    }
+
+    public void deleteByProjectID(String projectID) throws ModelNotFoundException{
+
+        List<String> deleteEnquiryIDList = getAllObject().filter(enquiry -> enquiry.getProjectID().equals(projectID))
+                .map(Model::getID)
+                .toList();
+
+        for (String id : deleteEnquiryIDList) {
+            delete(id);
+        }
     }
 
     public static EnquiryLogicActions getInstance() {

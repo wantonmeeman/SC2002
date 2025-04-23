@@ -1,5 +1,7 @@
 package Pages.ProjectPages;
 
+import Data.Models.Model;
+import Data.Models.User;
 import Exceptions.ModelNotFoundException;
 import Logic.*;
 import Pages.Components.*;
@@ -40,7 +42,7 @@ public class ManagerProjectPages {
         String activeProjectID = null;
 
         try {
-            activeProjectID= ProjectLogicActions.getInstance().getActiveProjectByManagerID(userID).get("ID");
+            activeProjectID = ProjectLogicActions.getInstance().getActiveProjectByManagerID(userID).get("ID");
         } catch (ModelNotFoundException e) {
             //This just means that there is not active project
         }
@@ -50,12 +52,9 @@ public class ManagerProjectPages {
                 HashMap<String,String> uhm = UserLogicActions.getInstance().get(phm.get("ManagerID"));
 
                 String name = uhm.get("Name");
+                if(activeProjectID == null || !activeProjectID.equals(phm.get("ID"))) {
+                    projectsStr += x + ". " + ProjectView.simpleView(phm.get("ID")) + " - " + name + "\n";
 
-                if(activeProjectID != null && activeProjectID.equals(phm.get("ID"))) {
-                    activeProjectStr = "4. "+ ProjectView.simpleView(phm.get("ID"))+" - "+name+" (Active)";
-                    inputToIDMap.put(4,phm.get("ID"));
-                }else{
-                    projectsStr += x + ". " + ProjectView.simpleView(phm.get("ID"))+" - "+name+"\n";
                     inputToIDMap.put(x++,phm.get("ID"));
                 }
             } catch (ModelNotFoundException e) {
@@ -64,6 +63,14 @@ public class ManagerProjectPages {
         }
 
         if(activeProjectID != null) {
+            try{
+                String activeName = UserLogicActions.getInstance().get(userID).get("Name");
+                activeProjectStr = "4. "+ ProjectView.simpleView(activeProjectID)+" - "+activeName+" (Active)";
+                inputToIDMap.put(4,activeProjectID);
+            }catch(ModelNotFoundException e){
+                System.out.println("Unable to find active project details");
+            }
+
             System.out.println(activeProjectStr);
 
             System.out.print(projectsStr);
@@ -83,7 +90,7 @@ public class ManagerProjectPages {
             }else if(input == 3){
                 //Filter Settings
                 ManagerProjectFilterSettingsPage.start(userID);
-            }else if(x > 0 && input < x){
+            }else if(input > 0 && input < x){
                 detailedProject(inputToIDMap.get(input),userID);
             }else{
                 System.out.println("Invalid Input");
@@ -111,7 +118,7 @@ public class ManagerProjectPages {
                 ManagerProjectFilterSettingsPage.start(userID);
             }else if(input == 4){
                 createProject(userID);
-            }else if(x > 0 && input < x){
+            }else if(input > 0 && input < x){
                 detailedProject(inputToIDMap.get(input),userID);
             }
             start(userID);
@@ -140,6 +147,7 @@ public class ManagerProjectPages {
 
             if(isManager){
                 System.out.println("4. Edit Project");
+                System.out.println("5. Delete Project");
             }
 
             try {
@@ -147,6 +155,7 @@ public class ManagerProjectPages {
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
+            ClearCMD.clear();
 
             if(input == 1){
                 return;
@@ -156,12 +165,22 @@ public class ManagerProjectPages {
                 viewApplicants(projectID,isManager,null);
             }else if(input == 4 && isManager){
                 editProject(projectID);
-            }else{
+            }else if(input == 5 && isManager) {
+                deleteProject(projectID);
+                return;
+            } else{
                 System.out.println("Invalid Input");
             }
             detailedProject(projectID, userID);
         } catch (ModelNotFoundException e) {
             System.out.println("Could not find object");
+        }
+    }
+    public static void deleteProject(String projectID){
+        try {
+            ProjectLogicActions.getInstance().delete(projectID);
+        }catch (ModelNotFoundException e){
+            System.out.println("Could not delete");
         }
     }
 
@@ -197,22 +216,29 @@ public class ManagerProjectPages {
 
     public static String createProjectOpening(Scanner scanner){
         System.out.println("Opening Date(YYYY-MM-DD): ");
-
-        return String.valueOf(
-                java.time.LocalDate.parse(scanner.nextLine())
-                        .atStartOfDay()
-                        .toEpochSecond(java.time.ZoneOffset.UTC)
-        );
+        try {
+            return String.valueOf(
+                    java.time.LocalDate.parse(scanner.nextLine())
+                            .atStartOfDay()
+                            .toEpochSecond(java.time.ZoneOffset.UTC)
+            );
+        }catch(Exception e){
+            System.out.println("Invalid Input");
+            return createProjectOpening(scanner);
+        }
     }
 
     public static String createProjectClosing(Scanner scanner){
         System.out.println("Closing Date(YYYY-MM-DD): ");
-
+        try {
         return String.valueOf(
                 java.time.LocalDate.parse(scanner.nextLine())
                         .atStartOfDay()
                         .toEpochSecond(java.time.ZoneOffset.UTC)
-        );
+        );        }catch(Exception e){
+        System.out.println("Invalid Input");
+        return createProjectClosing(scanner);
+    }
     }
 
     public static String createProjectOfficerSlots(Scanner scanner){
@@ -292,7 +318,7 @@ public class ManagerProjectPages {
             threeFlathm.put("TotalUnits",units);
         }else{
             System.out.println("Invalid Input");
-            return createTwoRoomFlat(scanner);
+            return createThreeRoomFlat(scanner);
         }
 
         System.out.println("3 Room Flat Price: ");
@@ -309,7 +335,7 @@ public class ManagerProjectPages {
             threeFlathm.put("Price", price);
         }else{
             System.out.println("Invalid Input");
-            return createTwoRoomFlat(scanner);
+            return createThreeRoomFlat(scanner);
         }
 
         return FlatLogicActions.getInstance().create(threeFlathm);
@@ -378,6 +404,7 @@ public class ManagerProjectPages {
             }
             try {
                 input = Integer.parseInt(scanner.nextLine());
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
@@ -387,7 +414,8 @@ public class ManagerProjectPages {
                 ApplicantFilterSettingsPage.start(ashm);
             }else if(input == 3){
                 printReceipt(projectID,ashm);
-            }else if(x > 0 && input < x){
+            }else if(
+                    input > 0 && input < x){
                 detailedApplicant(aal.get(input-4).get("ID"),isManager);
             }else{
                 System.out.println("Invalid Input");
@@ -421,6 +449,7 @@ public class ManagerProjectPages {
 
         try {
             input = Integer.parseInt(scanner.nextLine());
+            ClearCMD.clear();
         }catch(NumberFormatException e){
             input = -1;//pass to default handler
         }
@@ -474,6 +503,7 @@ public class ManagerProjectPages {
 
             try {
                 input = Integer.parseInt(scanner.nextLine());
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
@@ -535,6 +565,7 @@ public class ManagerProjectPages {
         try {
             try {
                 input = Integer.parseInt(scanner.nextLine());
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
@@ -678,12 +709,15 @@ public class ManagerProjectPages {
             }
             try {
                 input = Integer.parseInt(scanner.nextLine());
+
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }
             if(input == 1){
                 return;
-            }else if(x > 0 && input < x){
+            }else if(
+                    input > 0 && input < x){
                 detailedOfficer(registrationIDArr.get(input-2),isManager);
             }else{
                 System.out.println("Invalid Input");
@@ -716,6 +750,8 @@ public class ManagerProjectPages {
 
             try {
                 input = Integer.parseInt(scanner.nextLine());
+
+                ClearCMD.clear();
             }catch(NumberFormatException e){
                 input = -1;//pass to default handler
             }

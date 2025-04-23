@@ -15,10 +15,7 @@ import Util.Interfaces.IDGenerator;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -269,6 +266,20 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
     @Override
     public void delete(String ID) throws ModelNotFoundException{
+        EnquiryLogicActions.getInstance().deleteByProjectID(ID);
+        RegistrationLogicActions.getInstance().deleteByProjectID(ID);
+
+        Optional<Project> matchedProject = getAllObject()
+                .filter(project -> project.getID().equals(ID))
+                .findFirst();
+
+        if (matchedProject.isPresent()) {
+            Project project = matchedProject.get();
+
+            FlatLogicActions.getInstance().deleteAllLinked(project.getThreeRoomFlatID());
+            FlatLogicActions.getInstance().deleteAllLinked(project.getTwoRoomFlatID());
+        }
+
         ProjectRepository.getInstance().delete(ID);
     }
 

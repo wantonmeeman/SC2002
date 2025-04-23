@@ -37,7 +37,8 @@ public class NeighbourhoodPage {
 			} else if (input == 2) {
 				createNeighbourhood();
 				start();
-			} else if(x > 0 && input < x){
+			} else if(
+					input > 0 && input < x){
 				detailedNeighbourhood(nal.get(input - 3).get("ID"));
 			}else{
 				System.out.println("Invalid Input");

@@ -42,7 +42,8 @@ public class ApplicantEnquiryPage {
             return;
         } else if (input == 2) {
             createEnquiry(userID);
-        } else if(x > 0 && input < x){
+        } else if(
+                input > 0 && input < x){
             detailedEnquiry(enquiries.get(input - 3).get("ID"));
         }   else{
             System.out.println("Invalid Input");
@@ -81,7 +82,8 @@ public class ApplicantEnquiryPage {
             input = -1;
         }
 
-        if(x > 0 && input < x){
+        if(
+                input > 0 && input < x){
             return projList.get(input-1).get("ID");
         }else{
             System.out.println("Invalid Input");
