@@ -15,7 +15,17 @@ import java.util.HashMap;
 
 import static Pages.Components.OfficerFormatter.formatOfficers;
 
+/**
+ * The interface Project view.
+ */
 public interface ProjectView {
+    /**
+     * Detailed view string.
+     *
+     * @param projectID the project id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String detailedView(String projectID) throws ModelNotFoundException {
         String returnStr = "";
         SimpleDateFormat formatter = Config.DATE_FORMAT;
@@ -35,6 +45,13 @@ public interface ProjectView {
         return returnStr;
     }
 
+    /**
+     * Simple view string.
+     *
+     * @param projectID the project id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String simpleView(String projectID) throws ModelNotFoundException{
         HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
         SimpleDateFormat formatter = Config.DATE_FORMAT;

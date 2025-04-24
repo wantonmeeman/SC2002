@@ -8,27 +8,63 @@ import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
 import Util.Storable;
 
+/**
+ * The type Data repository.
+ */
 abstract public class DataRepository extends Storable implements
         RepositoryGetable, RepositoryCreatable, RepositoryDeletable,RepositoryUpdatable {
 
-    //Mapping Model to String and vice versa
+    /**
+     * To model list array list.
+     *
+     * @param csv the csv
+     * @return the array list
+     */
+//Mapping Model to String and vice versa
     protected abstract ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv);
+
+    /**
+     * To csv array list.
+     *
+     * @param alm the alm
+     * @return the array list
+     */
     protected abstract ArrayList<ArrayList<String>> toCSV(ArrayList<Model> alm);
 
+    /**
+     * The List of models.
+     */
     protected ArrayList<Model> listOfModels = new ArrayList<>();
 
+    /**
+     * Fetch.
+     */
     protected void fetch(){
         updateAll(toModelList(load()));
     }
 
+    /**
+     * Store.
+     */
     protected void store(){
         save(toCSV(listOfModels));
     }
 
+    /**
+     * Size int.
+     *
+     * @return the int
+     */
     public int size(){
         return listOfModels.size();
     }
 
+    /**
+     * Contains boolean.
+     *
+     * @param ID the id
+     * @return the boolean
+     */
     public boolean contains(String ID) {
         try {
             get(ID);

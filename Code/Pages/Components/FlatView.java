@@ -5,7 +5,17 @@ import Logic.FlatLogicActions;
 
 import java.util.HashMap;
 
+/**
+ * The interface Flat view.
+ */
 public interface FlatView {
+    /**
+     * Detailed view string.
+     *
+     * @param flatID the flat id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String detailedView(String flatID) throws ModelNotFoundException {
         String returnStr = "";
 
@@ -20,6 +30,13 @@ public interface FlatView {
         return returnStr;
     }
 
+    /**
+     * Simple view string.
+     *
+     * @param flatID the flat id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String simpleView(String flatID) throws ModelNotFoundException {
         HashMap<String,String> fhm = FlatLogicActions.getInstance().get(flatID);
         String type = fhm.get("Type");
@@ -27,6 +44,13 @@ public interface FlatView {
         return modifiedType+" - " + fhm.get("TotalUnits") + " Units left - $"+fhm.get("Price");
     }
 
+    /**
+     * Applicant view string.
+     *
+     * @param flatID the flat id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String applicantView(String flatID) throws ModelNotFoundException {
         String returnStr = "";
 

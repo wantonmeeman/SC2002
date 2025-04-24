@@ -16,7 +16,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Applicant project pages.
+ */
 public class ApplicantProjectPages {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID) {
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -78,6 +86,12 @@ public class ApplicantProjectPages {
             }
     }
 
+    /**
+     * Detailed flat.
+     *
+     * @param flatID the flat id
+     * @param userID the user id
+     */
     public static void detailedFlat(String flatID,String userID){
         String projectID;
         Scanner scanner = new Scanner(System.in);

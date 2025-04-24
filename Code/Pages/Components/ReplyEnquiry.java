@@ -6,7 +6,15 @@ import Util.ClearCMD;
 
 import java.util.Scanner;
 
+/**
+ * The interface Reply enquiry.
+ */
 public interface ReplyEnquiry {
+    /**
+     * Reply enquiry.
+     *
+     * @param enquiryID the enquiry id
+     */
     static void replyEnquiry(String enquiryID){
         try {
             Scanner scanner = new Scanner(System.in);

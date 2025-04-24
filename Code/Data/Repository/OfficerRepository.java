@@ -7,9 +7,15 @@ import java.util.ArrayList;
 
 import static Util.Config.*;
 
+/**
+ * The type Officer repository.
+ */
 public class OfficerRepository extends DataRepository {
     private static OfficerRepository instance;
 
+    /**
+     * Instantiates a new Officer repository.
+     */
     public OfficerRepository() {
         setFilepath(DATA_PATH + OFFICER_CSV);
         fetch();
@@ -55,6 +61,11 @@ public class OfficerRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static OfficerRepository getInstance() {
         if (instance == null)
             instance = new OfficerRepository();

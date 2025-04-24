@@ -18,7 +18,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Manager project pages.
+ */
 public class ManagerProjectPages {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID){
         Scanner scanner = new Scanner(System.in);
         HashMap<Integer,String> inputToIDMap = new HashMap<>();
@@ -127,6 +135,13 @@ public class ManagerProjectPages {
             start(userID);
         }
     }
+
+    /**
+     * Detailed project.
+     *
+     * @param projectID the project id
+     * @param userID    the user id
+     */
     public static void detailedProject(String projectID, String userID){
         Scanner scanner = new Scanner(System.in);
 
@@ -179,6 +194,12 @@ public class ManagerProjectPages {
             System.out.println("Could not find object");
         }
     }
+
+    /**
+     * Delete project.
+     *
+     * @param projectID the project id
+     */
     public static void deleteProject(String projectID){
         try {
             ProjectLogicActions.getInstance().delete(projectID);
@@ -187,11 +208,23 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Create project name string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createProjectName(Scanner scanner){
         System.out.println("Project Name:");
         return scanner.nextLine();
     }
 
+    /**
+     * Create project neighbourhood string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createProjectNeighbourhood(Scanner scanner){
         System.out.println("Project Neighbourhood: ");
         int input;
@@ -217,6 +250,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Create project opening string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createProjectOpening(Scanner scanner){
         System.out.println("Opening Date(YYYY-MM-DD): ");
         try {
@@ -231,6 +270,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Create project closing string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createProjectClosing(Scanner scanner){
         System.out.println("Closing Date(YYYY-MM-DD): ");
         try {
@@ -244,6 +289,12 @@ public class ManagerProjectPages {
     }
     }
 
+    /**
+     * Create project officer slots string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createProjectOfficerSlots(Scanner scanner){
         System.out.println("Officer Slots(Max 10):");
         String officerSlots = scanner.nextLine();
@@ -262,6 +313,12 @@ public class ManagerProjectPages {
 
     }
 
+    /**
+     * Create two room flat string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createTwoRoomFlat(Scanner scanner){
         HashMap<String,String> twoFlathm = new HashMap<>();
         twoFlathm.put("Type","2Room");
@@ -303,6 +360,12 @@ public class ManagerProjectPages {
         return FlatLogicActions.getInstance().create(twoFlathm);
     }
 
+    /**
+     * Create three room flat string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
     public static String createThreeRoomFlat(Scanner scanner){
         HashMap<String,String> threeFlathm = new HashMap<>();
         threeFlathm.put("Type","3Room");
@@ -344,6 +407,11 @@ public class ManagerProjectPages {
         return FlatLogicActions.getInstance().create(threeFlathm);
     }
 
+    /**
+     * Create project.
+     *
+     * @param userID the user id
+     */
     public static void createProject(String userID){
         Scanner scanner = new Scanner(System.in);
 
@@ -367,9 +435,20 @@ public class ManagerProjectPages {
         //3 Room Flat
         phm.put("ThreeRoomFlatID",createThreeRoomFlat(scanner));
 
-        ProjectLogicActions.getInstance().create(phm);
+        try {
+            ProjectLogicActions.getInstance().createProject(phm);
+        } catch (UnauthorizedActionException e) {
+            createProject(userID);
+        }
     }
 
+    /**
+     * View applicants.
+     *
+     * @param projectID the project id
+     * @param isManager the is manager
+     * @param ashm      the ashm
+     */
     public static void viewApplicants(String projectID,boolean isManager, HashMap<String,String> ashm){
         try {
 
@@ -428,6 +507,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Print receipt.
+     *
+     * @param projectID the project id
+     * @param ashm      the ashm
+     */
     public static void printReceipt(String projectID, HashMap<String,String> ashm){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -463,6 +548,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Detailed applicant.
+     *
+     * @param applicationID the application id
+     * @param isManager     the is manager
+     */
     public static void detailedApplicant(String applicationID,boolean isManager){
         try {
             Scanner scanner = new Scanner(System.in);
@@ -550,6 +641,11 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Edit project.
+     *
+     * @param projectID the project id
+     */
     public static void editProject(String projectID){
         //Can only edit Name, neighbourhood, Opening to ending
         Scanner scanner = new Scanner(System.in);
@@ -598,6 +694,11 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Edit flat.
+     *
+     * @param flatID the flat id
+     */
     public static void editFlat(String flatID){
         System.out.println(Seperator.seperate());
         try {
@@ -612,6 +713,11 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Edit name.
+     *
+     * @param projectID the project id
+     */
     public static void editName(String projectID){
         try {
             Scanner scanner = new Scanner(System.in);
@@ -628,6 +734,11 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Edit neighbourhood.
+     *
+     * @param projectID the project id
+     */
     public static void editNeighbourhood(String projectID){
         try {
             Scanner scanner = new Scanner(System.in);
@@ -654,6 +765,11 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Edit opening closing.
+     *
+     * @param projectID the project id
+     */
     public static void editOpeningClosing(String projectID){
         try {
             Scanner scanner = new Scanner(System.in);
@@ -699,6 +815,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * View officers.
+     *
+     * @param projectID the project id
+     * @param isManager the is manager
+     */
     public static void viewOfficers(String projectID,boolean isManager){
         try {
             Scanner scanner = new Scanner(System.in);
@@ -744,6 +866,12 @@ public class ManagerProjectPages {
         }
     }
 
+    /**
+     * Detailed officer.
+     *
+     * @param registrationID the registration id
+     * @param isManager      the is manager
+     */
     public static void detailedOfficer(String registrationID, boolean isManager){
         try {
             Scanner scanner = new Scanner(System.in);

@@ -5,7 +5,17 @@ import Logic.SearchSettingLogicActions;
 
 import java.util.HashMap;
 
+/**
+ * The interface Applicant search view.
+ */
 public interface ApplicantSearchView {
+    /**
+     * Detailed view string.
+     *
+     * @param ashm the ashm
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String detailedView(HashMap<String,String> ashm) throws ModelNotFoundException {
         String returnStr = "";
 

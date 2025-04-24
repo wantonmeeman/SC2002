@@ -12,7 +12,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Applicant officer enquiry page.
+ */
 public class ApplicantOfficerEnquiryPage {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;

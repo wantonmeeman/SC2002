@@ -11,7 +11,15 @@ import Util.ClearCMD;
 
 import java.util.Scanner;
 
+/**
+ * The type User page.
+ */
 public class UserPage {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -43,6 +51,11 @@ public class UserPage {
         }
     }
 
+    /**
+     * Change password.
+     *
+     * @param userID the user id
+     */
     public static void changePassword(String userID){
         Scanner scanner = new Scanner(System.in);
         System.out.println(Seperator.seperate());

@@ -2,7 +2,13 @@ package Util;
 
 import java.io.IOException;
 
+/**
+ * The type Clear cmd.
+ */
 public class ClearCMD {
+    /**
+     * Clear.
+     */
     public static void clear() {
         String os = System.getProperty("os.name").toLowerCase();
         try {

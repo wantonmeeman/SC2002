@@ -1,6 +1,14 @@
 package Pages.Components;
 
+/**
+ * The interface Homepage view.
+ */
 public interface HomepageView {
+    /**
+     * Applicant homepage string.
+     *
+     * @return the string
+     */
     static String applicantHomepage(){
         return Seperator.seperate()+"\n"+
         "1. Logout"+"\n"+
@@ -10,6 +18,11 @@ public interface HomepageView {
         "5. Profile";
     }
 
+    /**
+     * Officer homepage string.
+     *
+     * @return the string
+     */
     static String officerHomepage(){
         return Seperator.seperate()+"\n"+
                 "1. Logout"+"\n"+
@@ -20,6 +33,11 @@ public interface HomepageView {
                 "6. Profile";
     }
 
+    /**
+     * Manager homepage string.
+     *
+     * @return the string
+     */
     static String managerHomepage(){
         return Seperator.seperate() + "\n" +
                 "1. Logout"+ "\n"+

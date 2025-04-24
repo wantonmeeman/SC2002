@@ -18,9 +18,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The type Application logic actions.
+ */
 public class ApplicationLogicActions extends DataLogicActions<Application>{
     private static ApplicationLogicActions instance;
 
+    /**
+     * Instantiates a new Application logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public ApplicationLogicActions(IDGenerator idGenerator) {
        super(idGenerator);
     }
@@ -65,6 +73,12 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Delete by flat id.
+     *
+     * @param flatID the flat id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void deleteByFlatID(String flatID) throws ModelNotFoundException{
         List<String> toDeleteIDs = getAllObject()
                 .filter(application -> application.getFlatID().equals(flatID))
@@ -93,6 +107,14 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
 //        return applicationList;
 //    }
 
+    /**
+     * Gets filtered applications by project id.
+     *
+     * @param projectID the project id
+     * @param ashm      the ashm
+     * @return the filtered applications by project id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public ArrayList<HashMap<String, String>> getFilteredApplicationsByProjectID(String projectID, HashMap<String,String> ashm) throws ModelNotFoundException {
         String threeRoomID = ProjectLogicActions.getInstance().get(projectID).get("ThreeRoomFlatID");
         String twoRoomID = ProjectLogicActions.getInstance().get(projectID).get("TwoRoomFlatID");
@@ -197,7 +219,18 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         return true;
     }
 
-    //Double check this
+    /**
+     * Apply string.
+     *
+     * @param userID the user id
+     * @param flatID the flat id
+     * @return the string
+     * @throws UnauthorizedActionException the unauthorized action exception
+     * @throws ModelAlreadyExistsException the model already exists exception
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws RepositoryNotFoundException the repository not found exception
+     */
+//Double check this
     //Returns string in case we need it.
     public String apply(String userID, String flatID) throws UnauthorizedActionException, ModelAlreadyExistsException, ModelNotFoundException,RepositoryNotFoundException{
         if(checkApplicationValidity(userID,flatID)) {
@@ -216,19 +249,39 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         }
     }
 
+    /**
+     * Approve.
+     *
+     * @param applicationID the application id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void approve(String applicationID) throws ModelNotFoundException{
         Application application = getObject(applicationID);
         application.setStatus("Successful");
         ApplicationRepository.getInstance().update();
     }
 
+    /**
+     * Reject.
+     *
+     * @param applicationID the application id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void reject(String applicationID) throws ModelNotFoundException{
         Application application = getObject(applicationID);
         application.setStatus("Unsuccessful");
         ApplicationRepository.getInstance().update();
     }
 
-    public void book(String applicationID, String OfficerID) throws ModelNotFoundException{
+    /**
+     * Book.
+     *
+     * @param applicationID the application id
+     * @param OfficerID     the officer id
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws UnauthorizedActionException the unauthorized action exception
+     */
+    public void book(String applicationID, String OfficerID) throws ModelNotFoundException, UnauthorizedActionException{
         Application application = getObject(applicationID);
         if(application.getStatus().equals("Successful")) {
             application.setStatus("Booked");
@@ -241,6 +294,12 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         }
     }
 
+    /**
+     * Withdraw.
+     *
+     * @param ID the id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void withdraw(String ID) throws ModelNotFoundException{
         Application application = getObject(ID);
         application.setStatus("Withdrawn");
@@ -248,6 +307,11 @@ public class ApplicationLogicActions extends DataLogicActions<Application>{
         ApplicationRepository.getInstance().update();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ApplicationLogicActions getInstance() {
         if (instance == null)
             instance = new ApplicationLogicActions(new DefaultGenerateID());

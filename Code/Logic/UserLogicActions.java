@@ -25,9 +25,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The type User logic actions.
+ */
 public class UserLogicActions extends DataLogicActions<User>{
     private static UserLogicActions instance;
 
+    /**
+     * Instantiates a new User logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public UserLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -158,6 +166,13 @@ public class UserLogicActions extends DataLogicActions<User>{
         }
     }
 
+    /**
+     * Gets logout message.
+     *
+     * @param userID the user id
+     * @return the logout message
+     * @throws ModelNotFoundException the model not found exception
+     */
     public String getLogoutMessage(String userID) throws ModelNotFoundException {
         User u = getObject(userID);
 
@@ -186,6 +201,14 @@ public class UserLogicActions extends DataLogicActions<User>{
         }
     }
 
+    /**
+     * Apply.
+     *
+     * @param ID            the id
+     * @param applicationID the application id
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws RepositoryNotFoundException the repository not found exception
+     */
     public void apply(String ID,String applicationID) throws ModelNotFoundException, RepositoryNotFoundException {
         Applicant applicant = (Applicant) getObject(ID);
         applicant.setApplicationID(applicationID);
@@ -193,6 +216,14 @@ public class UserLogicActions extends DataLogicActions<User>{
         getDataRepository(getRole(getObject(ID))).update();
     }
 
+    /**
+     * Change password.
+     *
+     * @param ID          the id
+     * @param newPassword the new password
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws RepositoryNotFoundException the repository not found exception
+     */
     public void changePassword(String ID, String newPassword) throws ModelNotFoundException, RepositoryNotFoundException{
         User u = getObject(ID);
         u.setPassword(newPassword);
@@ -200,6 +231,14 @@ public class UserLogicActions extends DataLogicActions<User>{
         getDataRepository(getRole(u)).update();
     }
 
+    /**
+     * Login hash map.
+     *
+     * @param userID   the user id
+     * @param password the password
+     * @return the hash map
+     * @throws WrongInputException the wrong input exception
+     */
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
 
         //System.out.println("[DEBUG] Attempting login for userID: " + userID);
@@ -216,6 +255,11 @@ public class UserLogicActions extends DataLogicActions<User>{
         }
     }
 
+    /**
+     * Remove applications.
+     *
+     * @param applicationID the application id
+     */
     public void removeApplications(String applicationID){
         Stream.of(OfficerRepository.getInstance().getAll(),ApplicantRepository.getInstance().getAll())
                 .flatMap(Collection::stream)
@@ -229,6 +273,11 @@ public class UserLogicActions extends DataLogicActions<User>{
         ApplicantRepository.getInstance().update();
     }
 
+    /**
+     * Get all manager array list.
+     *
+     * @return the array list
+     */
     public ArrayList<HashMap<String,String>> getAllManager(){
         return Stream.of(ManagerRepository.getInstance().getAll())
                 .flatMap(Collection::stream)  // Flatten the list of lists to a stream of users
@@ -237,6 +286,11 @@ public class UserLogicActions extends DataLogicActions<User>{
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static UserLogicActions getInstance() {
         if (instance == null)
             instance = new UserLogicActions(new DefaultGenerateID());

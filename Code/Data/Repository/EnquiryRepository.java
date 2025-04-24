@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import static Util.Config.*;
 import Data.Models.Enquiry;
 
+/**
+ * The type Enquiry repository.
+ */
 public class EnquiryRepository extends DataRepository {
     private static EnquiryRepository instance;
 
+    /**
+     * Instantiates a new Enquiry repository.
+     */
     public EnquiryRepository() {
         setFilepath(DATA_PATH + ENQUIRY_CSV);
         fetch();
@@ -55,6 +61,11 @@ public class EnquiryRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static EnquiryRepository getInstance() {
         if (instance == null)
             instance = new EnquiryRepository();

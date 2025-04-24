@@ -1,6 +1,15 @@
 package Util;
 
+/**
+ * The type Wrap text.
+ */
 public class WrapText {
+    /**
+     * Wrap string.
+     *
+     * @param input the input
+     * @return the string
+     */
     public static String wrap(String input) {
 		if(input != null) {
 			StringBuilder result = new StringBuilder();

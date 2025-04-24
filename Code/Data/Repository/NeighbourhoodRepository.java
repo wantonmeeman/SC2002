@@ -7,9 +7,15 @@ import java.util.ArrayList;
 
 import static Util.Config.*;
 
+/**
+ * The type Neighbourhood repository.
+ */
 public class NeighbourhoodRepository extends DataRepository {
     private static NeighbourhoodRepository instance;
 
+    /**
+     * Instantiates a new Neighbourhood repository.
+     */
     public NeighbourhoodRepository() {
         setFilepath(DATA_PATH + NEIGHBOURHOOD_CSV);
         fetch();
@@ -47,6 +53,11 @@ public class NeighbourhoodRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static NeighbourhoodRepository getInstance() {
         if (instance == null)
             instance = new NeighbourhoodRepository();

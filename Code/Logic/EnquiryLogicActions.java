@@ -16,9 +16,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.time.Instant;
 
+/**
+ * The type Enquiry logic actions.
+ */
 public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
     private static EnquiryLogicActions instance;
 
+    /**
+     * Instantiates a new Enquiry logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public EnquiryLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -69,6 +77,12 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         EnquiryRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Get enquiries by user id array list.
+     *
+     * @param UserID the user id
+     * @return the array list
+     */
     public ArrayList<HashMap<String,String>> getEnquiriesByUserID(String UserID){
         ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
         getAllObject()
@@ -79,6 +93,12 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         return enquiryList;
     }
 
+    /**
+     * Get enquiries by project id array list.
+     *
+     * @param ProjectID the project id
+     * @return the array list
+     */
     public ArrayList<HashMap<String,String>> getEnquiriesByProjectID(String ProjectID){
         ArrayList<HashMap<String, String>> enquiryList = new ArrayList<>();
         getAllObject()
@@ -89,6 +109,13 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         return enquiryList;
     }
 
+    /**
+     * Edit message.
+     *
+     * @param ID         the id
+     * @param newMessage the new message
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editMessage(String ID, String newMessage) throws ModelNotFoundException{
         Enquiry newEnquiry = getObject(ID);
 
@@ -97,6 +124,13 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         EnquiryRepository.getInstance().update();
     }
 
+    /**
+     * Reply.
+     *
+     * @param enquiryID the enquiry id
+     * @param reply     the reply
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void reply(String enquiryID, String reply) throws ModelNotFoundException {
         Enquiry newEnquiry = getObject(enquiryID);
 
@@ -105,6 +139,12 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         EnquiryRepository.getInstance().update();
     }
 
+    /**
+     * Delete by project id.
+     *
+     * @param projectID the project id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void deleteByProjectID(String projectID) throws ModelNotFoundException{
 
         List<String> deleteEnquiryIDList = getAllObject().filter(enquiry -> enquiry.getProjectID().equals(projectID))
@@ -116,6 +156,11 @@ public class EnquiryLogicActions extends DataLogicActions<Enquiry>{
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static EnquiryLogicActions getInstance() {
         if (instance == null)
             instance = new EnquiryLogicActions(new DefaultGenerateID());

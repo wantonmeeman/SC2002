@@ -13,7 +13,15 @@ import Util.ClearCMD;
 
 import java.util.Scanner;
 
+/**
+ * The type Applicant homepage.
+ */
 public class ApplicantHomepage {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID) {
         Scanner scanner = new Scanner(System.in);
         int input;

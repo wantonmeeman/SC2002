@@ -6,9 +6,15 @@ import static Util.Config.APPLICANT_CSV;
 import static Util.Config.DATA_PATH;
 import java.util.ArrayList;
 
+/**
+ * The type Applicant repository.
+ */
 public class ApplicantRepository extends DataRepository {
     private static ApplicantRepository instance;
 
+    /**
+     * Instantiates a new Applicant repository.
+     */
     public ApplicantRepository() {
         setFilepath(DATA_PATH + APPLICANT_CSV);
         fetch();
@@ -54,6 +60,11 @@ public class ApplicantRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ApplicantRepository getInstance() {
         if (instance == null)
             instance = new ApplicantRepository();

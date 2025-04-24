@@ -9,23 +9,27 @@ import Util.ClearCMD;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Login page.
+ */
 public class LoginPage {
+    /**
+     * Start.
+     */
     public static void start() {
         Scanner scanner = new Scanner(System.in);
         HashMap<String,String> user;
 
-        String userid;
         String password;
 
-        System.out.println("User ID:");
-        userid = scanner.nextLine();
+        String userID = getNRIC(scanner);
 
         System.out.println("Password:");
         password = scanner.nextLine();
 
         try {
-            user = UserLogicActions.getInstance().login(userid,password);
-            String userID = user.get("ID");
+            user = UserLogicActions.getInstance().login(userID,password);
+            userID = user.get("ID");
             ClearCMD.clear();
 
             String role = user.get("Role");
@@ -41,8 +45,28 @@ public class LoginPage {
 
             start();
         } catch (WrongInputException e) {
-            System.out.println("Invalid Input!");//Move this to abstraction?
+            System.out.println("Invalid Input!");
             start();
+        }
+    }
+
+    /**
+     * Get nric string.
+     *
+     * @param scanner the scanner
+     * @return the string
+     */
+    public static String getNRIC(Scanner scanner){
+        System.out.println("User ID:");
+        String userid = scanner.nextLine();
+        if(
+                userid.length() == (7+2) && (userid.charAt(0) == 'T' || userid.charAt(0) == 'S') &&
+                Character.isLetter(userid.charAt(userid.length()-1))
+        )
+            return userid;
+        else {
+            System.out.println("Wrong NRIC Format");
+            return getNRIC(scanner);
         }
     }
 }

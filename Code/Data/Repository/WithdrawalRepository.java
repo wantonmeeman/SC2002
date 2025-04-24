@@ -8,9 +8,15 @@ import java.util.ArrayList;
 
 import static Util.Config.*;
 
+/**
+ * The type Withdrawal repository.
+ */
 public class WithdrawalRepository extends DataRepository {
     private static WithdrawalRepository instance;
 
+    /**
+     * Instantiates a new Withdrawal repository.
+     */
     public WithdrawalRepository() {
         setFilepath(DATA_PATH + WITHDRAWAL_CSV);
         fetch();
@@ -48,6 +54,11 @@ public class WithdrawalRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static WithdrawalRepository getInstance() {
         if (instance == null)
             instance = new WithdrawalRepository();

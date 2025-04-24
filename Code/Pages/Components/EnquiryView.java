@@ -12,7 +12,17 @@ import java.util.HashMap;
 import static Util.WrapText.wrap;
 import static Util.TruncateText.truncate;
 
+/**
+ * The interface Enquiry view.
+ */
 public interface EnquiryView {
+    /**
+     * Detailed view string.
+     *
+     * @param enquiryID the enquiry id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String detailedView(String enquiryID) throws ModelNotFoundException {
             SimpleDateFormat formatter = Config.DATE_FORMAT;//TODO config
             String returnStr = "";
@@ -34,6 +44,13 @@ public interface EnquiryView {
             return returnStr;
     }
 
+    /**
+     * Simple view string.
+     *
+     * @param enquiryID the enquiry id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String simpleView(String enquiryID) throws ModelNotFoundException{
             SimpleDateFormat formatter = Config.DATE_FORMAT;//TODO config
             HashMap<String,String> ehm = EnquiryLogicActions.getInstance().get(enquiryID);

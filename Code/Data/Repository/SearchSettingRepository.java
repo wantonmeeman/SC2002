@@ -7,9 +7,15 @@ import static Util.Config.*;
 
 import java.util.ArrayList;
 
+/**
+ * The type Search setting repository.
+ */
 public class SearchSettingRepository extends DataRepository {
     private static SearchSettingRepository instance;
 
+    /**
+     * Instantiates a new Search setting repository.
+     */
     public SearchSettingRepository() {
         setFilepath(DATA_PATH + SEARCH_SETTING_CSV);
         fetch();
@@ -57,6 +63,11 @@ public class SearchSettingRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static SearchSettingRepository getInstance() {
         if (instance == null)
             instance = new SearchSettingRepository();

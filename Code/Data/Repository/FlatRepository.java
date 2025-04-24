@@ -7,9 +7,15 @@ import static Util.Config.*;
 
 import java.util.ArrayList;
 
+/**
+ * The type Flat repository.
+ */
 public class FlatRepository extends DataRepository {
     private static FlatRepository instance;
 
+    /**
+     * Instantiates a new Flat repository.
+     */
     public FlatRepository() {
         setFilepath(DATA_PATH + FLAT_CSV);
         fetch();
@@ -49,6 +55,11 @@ public class FlatRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static FlatRepository getInstance() {
         if (instance == null)
             instance = new FlatRepository();

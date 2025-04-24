@@ -5,7 +5,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * The interface Save csv.
+ */
 public interface SaveCSV {
+    /**
+     * Save csv.
+     *
+     * @param filepath the filepath
+     * @param csvData  the csv data
+     */
     static void saveCSV(final String filepath, ArrayList<ArrayList<String>> csvData) {
         try {
 
@@ -35,7 +44,7 @@ public interface SaveCSV {
                     String value = line.get(x);
 
                     if (value != null){
-                        value = value.replace(',','␟').replace('\n','§');
+                        value = value.replace(",","�??").replace("\n","§");
                     }
 
                     printWriter.print(value+(x==line.size()-1 ?"":","));

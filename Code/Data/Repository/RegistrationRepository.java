@@ -6,9 +6,15 @@ import static Util.Config.*;
 import java.util.ArrayList;
 import Data.Models.Registration;
 
+/**
+ * The type Registration repository.
+ */
 public class RegistrationRepository extends DataRepository {
     private static RegistrationRepository instance;
 
+    /**
+     * Instantiates a new Registration repository.
+     */
     public RegistrationRepository() {
         setFilepath(DATA_PATH + REGISTRATION_CSV);
         fetch();
@@ -50,6 +56,11 @@ public class RegistrationRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static RegistrationRepository getInstance() {
         if (instance == null)
             instance = new RegistrationRepository();

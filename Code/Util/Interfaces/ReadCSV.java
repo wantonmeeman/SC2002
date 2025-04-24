@@ -5,7 +5,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * The interface Read csv.
+ */
 public interface ReadCSV {
+    /**
+     * Read csv array list.
+     *
+     * @param filepath the filepath
+     * @return the array list
+     */
     static ArrayList<ArrayList<String>> readCSV(final String filepath) {
 
         //System.out.println("Reading file: " + filepath);
@@ -26,7 +35,7 @@ public interface ReadCSV {
                         if (lineList[x].equals("null")) {
                             lineList[x] = null;
                         }else{
-                            lineList[x] = lineList[x].replace('␟',',').replace('§','\n');
+                            lineList[x] = lineList[x].replace("�??",",").replace("§","\n");
                         }
                     }
 

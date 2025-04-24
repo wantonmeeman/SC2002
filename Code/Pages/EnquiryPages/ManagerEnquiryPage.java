@@ -13,7 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Manager enquiry page.
+ */
 public class ManagerEnquiryPage implements ReplyEnquiry {
+    /**
+     * Start.
+     *
+     * @param userID the user id
+     */
     public static void start(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -49,6 +57,12 @@ public class ManagerEnquiryPage implements ReplyEnquiry {
         start(userID);
     }
 
+    /**
+     * View enquiry.
+     *
+     * @param enquiryID the enquiry id
+     * @param userID    the user id
+     */
     public static void viewEnquiry(String enquiryID,String userID){
         try {
             Scanner scanner = new Scanner(System.in);

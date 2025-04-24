@@ -9,9 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
+/**
+ * The type Project repository.
+ */
 public class ProjectRepository extends DataRepository {
     private static ProjectRepository instance;
 
+    /**
+     * Instantiates a new Project repository.
+     */
     public ProjectRepository() {
         setFilepath(DATA_PATH + PROJECT_CSV);
         fetch();
@@ -69,6 +75,11 @@ public class ProjectRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ProjectRepository getInstance() {
         if (instance == null)
             instance = new ProjectRepository();

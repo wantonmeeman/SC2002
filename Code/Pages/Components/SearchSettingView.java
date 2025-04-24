@@ -8,7 +8,17 @@ import Logic.UserLogicActions;
 
 import java.util.HashMap;
 
+/**
+ * The interface Search setting view.
+ */
 public interface SearchSettingView {
+    /**
+     * Detailed view string.
+     *
+     * @param searchSettingID the search setting id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String detailedView(String searchSettingID) throws ModelNotFoundException {
         String returnStr = "";
         HashMap<String, String> sshm;

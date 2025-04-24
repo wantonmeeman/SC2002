@@ -7,9 +7,15 @@ import java.util.ArrayList;
 
 import static Util.Config.*;
 
+/**
+ * The type Manager repository.
+ */
 public class ManagerRepository extends DataRepository {
     private static ManagerRepository instance;
 
+    /**
+     * Instantiates a new Manager repository.
+     */
     public ManagerRepository() {
         setFilepath(DATA_PATH + MANAGER_CSV);
         fetch();
@@ -53,6 +59,11 @@ public class ManagerRepository extends DataRepository {
         return csvData;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ManagerRepository getInstance() {
         if (instance == null)
             instance = new ManagerRepository();

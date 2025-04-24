@@ -13,7 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The interface Project filter settings.
+ */
 public interface ProjectFilterSettings {
+    /**
+     * Neighbourhood.
+     *
+     * @param userID the user id
+     */
     static void neighbourhood(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -47,6 +55,11 @@ public interface ProjectFilterSettings {
         }
     }
 
+    /**
+     * Manager.
+     *
+     * @param userID the user id
+     */
     static void manager(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -78,6 +91,11 @@ public interface ProjectFilterSettings {
         }
     }
 
+    /**
+     * Name.
+     *
+     * @param userID the user id
+     */
     static void name(String userID){
         Scanner scanner = new Scanner(System.in);
 
@@ -95,6 +113,12 @@ public interface ProjectFilterSettings {
         }
     }
 
+    /**
+     * Sort.
+     *
+     * @param userID the user id
+     * @throws ModelNotFoundException the model not found exception
+     */
     static void sort(String userID) throws ModelNotFoundException {
         SearchSettingLogicActions.getInstance().toggleSort(userID);
         ClearCMD.clear();

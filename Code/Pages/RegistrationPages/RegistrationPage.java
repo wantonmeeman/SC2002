@@ -3,6 +3,7 @@ package Pages;
 import Data.Models.Project;
 import Data.Models.User;
 import Exceptions.ModelNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Logic.*;
 import Pages.Components.*;
 import Util.ClearCMD;
@@ -14,7 +15,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Registration page.
+ */
 public class RegistrationPage implements ReplyEnquiry {
+	/**
+	 * Start.
+	 *
+	 * @param userID the user id
+	 */
 	public static void start(String userID) {
 		Scanner scanner = new Scanner(System.in);
 		int input;
@@ -62,6 +71,11 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * Register.
+	 *
+	 * @param userID the user id
+	 */
 	public static void register(String userID){
 		ArrayList<HashMap<String, String>> projList = ProjectLogicActions.getInstance().getAll();
 		int x = 2;
@@ -100,6 +114,12 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * Detailed registration.
+	 *
+	 * @param projectID the project id
+	 * @param userID    the user id
+	 */
 	public static void detailedRegistration(String projectID,String userID){
 		Scanner scanner = new Scanner(System.in);
 		int input;
@@ -140,6 +160,11 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * View enquiry.
+	 *
+	 * @param enquiryID the enquiry id
+	 */
 	public static void viewEnquiry(String enquiryID){
 		try {
 		Scanner scanner = new Scanner(System.in);
@@ -187,6 +212,11 @@ public class RegistrationPage implements ReplyEnquiry {
 //		}
 //	}
 
+	/**
+	 * View enquiries.
+	 *
+	 * @param projectID the project id
+	 */
 	public static void viewEnquiries(String projectID){
 		try {
 			Scanner scanner = new Scanner(System.in);
@@ -221,6 +251,12 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * View applicant.
+	 *
+	 * @param applicantID the applicant id
+	 * @param officerID   the officer id
+	 */
 	public static void viewApplicant(String applicantID, String officerID){
 		try{
 			Scanner scanner = new Scanner(System.in);
@@ -256,7 +292,11 @@ public class RegistrationPage implements ReplyEnquiry {
 			}else if(input == 2){
 				String status = ahm.get("Status");
 				if(status.equals("Successful")) {
-					ApplicationLogicActions.getInstance().book(uhm.get("ApplicationID"), officerID);
+					try {
+						ApplicationLogicActions.getInstance().book(uhm.get("ApplicationID"), officerID);
+					}catch(UnauthorizedActionException e){
+						System.out.println("Cannot book flat");
+					}
 				}else if(status.equals("Booked")){
 					printReceipt(uhm.get("ApplicationID"));
 				}
@@ -273,6 +313,11 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * Print receipt.
+	 *
+	 * @param applicationID the application id
+	 */
 	public static void printReceipt(String applicationID){
         HashMap<String,String> ahm = null;
         try {
@@ -291,6 +336,12 @@ public class RegistrationPage implements ReplyEnquiry {
 		}
 	}
 
+	/**
+	 * View applicants.
+	 *
+	 * @param projectID the project id
+	 * @param userID    the user id
+	 */
 	public static void viewApplicants(String projectID, String userID){
 		try {
 			Scanner scanner = new Scanner(System.in);

@@ -6,6 +6,7 @@ import Data.Models.Flat;
 import Data.Models.User;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Exceptions.WrongInputException;
 import Logic.UserLogicActions;
 import Logic.SearchSettingLogicActions;
@@ -21,9 +22,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The type Project logic actions.
+ */
 public class ProjectLogicActions extends DataLogicActions<Project>{
     private static ProjectLogicActions instance;
 
+    /**
+     * Instantiates a new Project logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public ProjectLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -71,6 +80,31 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         return projectID;
     }
 
+    /**
+     * Create project string.
+     *
+     * @param hm the hm
+     * @return the string
+     * @throws UnauthorizedActionException the unauthorized action exception
+     */
+    public String createProject(HashMap<String,String> hm) throws UnauthorizedActionException{
+        boolean canCreate = true;
+
+        ArrayList<HashMap<String,String>> pal = ProjectLogicActions.getInstance().getAll();
+        for(HashMap<String,String> phm:pal){
+            boolean timeCheck = Long.parseLong(phm.get("OpeningDate")) <= Long.parseLong(hm.get("ClosingDate")) && Long.parseLong(hm.get("OpeningDate")) <= Long.parseLong(phm.get("ClosingDate"));
+            if(timeCheck){
+                canCreate = false;
+            }
+        }
+
+        if(canCreate){
+            return create(hm);
+        }else{
+            throw new UnauthorizedActionException();
+        }
+    }
+
     @Override
     protected Stream<Project> getAllObject(){
         return ProjectRepository.getInstance().getAll()
@@ -78,6 +112,13 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
                 .map(model -> (Project) model);
     }
 
+    /**
+     * Gets all manager filtered.
+     *
+     * @param userID the user id
+     * @return the all manager filtered
+     * @throws ModelNotFoundException the model not found exception
+     */
     public ArrayList<HashMap<String,String>> getAllManagerFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
         HashMap<String, String> ss = new HashMap<>();
@@ -120,7 +161,15 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
         return projList;
     }
-        public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
+
+    /**
+     * Gets all filtered.
+     *
+     * @param userID the user id
+     * @return the all filtered
+     * @throws ModelNotFoundException the model not found exception
+     */
+    public ArrayList<HashMap<String,String>> getAllFiltered(String userID) throws ModelNotFoundException{
         ArrayList<HashMap<String, String>> projList = new ArrayList<>();
 
         HashMap<String,String> user = UserLogicActions.getInstance().get(userID);
@@ -213,6 +262,13 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         return projList;
     }
 
+    /**
+     * Gets active project by manager id.
+     *
+     * @param managerID the manager id
+     * @return the active project by manager id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public HashMap<String,String> getActiveProjectByManagerID(String managerID) throws ModelNotFoundException{
 
         Optional<Project> projOpt = getAllObject().filter(
@@ -228,6 +284,13 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         }
     }
 
+    /**
+     * Gets project by flat id.
+     *
+     * @param flatID the flat id
+     * @return the project by flat id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public HashMap<String,String> getProjectByFlatID(String flatID) throws ModelNotFoundException {
         Optional<Project> projOpt = getAllObject().filter(
                         project -> project.getThreeRoomFlatID().equals(flatID) || project.getTwoRoomFlatID().equals(flatID)
@@ -240,20 +303,50 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         }
     }
 
+    /**
+     * Toggle.
+     *
+     * @param projectID the project id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void toggle(String projectID) throws ModelNotFoundException{
         getObject(projectID).toggleVisibility();
         ProjectRepository.getInstance().update();
     }
 
+    /**
+     * Edit name.
+     *
+     * @param projectID the project id
+     * @param name      the name
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editName(String projectID,String name) throws ModelNotFoundException {
         getObject(projectID).setName(name);
 
         ProjectRepository.getInstance().update();
     }
+
+    /**
+     * Edit neighbourhood.
+     *
+     * @param projectID       the project id
+     * @param neighbourhoodID the neighbourhood id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editNeighbourhood(String projectID,String neighbourhoodID) throws ModelNotFoundException{
         getObject(projectID).setNeighbourhoodID(neighbourhoodID);
         ProjectRepository.getInstance().update();
     }
+
+    /**
+     * Edit opening closing.
+     *
+     * @param projectID the project id
+     * @param opening   the opening
+     * @param closing   the closing
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editOpeningClosing(String projectID, String opening, String closing) throws ModelNotFoundException{
         //Processing
         long openingLong = LocalDate.parse(opening).atStartOfDay(ZoneId.of("UTC")).toInstant().getEpochSecond();
@@ -283,6 +376,11 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         ProjectRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ProjectLogicActions getInstance() {
         if (instance == null)
             instance = new ProjectLogicActions(new DefaultGenerateID());

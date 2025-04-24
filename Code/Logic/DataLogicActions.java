@@ -15,10 +15,20 @@ import Logic.Interfaces.LogicIdentifiable;
 import Util.DefaultGenerateID;
 import Util.Interfaces.IDGenerator;
 
+/**
+ * The type Data logic actions.
+ *
+ * @param <T> the type parameter
+ */
 public abstract class DataLogicActions<T extends Model>
         implements LogicIdentifiable, LogicCreatable, LogicGetable, LogicDeletable {
     private IDGenerator idGenerator;
 
+    /**
+     * Instantiates a new Data logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public DataLogicActions(IDGenerator idGenerator) {
         this.idGenerator = idGenerator;
     }
@@ -27,14 +37,32 @@ public abstract class DataLogicActions<T extends Model>
         return idGenerator.generateID(8);
     }
 
+    /**
+     * To map hash map.
+     *
+     * @param t the t
+     * @return the hash map
+     */
     abstract protected HashMap<String,String> toMap(T t);
 
     abstract public String create(HashMap<String,String> hm) throws ModelAlreadyExistsException;
 
+    /**
+     * Get all object stream.
+     *
+     * @return the stream
+     */
     protected Stream<T> getAllObject(){
         return Stream.empty();
     }
 
+    /**
+     * Gets object.
+     *
+     * @param ID the id
+     * @return the object
+     * @throws ModelNotFoundException the model not found exception
+     */
     protected T getObject(String ID) throws ModelNotFoundException{
         Optional<T> itemOpt = getAllObject().filter(
                 item -> item.getID().equals(ID)

@@ -13,9 +13,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * The type Withdrawal logic actions.
+ */
 public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
     private static WithdrawalLogicActions instance;
 
+    /**
+     * Instantiates a new Withdrawal logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public WithdrawalLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -65,6 +73,12 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
         WithdrawalRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Approve.
+     *
+     * @param withdrawalID the withdrawal id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void approve(String withdrawalID) throws ModelNotFoundException{
         Withdrawal w = getObject(withdrawalID);
         w.setStatus("Successful");
@@ -74,12 +88,23 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
         WithdrawalRepository.getInstance().update();
     }
 
+    /**
+     * Reject.
+     *
+     * @param withdrawalID the withdrawal id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void reject(String withdrawalID) throws ModelNotFoundException{
         Withdrawal w = getObject(withdrawalID);
         w.setStatus("Unsuccessful");
         WithdrawalRepository.getInstance().update();
     }
 
+    /**
+     * Withdraw.
+     *
+     * @param applicationID the application id
+     */
     public void withdraw(String applicationID){
         HashMap<String,String> whm = new HashMap<>();
         whm.put("ID",applicationID);
@@ -87,6 +112,12 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
         create(whm);
     }
 
+    /**
+     * Delete by application id.
+     *
+     * @param applicationID the application id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void deleteByApplicationID(String applicationID) throws ModelNotFoundException{
         Optional<Withdrawal> match = getAllObject()
                 .filter(withdrawal -> withdrawal.getID().equals(applicationID))
@@ -97,6 +128,11 @@ public class WithdrawalLogicActions extends DataLogicActions<Withdrawal>{
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static WithdrawalLogicActions getInstance() {
         if (instance == null)
             instance = new WithdrawalLogicActions(new DefaultGenerateID());

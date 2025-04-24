@@ -10,8 +10,17 @@ import Util.Interfaces.IDGenerator;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+/**
+ * The type Search setting logic actions.
+ */
 public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
     private static SearchSettingLogicActions instance;
+
+    /**
+     * Instantiates a new Search setting logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public SearchSettingLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -70,12 +79,25 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         SearchSettingRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Toggle sort.
+     *
+     * @param userID the user id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void toggleSort(String userID) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectAscending(!ss.getProjectAscending());
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Edit neighbourhood.
+     *
+     * @param userID          the user id
+     * @param neighbourhoodID the neighbourhood id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editNeighbourhood(String userID, String neighbourhoodID) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectNeighbourhoodID(neighbourhoodID);
@@ -83,6 +105,13 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Edit name.
+     *
+     * @param userID the user id
+     * @param name   the name
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editName(String userID, String name) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectName(name);
@@ -90,6 +119,13 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Edit manager.
+     *
+     * @param userID    the user id
+     * @param managerID the manager id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editManager(String userID, String managerID) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectManagerID(managerID);
@@ -97,18 +133,35 @@ public class SearchSettingLogicActions extends DataLogicActions<SearchSetting>{
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Toggle two room filter.
+     *
+     * @param userID the user id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void toggleTwoRoomFilter(String userID) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectTwoRoomFlat(!ss.getProjectTwoRoomFlat());
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Toggle three room filter.
+     *
+     * @param userID the user id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void toggleThreeRoomFilter(String userID) throws ModelNotFoundException{
         SearchSetting ss = getObject(userID);
         ss.setProjectThreeRoomFlat(!ss.getProjectThreeRoomFlat());
         SearchSettingRepository.getInstance().update();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static SearchSettingLogicActions getInstance() {
         if (instance == null)
             instance = new SearchSettingLogicActions(new DefaultGenerateID());

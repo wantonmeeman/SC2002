@@ -12,8 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Neighbourhood page.
+ */
 public class NeighbourhoodPage {
-		public static void start() {
+	/**
+	 * Start.
+	 */
+	public static void start() {
 			Scanner scanner = new Scanner(System.in);
 			int input;
 

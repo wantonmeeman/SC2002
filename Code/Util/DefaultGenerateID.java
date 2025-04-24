@@ -4,6 +4,9 @@ import Util.Interfaces.IDGenerator;
 
 import java.util.Random;
 
+/**
+ * The type Default generate id.
+ */
 public class DefaultGenerateID implements IDGenerator {
     private static final String ALPHANUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final Random RANDOM = new Random();

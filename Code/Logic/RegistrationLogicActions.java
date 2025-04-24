@@ -15,9 +15,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/**
+ * The type Registration logic actions.
+ */
 public class RegistrationLogicActions extends DataLogicActions<Registration>{
     private static RegistrationLogicActions instance;
 
+    /**
+     * Instantiates a new Registration logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public RegistrationLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -63,6 +71,12 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         RegistrationRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Get by officer id array list.
+     *
+     * @param userID the user id
+     * @return the array list
+     */
     public ArrayList<HashMap<String,String>> getByOfficerID(String userID){
         return getAllObject()
                 .filter(registration -> {
@@ -76,6 +90,12 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Get by project id array list.
+     *
+     * @param projectID the project id
+     * @return the array list
+     */
     public ArrayList<HashMap<String,String>> getByProjectID(String projectID){
         return getAllObject()
                 .filter(registration -> {
@@ -145,6 +165,14 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
+    /**
+     * Register string.
+     *
+     * @param hm the hm
+     * @return the string
+     * @throws UnauthorizedActionException the unauthorized action exception
+     * @throws ModelNotFoundException      the model not found exception
+     */
     public String register(HashMap<String,String> hm) throws UnauthorizedActionException, ModelNotFoundException {
         String officerID = hm.get("OfficerID");
         String projectID = hm.get("ProjectID");
@@ -156,6 +184,12 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
+    /**
+     * Delete by project id.
+     *
+     * @param projectID the project id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void deleteByProjectID(String projectID) throws ModelNotFoundException{
         List<String> toDeleteIDs = getAllObject()
                 .filter(registration -> registration.getProjectID().equals(projectID))
@@ -167,6 +201,13 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
+    /**
+     * Approve.
+     *
+     * @param registrationID the registration id
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws UnauthorizedActionException the unauthorized action exception
+     */
     public void approve(String registrationID) throws ModelNotFoundException, UnauthorizedActionException {
         Registration registration = getObject(registrationID);
         String projectID = registration.getProjectID();
@@ -184,12 +225,25 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
+    /**
+     * Reject.
+     *
+     * @param registrationID the registration id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void reject(String registrationID) throws ModelNotFoundException {
         Registration registration = getObject(registrationID);
         registration.setStatus("Unsuccessful");
         RegistrationRepository.getInstance().update();
     }
 
+    /**
+     * Gets approved officers.
+     *
+     * @param projectID the project id
+     * @return the approved officers
+     * @throws ModelNotFoundException the model not found exception
+     */
     public ArrayList<HashMap<String,String>> getApprovedOfficers(String projectID) throws ModelNotFoundException{
         return getAll().stream()
                 .filter(registration->registration.get("ProjectID").equals(projectID))
@@ -197,6 +251,11 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static RegistrationLogicActions getInstance() {
         if (instance == null)
             instance = new RegistrationLogicActions(new DefaultGenerateID());

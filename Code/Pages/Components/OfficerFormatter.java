@@ -9,7 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * The interface Officer formatter.
+ */
 public interface OfficerFormatter {
+    /**
+     * Format officers string.
+     *
+     * @param projectID the project id
+     * @return the string
+     * @throws ModelNotFoundException the model not found exception
+     */
     static String formatOfficers(String projectID) throws ModelNotFoundException {
         String returnStr = "";
         ArrayList<HashMap<String,String>> ral = RegistrationLogicActions.getInstance().getApprovedOfficers(projectID);

@@ -7,6 +7,9 @@ import Util.ClearCMD;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The type Applicant filter settings page.
+ */
 public class ApplicantFilterSettingsPage {
     private static HashMap<String,String> maritalToggle(HashMap<String,String> ashm){
         String maritalStatus = ashm.get("MaritalStatus");
@@ -44,6 +47,12 @@ public class ApplicantFilterSettingsPage {
         return ashm;
     }
 
+    /**
+     * Start hash map.
+     *
+     * @param ashm the ashm
+     * @return the hash map
+     */
     public static HashMap<String,String> start(HashMap<String,String> ashm){
         Scanner scanner = new Scanner(System.in);
         int input;

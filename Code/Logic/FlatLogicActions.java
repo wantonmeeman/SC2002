@@ -4,6 +4,7 @@ import Data.Models.Flat;
 import Data.Repository.FlatRepository;
 import Exceptions.ModelAlreadyExistsException;
 import Exceptions.ModelNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Util.DefaultGenerateID;
 import Util.Interfaces.IDGenerator;
 
@@ -13,9 +14,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * The type Flat logic actions.
+ */
 public class FlatLogicActions extends DataLogicActions<Flat>{
     private static FlatLogicActions instance;
 
+    /**
+     * Instantiates a new Flat logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public FlatLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -61,14 +70,31 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         FlatRepository.getInstance().delete(ID);
     }
 
-    public void book(String flatID) throws ModelNotFoundException{
+    /**
+     * Book.
+     *
+     * @param flatID the flat id
+     * @throws ModelNotFoundException      the model not found exception
+     * @throws UnauthorizedActionException the unauthorized action exception
+     */
+    public void book(String flatID) throws ModelNotFoundException, UnauthorizedActionException {
 
         Flat flat = getObject(flatID);
-        flat.setTotalUnits(flat.getTotalUnits()-1);
-
-        FlatRepository.getInstance().update();
+        if(flat.getTotalUnits() > 0) {
+            flat.setTotalUnits(flat.getTotalUnits() - 1);
+            FlatRepository.getInstance().update();
+        }else{
+            throw new UnauthorizedActionException();
+        }
     }
 
+    /**
+     * Edit price.
+     *
+     * @param flatID the flat id
+     * @param price  the price
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editPrice(String flatID, Float price) throws ModelNotFoundException{
 
         Flat flat = getObject(flatID);
@@ -77,6 +103,12 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         FlatRepository.getInstance().update();
     }
 
+    /**
+     * Delete all linked.
+     *
+     * @param flatID the flat id
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void deleteAllLinked(String flatID) throws ModelNotFoundException{
         Optional<Flat> matchedFlat = getAllObject()
                 .filter(flat -> flat.getID().equals(flatID))
@@ -93,6 +125,11 @@ public class FlatLogicActions extends DataLogicActions<Flat>{
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static FlatLogicActions getInstance() {
         if (instance == null)
             instance = new FlatLogicActions(new DefaultGenerateID());

@@ -10,9 +10,17 @@ import Util.Interfaces.IDGenerator;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+/**
+ * The type Neighbourhood logic actions.
+ */
 public class NeighbourhoodLogicActions extends DataLogicActions<Neighbourhood>{
     private static NeighbourhoodLogicActions instance;
 
+    /**
+     * Instantiates a new Neighbourhood logic actions.
+     *
+     * @param idGenerator the id generator
+     */
     public NeighbourhoodLogicActions(IDGenerator idGenerator) {
         super(idGenerator);
     }
@@ -56,12 +64,24 @@ public class NeighbourhoodLogicActions extends DataLogicActions<Neighbourhood>{
         NeighbourhoodRepository.getInstance().delete(ID);
     }
 
+    /**
+     * Edit name.
+     *
+     * @param neighbourhoodID the neighbourhood id
+     * @param name            the name
+     * @throws ModelNotFoundException the model not found exception
+     */
     public void editName(String neighbourhoodID, String name) throws ModelNotFoundException{
         Neighbourhood neighbourhood = getObject(neighbourhoodID);
         neighbourhood.setName(name);
         NeighbourhoodRepository.getInstance().update();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static NeighbourhoodLogicActions getInstance() {
         if (instance == null)
             instance = new NeighbourhoodLogicActions(new DefaultGenerateID());
