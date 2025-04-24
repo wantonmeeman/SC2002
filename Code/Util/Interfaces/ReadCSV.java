@@ -16,7 +16,11 @@ public interface ReadCSV {
             Scanner scanner = new Scanner(file);
 
             while (scanner.hasNextLine()) {
-                String[] lineList = scanner.nextLine().split(",");
+
+                String line = scanner.nextLine();
+                if(line.trim().isEmpty()) continue;//This skips empty lines
+
+                String[] lineList = line.split(",");
                 if(lineList.length > 0) {
                     for (int x = 0; lineList.length > x; x++) {
                         if (lineList[x].equals("null")) {

@@ -37,7 +37,6 @@ public class FlatRepository extends DataRepository {
 
         alm.forEach(model -> {
             Flat flat = (Flat) model;
-
             ArrayList<String> row = new ArrayList<>();
             row.add(flat.getID());                        // ID
             row.add(flat.getType());                      // type

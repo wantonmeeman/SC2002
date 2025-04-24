@@ -76,6 +76,19 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public ArrayList<HashMap<String,String>> getByProjectID(String projectID){
+        return getAllObject()
+                .filter(registration -> {
+                    try{
+                        return registration.getProjectID().equals(projectID);
+                    }catch(NullPointerException e){
+                        return false;
+                    }
+                })
+                .map(this::toMap)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     private boolean registerEligibility(String userID, String projectID) {
         try {
             String userApplicationID = UserLogicActions.getInstance().get(userID).get("ApplicationID");
@@ -91,7 +104,17 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
                 }
             }
 
+            ArrayList<HashMap<String,String>> registrationArrayList = getApprovedOfficers(projectID);
             HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+
+            //Check if the registration is full
+            int totalValidOfficer = registrationArrayList.size();
+            int officerSlots = Integer.parseInt(phm.get("OfficerSlots"));
+
+            if((officerSlots-totalValidOfficer) <= 0){
+                return false;
+            }
+
             long openingApply = Long.parseLong(phm.get("OpeningDate"));
             long closingApply = Long.parseLong(phm.get("ClosingDate"));
 
@@ -122,9 +145,11 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
-    public String register(HashMap<String,String> hm) throws ModelAlreadyExistsException,UnauthorizedActionException {
+    public String register(HashMap<String,String> hm) throws UnauthorizedActionException, ModelNotFoundException {
+        String officerID = hm.get("OfficerID");
+        String projectID = hm.get("ProjectID");
 
-        if(registerEligibility(hm.get("OfficerID"),hm.get("ProjectID"))) {
+        if(registerEligibility(officerID,projectID)) {
             return create(hm);
         }else{
             throw new UnauthorizedActionException();
@@ -142,16 +167,34 @@ public class RegistrationLogicActions extends DataLogicActions<Registration>{
         }
     }
 
-    public void approve(String registrationID) throws ModelNotFoundException {
+    public void approve(String registrationID) throws ModelNotFoundException, UnauthorizedActionException {
         Registration registration = getObject(registrationID);
-        registration.setStatus("Successful");
-        RegistrationRepository.getInstance().update();
+        String projectID = registration.getProjectID();
+
+        HashMap<String,String> phm = ProjectLogicActions.getInstance().get(projectID);
+
+        int officerSlots = Integer.parseInt(phm.get("OfficerSlots"));
+        int totalValidOfficer = getApprovedOfficers(projectID).size();
+
+        if((officerSlots-totalValidOfficer) > 0){
+            registration.setStatus("Successful");
+            RegistrationRepository.getInstance().update();
+        }else{
+            throw new UnauthorizedActionException();
+        }
     }
 
     public void reject(String registrationID) throws ModelNotFoundException {
         Registration registration = getObject(registrationID);
         registration.setStatus("Unsuccessful");
         RegistrationRepository.getInstance().update();
+    }
+
+    public ArrayList<HashMap<String,String>> getApprovedOfficers(String projectID) throws ModelNotFoundException{
+        return getAll().stream()
+                .filter(registration->registration.get("ProjectID").equals(projectID))
+                .filter(registration->registration.get("Status").equals("Successful"))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public static RegistrationLogicActions getInstance() {

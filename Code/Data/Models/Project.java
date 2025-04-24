@@ -13,7 +13,6 @@ public class Project extends Model {
     private long closingDate;
     private boolean visibility;
     private int officerSlots;
-    private String[] officersIDs;
     private String managerID;
     private String twoRoomFlatID;
     private String threeRoomFlatID;
@@ -22,7 +21,7 @@ public class Project extends Model {
                     String name, String neighbourhoodID,
                    long openingDate, long closingDate,
                    boolean visible,
-                   int officerSlots, String[] officerIDs,
+                   int officerSlots,
                    String managerID, String twoRoomFlatID,
                     String threeRoomFlatID) {
         super(projectID);//Generate random
@@ -34,7 +33,6 @@ public class Project extends Model {
         this.visibility = visible;
 
         this.officerSlots = officerSlots;
-        this.officersIDs = officerIDs;
         this.managerID = managerID;
         this.twoRoomFlatID = twoRoomFlatID;
         this.threeRoomFlatID = threeRoomFlatID;
@@ -86,14 +84,6 @@ public class Project extends Model {
 
     public void setManagerID(String managerID) {
         this.managerID = managerID;
-    }
-
-    public String[] getOfficersIDs() {
-        return officersIDs;
-    }
-
-    public void setOfficersIDs(String[] officersIDs) {
-        this.officersIDs = officersIDs;
     }
 
     public int getOfficerSlots() {

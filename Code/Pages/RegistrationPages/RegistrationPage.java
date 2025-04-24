@@ -33,7 +33,6 @@ public class RegistrationPage implements ReplyEnquiry {
 
 					System.out.println((x++) + ". "+ RegistrationView.simpleView(projectID,status));
 				}catch(ModelNotFoundException e){
-					//TODO
 					System.out.println("Registration not found");
 				}
 			}

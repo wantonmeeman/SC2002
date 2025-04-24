@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ApplicantEnquiryPage {
+public class ApplicantOfficerEnquiryPage {
     public static void start(String userID){
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -54,12 +54,18 @@ public class ApplicantEnquiryPage {
     private static void createEnquiry(String userID){
         HashMap<String,String> hm = new HashMap<String,String>();
 
-        hm.put("ProjectID",chooseProject());
-        hm.put("Message",writeMessage());
-        hm.put("UserID", userID);
+        String projectID = chooseProject();
 
-        EnquiryLogicActions.getInstance().create(hm);
-        ClearCMD.clear();
+        if(projectID == null) {
+            System.out.println("No projects found");
+        }else{
+            hm.put("ProjectID", projectID);
+            hm.put("Message", writeMessage());
+            hm.put("UserID", userID);
+
+            EnquiryLogicActions.getInstance().create(hm);
+            ClearCMD.clear();
+        }
     }
 
     private static String chooseProject(){
@@ -76,20 +82,22 @@ public class ApplicantEnquiryPage {
             System.out.println((x++) +". "+hm.get("Name"));
         }
 
-        try {
-            input = Integer.parseInt(scanner.nextLine());
-        }catch (Exception e){
-            input = -1;
-        }
+        if(x > 1){
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                input = -1;
+            }
 
-        if(
-                input > 0 && input < x){
-            return projList.get(input-1).get("ID");
+            if (input > 0 && input < x) {
+                return projList.get(input - 1).get("ID");
+            } else {
+                System.out.println("Invalid Input");
+                return chooseProject();
+            }
         }else{
-            System.out.println("Invalid Input");
-            chooseProject();
+            return null;
         }
-        return null;
     }
 
     private static String writeMessage(){

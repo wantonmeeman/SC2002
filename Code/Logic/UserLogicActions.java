@@ -202,7 +202,7 @@ public class UserLogicActions extends DataLogicActions<User>{
 
     public HashMap<String, String> login(String userID, String password) throws WrongInputException {
 
-        System.out.println("[DEBUG] Attempting login for userID: " + userID);
+        //System.out.println("[DEBUG] Attempting login for userID: " + userID);
 
         Optional<User> userOpt = getAllObject().filter(
                         user -> user.getID().equals(userID) && user.getPassword().equals(password)

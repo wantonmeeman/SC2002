@@ -27,7 +27,8 @@ public interface ProjectView {
 
         returnStr += "Project Name: "+phm.get("Name");
         returnStr += "\nProject Neighbourhood: " + NeighbourhoodView.simpleView(phm.get("NeighbourhoodID"));
-        returnStr += "\nProject Officers: "+formatOfficers(phm.get("OfficerIDs"));
+        returnStr += "\nProject Officers: "+formatOfficers(projectID);
+        returnStr += "\nOfficer Slots: "+ phm.get("OfficerSlots");
         returnStr += "\nProject Manager: "+ mhm.get("Name");
         returnStr += "\nProject Application Opening to Ending: " + formattedOpening + " to " + formattedClosing;
 

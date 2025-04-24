@@ -1,8 +1,11 @@
 package Pages.HomePages;
 
+import Data.Models.Project;
+import Exceptions.ModelNotFoundException;
+import Logic.ProjectLogicActions;
 import Pages.ApplicationPages.ApplicationsPage;
 import Pages.Components.HomepageView;
-import Pages.EnquiryPages.ApplicantEnquiryPage;
+import Pages.EnquiryPages.ApplicantOfficerEnquiryPage;
 import Pages.ProjectPages.ApplicantProjectPages;
 import Pages.UserPages.LogoutPage;
 import Pages.UserPages.UserPage;
@@ -34,7 +37,7 @@ public class ApplicantHomepage {
                 break;
             case 3:
                 //Enquiries
-                ApplicantEnquiryPage.start(userID);
+                ApplicantOfficerEnquiryPage.start(userID);
                 break;
             case 4:
                 //Applications

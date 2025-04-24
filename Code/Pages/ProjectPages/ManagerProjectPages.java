@@ -3,6 +3,7 @@ package Pages.ProjectPages;
 import Data.Models.Model;
 import Data.Models.User;
 import Exceptions.ModelNotFoundException;
+import Exceptions.UnauthorizedActionException;
 import Logic.*;
 import Pages.Components.*;
 import Pages.FilterSettingPages.ApplicantFilterSettingsPage;
@@ -120,6 +121,8 @@ public class ManagerProjectPages {
                 createProject(userID);
             }else if(input > 0 && input < x){
                 detailedProject(inputToIDMap.get(input),userID);
+            }else{
+                System.out.println("Invalid Input");
             }
             start(userID);
         }
@@ -206,7 +209,7 @@ public class ManagerProjectPages {
             input = -1;//pass to default handler
         }
 
-        if(input < x) {
+        if(input > 0 && input < x) {
             return nal.get(input - 1).get("ID");
         }else{
             System.out.println("Invalid Input");
@@ -347,7 +350,6 @@ public class ManagerProjectPages {
         HashMap<String,String> phm = new HashMap<>();
 
         phm.put("ManagerID",userID);
-        phm.put("OfficerIDs","");
         phm.put("Visibility","true");
         //Validation
 
@@ -666,6 +668,13 @@ public class ManagerProjectPages {
 
             String openingDateString = scanner.nextLine();
 
+            try {
+                String.valueOf(
+                        java.time.LocalDate.parse(openingDateString)
+                                .atStartOfDay()
+                                .toEpochSecond(java.time.ZoneOffset.UTC)
+                );
+
             dateObject = new Date(Long.parseLong(phm.get("ClosingDate"))*1000L);
             formattedDateTime = formatter.format(dateObject);
 
@@ -673,9 +682,19 @@ public class ManagerProjectPages {
             System.out.println("New Closing(YYYY-MM-DD): ");
 
             String closingDateString = scanner.nextLine();
+                String.valueOf(
+                        java.time.LocalDate.parse(closingDateString)
+                                .atStartOfDay()
+                                .toEpochSecond(java.time.ZoneOffset.UTC)
+                );
 
             ProjectLogicActions.getInstance().editOpeningClosing(projectID,openingDateString,closingDateString);
-        } catch (ModelNotFoundException e) {
+            }catch(Exception e) {
+                System.out.println("Invalid Input");
+                editOpeningClosing(projectID);
+            }
+
+             } catch (ModelNotFoundException e) {
             System.out.println("Could not find flat");
         }
     }
@@ -685,27 +704,24 @@ public class ManagerProjectPages {
             Scanner scanner = new Scanner(System.in);
             int input;
 
-            String[] officerArr = ProjectLogicActions.getInstance().get(projectID).get("OfficerIDs").split(",");
-            ArrayList<String> registrationIDArr = new ArrayList<>();
+            ArrayList<HashMap<String,String>> registrationArr = RegistrationLogicActions.getInstance().getByProjectID(projectID);
 
             System.out.println(Seperator.seperate());
             System.out.println(Back.back());
             int x = 2;
 
-            for(String officerID: officerArr){
-                if(!officerID.equals("")) {
+            for(HashMap<String,String> registration: registrationArr){
+                    String officerID = registration.get("OfficerID");
                     String Name = UserLogicActions.getInstance().get(officerID).get("Name");
                     ArrayList<HashMap<String, String>> ral = RegistrationLogicActions.getInstance().getByOfficerID(officerID);
 
                     for (HashMap<String, String> rhm : ral) {
                         String rProjectID = rhm.get("ProjectID");
                         if (projectID.equals(rProjectID)) {
-                            registrationIDArr.add(rhm.get("ID"));
                             System.out.println((x++) + ". " + Name + " - " + rhm.get("Status"));
                             break;
                         }
                     }
-                }
             }
             try {
                 input = Integer.parseInt(scanner.nextLine());
@@ -718,7 +734,7 @@ public class ManagerProjectPages {
                 return;
             }else if(
                     input > 0 && input < x){
-                detailedOfficer(registrationIDArr.get(input-2),isManager);
+                detailedOfficer(registrationArr.get(input-2).get("ID"),isManager);
             }else{
                 System.out.println("Invalid Input");
             }
@@ -768,6 +784,8 @@ public class ManagerProjectPages {
 
         } catch (ModelNotFoundException e) {
             System.out.println("Could not find object");
+        }catch (UnauthorizedActionException e){
+            System.out.println("Cannot approve");
         }
     }
 }

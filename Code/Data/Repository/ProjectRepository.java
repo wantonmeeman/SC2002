@@ -21,10 +21,7 @@ public class ProjectRepository extends DataRepository {
     protected ArrayList<Model> toModelList(ArrayList<ArrayList<String>> csv) {
         ArrayList<Model> projectArr = new ArrayList<>();
 
-
-
         for (ArrayList<String> strArr : csv) {
-            String[] officerIDArr = strArr.get(7).split(",");
 
             projectArr.add(new Project(
                     strArr.get(0),
@@ -34,10 +31,9 @@ public class ProjectRepository extends DataRepository {
                     Long.parseLong(strArr.get(4)),
                     Boolean.parseBoolean(strArr.get(5)),
                     Integer.parseInt(strArr.get(6)),
-                    officerIDArr,
+                    strArr.get(7),
                     strArr.get(8),
-                    strArr.get(9),
-                    strArr.get(10)
+                    strArr.get(9)
                     )
             );
         }
@@ -63,12 +59,6 @@ public class ProjectRepository extends DataRepository {
             row.add(String.valueOf(project.getClosingDate()));           // Add closing date
             row.add(String.valueOf(project.isVisible()));             // Add visibility (boolean)
             row.add(String.valueOf(officerSlots));          // Add number of officer slots
-
-            List<String> list = new ArrayList<>(Arrays.asList(project.getOfficersIDs()));
-
-            while (list.size() < officerSlots) list.add("");
-
-            row.add(String.join(",", list.subList(0, officerSlots))); // Add officer IDs as string
             row.add(project.getManagerID());             // Add manager ID
             row.add(project.getTwoRoomFlatID());         // Add two-room flat ID
             row.add(project.getThreeRoomFlatID());

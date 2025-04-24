@@ -1,9 +1,8 @@
 package Pages.HomePages;
 
-import Pages.*;
 import Pages.ApplicationPages.ApplicationsPage;
 import Pages.Components.HomepageView;
-import Pages.EnquiryPages.ApplicantEnquiryPage;
+import Pages.EnquiryPages.ApplicantOfficerEnquiryPage;
 import Pages.ProjectPages.ApplicantProjectPages;
 import Pages.RegistrationPage;
 import Pages.UserPages.LogoutPage;
@@ -35,7 +34,7 @@ public class OfficerHomepage {
                 break;
             case 3:
                 //Enquiries
-                ApplicantEnquiryPage.start(userID);
+                ApplicantOfficerEnquiryPage.start(userID);
                 break;
             case 4:
                 //Applications

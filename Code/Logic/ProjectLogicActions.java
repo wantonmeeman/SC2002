@@ -1,5 +1,6 @@
 package Logic;
 
+import Data.Models.Officer;
 import Data.Models.Project;
 import Data.Models.Flat;
 import Data.Models.User;
@@ -38,7 +39,6 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         projectMap.put("ClosingDate", String.valueOf(project.getClosingDate()));
         projectMap.put("Visibility", String.valueOf(project.isVisible()));
         projectMap.put("OfficerSlots", String.valueOf(project.getOfficerSlots()));
-        projectMap.put("OfficerIDs", String.join(",", project.getOfficersIDs()));
         projectMap.put("ManagerID", project.getManagerID());
         projectMap.put("TwoRoomFlatID", project.getTwoRoomFlatID());
         projectMap.put("ThreeRoomFlatID", project.getThreeRoomFlatID());
@@ -48,13 +48,13 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
     public String create(HashMap<String,String> hm){
         String projectID = generateID();
+
         String name = hm.get("Name");
         String neighbourhoodID = hm.get("NeighbourhoodID");
         long openingDate = Long.parseLong(hm.get("OpeningDate"));
         long closingDate = Long.parseLong(hm.get("ClosingDate"));
         boolean visibility = Boolean.parseBoolean(hm.get("Visibility"));
         int officerSlots = Integer.parseInt(hm.get("OfficerSlots"));
-        String[] officerIDs = hm.get("OfficerIDs").split(",");
         String managerID = hm.get("ManagerID");
         String twoRoomFlatID = hm.get("TwoRoomFlatID");
         String threeRoomFlatID = hm.get("ThreeRoomFlatID");
@@ -63,7 +63,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
             ProjectRepository.getInstance().create(
                     new Project(
                             projectID, name, neighbourhoodID, openingDate,
-                    closingDate, visibility ,officerSlots, officerIDs, managerID, twoRoomFlatID, threeRoomFlatID));
+                    closingDate, visibility ,officerSlots,  managerID, twoRoomFlatID, threeRoomFlatID));
         }catch(ModelAlreadyExistsException e){
             create(hm);//Try again
         }
