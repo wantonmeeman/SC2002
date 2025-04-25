@@ -93,7 +93,8 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
         ArrayList<HashMap<String,String>> pal = ProjectLogicActions.getInstance().getAll();
         for(HashMap<String,String> phm:pal){
             boolean timeCheck = Long.parseLong(phm.get("OpeningDate")) <= Long.parseLong(hm.get("ClosingDate")) && Long.parseLong(hm.get("OpeningDate")) <= Long.parseLong(phm.get("ClosingDate"));
-            if(timeCheck){
+            boolean managerCheck = phm.get("ManagerID").equals(hm.get("ManagerID"));
+            if(timeCheck && managerCheck){
                 canCreate = false;
             }
         }
@@ -161,6 +162,7 @@ public class ProjectLogicActions extends DataLogicActions<Project>{
 
         return projList;
     }
+
 
     /**
      * Gets all filtered.

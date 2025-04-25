@@ -438,6 +438,7 @@ public class ManagerProjectPages {
         try {
             ProjectLogicActions.getInstance().createProject(phm);
         } catch (UnauthorizedActionException e) {
+            System.out.println("Cannot create!");
             createProject(userID);
         }
     }

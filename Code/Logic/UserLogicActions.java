@@ -131,11 +131,6 @@ public class UserLogicActions extends DataLogicActions<User>{
 
     @Override
     protected Stream<User> getAllObject(){
-
-        // System.out.println("[DEBUG] Loading applicants: " + ApplicantRepository.getInstance().getAll().size());
-        // System.out.println("[DEBUG] Loading managers: " + ManagerRepository.getInstance().getAll().size());
-        // System.out.println("[DEBUG] Loading officers: " + OfficerRepository.getInstance().getAll().size());
-
         return Stream.of(
                         ApplicantRepository.getInstance().getAll(),
                         ManagerRepository.getInstance().getAll(),
